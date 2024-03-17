@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth, firestoreDB } from '../config/firebase.config'
 import { DocumentSnapshot, doc, getDoc } from 'firebase/firestore'
+import { useDispatch } from 'react-redux'
+import { SET_USER } from '../context/actions/userActions'
 const Loginscreen = () => {
   const screenwidth = Math.round(Dimensions.get("window").width)
 
@@ -16,15 +18,20 @@ const Loginscreen = () => {
   const [alert, setalert] = useState(false)
   const [alertMessage, setalertMessage] = useState(null)
 
+  const dispatch =  useDispatch()
+
   const HandleLogin = async () =>{
     if (getEmailValidationStatus && email!= ""){
 
       await signInWithEmailAndPassword(firebaseAuth, email,password).then(userCred =>{
         if (userCred){
           console.log("User ID", userCred?.user.uid);
+
+          
           getDoc(doc(firestoreDB, 'users', userCred?.user.uid )).then(DocumentSnapshot =>{
             if(DocumentSnapshot.exists){
               console.log("User Data", DocumentSnapshot.data())
+              dispatch(SET_USER(DocumentSnapshot.data()))
         
             }
             
@@ -34,7 +41,7 @@ const Loginscreen = () => {
           console.log("Error: ", err.message); 
 
           if (err.message.includes("invalid-credential"))
-          {
+          {;
             setalert(true)
             setalertMessage("Wrong credentials")
            
@@ -69,7 +76,7 @@ const Loginscreen = () => {
       <View className= 'flex-1 items-center justify-start'>
         <Image 
         source={BGImage} resizeMode='cover' 
-        className='h-96'
+        className='h-20'
         style={{width: screenwidth}}/> 
 
        
@@ -77,7 +84,7 @@ const Loginscreen = () => {
             
 
 
-            <View className= 'w-full h-full bg-white rounded-tl-[190] -mt-44 flex items-center justify-start py-6 px-6 space-y-6'> 
+            <View className= 'w-full h-full bg-white flex items-center justify-start py-6 px-6 space-y-6'> 
 
             <Image 
         source={Logo} resizeMode='contain' 

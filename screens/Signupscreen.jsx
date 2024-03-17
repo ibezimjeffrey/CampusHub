@@ -9,6 +9,9 @@ import { BlurView } from 'expo-blur';
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth, firestoreDB } from '../config/firebase.config'
 import { doc, setDoc } from 'firebase/firestore'
+import {CheckBox} from 'react-native-elements'
+
+
 
 const Signupscreen = () => {
   const screenwidth = Math.round(Dimensions.get("window").width)
@@ -19,6 +22,10 @@ const Signupscreen = () => {
   const [name, setname] = useState("")
   const [AVATARmenu, setAVATARmenu] = useState(false)
   const [getEmailValidationStatus, setgetEmailValidationStatus] = useState(false)
+  const [Type, setType] = useState("")
+
+ const [isClient, setisClient] = useState(false)
+ const [isfreelancer, setisFreelancer] = useState(false)
 
   const HandleAVATAR = (item) => {
    
@@ -34,6 +41,8 @@ const Signupscreen = () => {
           fullName: name,
           profilePic: avatar,
           providerData: userCred.user.providerData,
+          type: Type,
+          
 
 
         };
@@ -48,6 +57,18 @@ const Signupscreen = () => {
 
   };
 
+  const HandleFreelancer = () =>{
+    setisFreelancer(!isfreelancer)
+    setType("Freelancer")
+
+  }
+
+  const HandleClient = () =>{
+    setisClient(!isClient)
+    setType("Client")
+
+  }
+
   const navigation= useNavigation();
   return (
     
@@ -55,7 +76,7 @@ const Signupscreen = () => {
        
         <Image 
         source={BGImage} resizeMode='cover' 
-        className='h-96'
+        className='h-20'
         style={{width: screenwidth}}/> 
 
         {AVATARmenu && (
@@ -87,7 +108,7 @@ const Signupscreen = () => {
 
         )}
         
-            <View className= 'w-full h-full bg-white rounded-tl-[190] -mt-44 flex items-center justify-start py-6 px-6 space-y-6'> 
+            <View className= 'w-full h-full bg-white relative flex items-center justify-start py-6 px-6 space-y-6'> 
             <Text className="py-2 text-primaryText text-xl font-semibold">Join CampusHub</Text>
             <View className="w-full flex items-center justify-center relative -my-4">
       <TouchableOpacity onPress={()=> setAVATARmenu(true)}
@@ -111,6 +132,9 @@ const Signupscreen = () => {
 
         <View className="w-full flex items-center justify-center">
 
+       
+
+
 
         <Userinput
        Placeholder="Full Name"
@@ -131,7 +155,37 @@ const Signupscreen = () => {
            setstateValue ={setpassword}
             />
 
+
+
           {/* {login button} */}
+
+          <View className="w-full px-4  my-3 flex items-center flex-row justify-center">
+
+{!isClient &&(
+
+<CheckBox checkedColor='green' checked= {isfreelancer} onPress={() => HandleFreelancer()}
+title='Freelancer'/>
+
+
+
+)}
+
+{
+  !isfreelancer &&(
+<CheckBox checkedColor='green' checked= {isClient} onPress={() => HandleClient()}
+  title='Client'
+
+/>
+
+  )
+
+}
+            
+       
+
+
+          </View>
+
 
 
           <TouchableOpacity onPress={handleSignup}

@@ -4,19 +4,31 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { Provider } from 'react-redux';
+
 const Stack = createNativeStackNavigator();
-import { Homescreen } from './screens';
+import { Homescreen, Splashscreen } from './screens';
 import { Loginscreen } from './screens';
 import { Signupscreen } from './screens';
+import Store from './context/store';
+
 
 export default function App() {
   return (
 <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Loginscreen" component={Loginscreen} />
+  <Provider store={Store}>
+
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Splashscreen" component={Splashscreen} />
+          <Stack.Screen name="Homescreen" component={Homescreen} />
+      
         <Stack.Screen name="Signupscreen" component={Signupscreen} />
+        <Stack.Screen name="Loginscreen" component={Loginscreen} />
+       
       </Stack.Navigator>
-    </NavigationContainer>
+  
+  </Provider>
+  </NavigationContainer> 
     
   );
 }
