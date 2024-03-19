@@ -1,30 +1,77 @@
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Logo } from '../assets';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {Splashscreen} from './index.js';
+import {useSelector} from 'react-redux'
+
+  const user = useSelector((state) => state.user.user);
+
+  const username = useSelector((state) => state.user.fullName);
+function Home() {
+  return (
+  <Splashscreen/>
+  );
+}
+
+function Search() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <p>{username}</p>
+    </View>
+  );
+}
+
+
+function Post() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Post</Text>
+    </View>
+  );
+}
+
+
+function Messages() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Messages </Text>
+    </View>
+  );
+}
+
+function Settings() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Settings</Text>
+    </View>
+  );
+}
+
+const Tab = createBottomTabNavigator();
 
 
 const Homescreen = () => {
 
-  const user = useSelector((state) => state.user.user);
-  console.log("Logged user:", user)
+
+
+
+
 
   return (
 
 
-    <NavigationContainer>
-
-
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Splashscreen" component={Splashscreen} />
-          <Stack.Screen name="Homescreen" component={Homescreen} />
-      
-        <Stack.Screen name="Signupscreen" component={Signupscreen} />
-        <Stack.Screen name="Loginscreen" component={Loginscreen} />
-       
-      </Stack.Navigator>
-  
-  </NavigationContainer> 
+    <NavigationContainer independent={true}> 
+      <Tab.Navigator screenOptions={{headerShown: false}}>
+          
+        <Tab.Screen name="Home"  component={Home} />
+        <Tab.Screen name="Search" component={Search} />
+        <Tab.Screen name="Post" component={Post} />
+        <Tab.Screen name="Messages" component={Messages} />
+        <Tab.Screen name="Settings" component={Settings} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 
 
 // <View className="Flex-1">
@@ -60,7 +107,7 @@ const Homescreen = () => {
 
 
 
-  )
+  
 }
 
 export default Homescreen

@@ -22,10 +22,7 @@ const Signupscreen = () => {
   const [name, setname] = useState("")
   const [AVATARmenu, setAVATARmenu] = useState(false)
   const [getEmailValidationStatus, setgetEmailValidationStatus] = useState(false)
-  const [Type, setType] = useState("")
 
- const [isClient, setisClient] = useState(false)
- const [isfreelancer, setisFreelancer] = useState(false)
 
   const HandleAVATAR = (item) => {
    
@@ -41,7 +38,7 @@ const Signupscreen = () => {
           fullName: name,
           profilePic: avatar,
           providerData: userCred.user.providerData,
-          type: Type,
+     
           
 
 
@@ -57,17 +54,6 @@ const Signupscreen = () => {
 
   };
 
-  const HandleFreelancer = () =>{
-    setisFreelancer(!isfreelancer)
-    setType("Freelancer")
-
-  }
-
-  const HandleClient = () =>{
-    setisClient(!isClient)
-    setType("Client")
-
-  }
 
   const navigation= useNavigation();
   return (
@@ -161,25 +147,7 @@ const Signupscreen = () => {
 
           <View className="w-full px-4  my-3 flex items-center flex-row justify-center">
 
-{!isClient &&(
 
-<CheckBox checkedColor='green' checked= {isfreelancer} onPress={() => HandleFreelancer()}
-title='Freelancer'/>
-
-
-
-)}
-
-{
-  !isfreelancer &&(
-<CheckBox checkedColor='green' checked= {isClient} onPress={() => HandleClient()}
-  title='Client'
-
-/>
-
-  )
-
-}
             
        
 
