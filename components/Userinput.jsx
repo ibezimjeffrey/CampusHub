@@ -51,7 +51,7 @@ const Userinput = ({ Placeholder, isPass, setstateValue, setgetEmailValidationSt
         value={value}
         onChangeText={handleTextChange}
         secureTextEntry={isPass && showPass}
-        autoCapitalize='none'
+        
       
       />
 

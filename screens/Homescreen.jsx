@@ -2,26 +2,23 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {Splashscreen} from './index.js';
-import {useSelector} from 'react-redux'
+import {ClientHomescreen} from './index.js';
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
-  const user = useSelector((state) => state.user.user);
 
-  const username = useSelector((state) => state.user.fullName);
 function Home() {
   return (
-  <Splashscreen/>
+  <ClientHomescreen/>
   );
 }
 
 function Search() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <p>{username}</p>
+      <Text>Search</Text>
     </View>
   );
 }
-
 
 function Post() {
   return (
@@ -31,83 +28,61 @@ function Post() {
   );
 }
 
-
 function Messages() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Messages </Text>
+      <Text>Messages</Text>
     </View>
   );
 }
 
-function Settings() {
+function Profile() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings</Text>
+      <Text>Profile</Text>
     </View>
   );
 }
 
 const Tab = createBottomTabNavigator();
 
-
 const Homescreen = () => {
-
-
-
-
-
-
   return (
-
-
     <NavigationContainer independent={true}> 
-      <Tab.Navigator screenOptions={{headerShown: false}}>
-          
-        <Tab.Screen name="Home"  component={Home} />
+      <Tab.Navigator 
+        screenOptions={({ route } ) => ({
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = focused ? 'home' : 'home-outline';
+            } else if (route.name === 'Search') {
+              iconName = focused ? 'search' : 'search-outline';
+            } else if (route.name === 'Post') {
+              iconName = focused ? 'add-circle' : 'add-circle-outline';
+            } else if (route.name === 'Messages') {
+              iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
+            } else if (route.name === 'Profile') {
+              iconName = focused ? 'person' : 'person-outline';
+            }
+
+      
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: 'green',
+          inactiveTintColor: 'gray',
+        }}>
+        <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Post" component={Post} />
         <Tab.Screen name="Messages" component={Messages} />
-        <Tab.Screen name="Settings" component={Settings} />
+        <Tab.Screen name="Profile" component={Profile} />
       </Tab.Navigator>
     </NavigationContainer>
   );
-
-
-// <View className="Flex-1">
-// <SafeAreaView>
-//   <View className="w-full flex-row items-center justify-between px-4 py-2">
-  
-//   <TouchableOpacity>
-//   <Image 
-//   source={Logo} resizeMode='contain' 
-//   className=' w-20 h-20'
-//   /> 
-
-//   </TouchableOpacity>
- 
-
-//   <TouchableOpacity className="w-12 h-12 rounded-full border border-primary flex">
-
-//   <Image 
-//   source={{uri:user?.profilePic}} resizeMode='cover' 
-//   className=' w-full h-full'
-//   /> 
-
-
-//   </TouchableOpacity>
-
-//   </View>
-// </SafeAreaView>
-
-// </View>
-
-
-
-
-
-
-  
 }
 
-export default Homescreen
+export default Homescreen;
