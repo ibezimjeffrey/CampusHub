@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {ClientHomescreen} from './index.js';
+import {AddTochatscreen, ClientHomescreen, Messagescreen, Profilescreen} from './index.js';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
 
@@ -30,17 +30,20 @@ function Post() {
 
 function Messages() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Messages</Text>
-    </View>
+  <Messagescreen/>
   );
 }
 
 function Profile() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile</Text>
-    </View>
+ <Profilescreen/>
+  );
+}
+
+
+function Chat() {
+  return (
+ <AddTochatscreen/>
   );
 }
 
@@ -78,7 +81,7 @@ const Homescreen = () => {
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Post" component={Post} />
-        <Tab.Screen name="Messages" component={Messages} />
+        <Tab.Screen name="Messages" component={Chat} />
         <Tab.Screen name="Profile" component={Profile} />
       </Tab.Navigator>
     </NavigationContainer>

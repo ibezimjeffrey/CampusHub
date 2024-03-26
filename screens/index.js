@@ -3,3 +3,8 @@ export { default as Loginscreen} from "./Loginscreen";
 export { default as Signupscreen} from "./Signupscreen";
 export { default as Splashscreen} from "./Splashscreen";
 export { default as ClientHomescreen} from "./ClientHomescreen";
+export { default as Profilescreen} from "./Profilescreen";
+export { default as Aboutscreen} from "./Aboutscreen";
+export { default as Messagescreen} from "./Messagescreen";
+export { default as AddTochatscreen} from "./AddTochatscreen";
+export { default as Chatscreen} from "./Chatscreen";

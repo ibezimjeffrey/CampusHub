@@ -56,9 +56,9 @@ const ClientHomescreen = () => {
 
   </View>
 
-  <View>
-    <Text className="font-serif text-2xl text-primary ">{greeting} 
-    <Text className="font-serif text-2xl text-primaryBold " >{user?.fullName}</Text> </Text>
+  <View className="">
+    <Text className=" text-2xl text-primary ">{greeting} 
+    <Text className=" text-2xl text-primaryBold " >{user?.fullName}</Text> </Text>
    
   </View>
 

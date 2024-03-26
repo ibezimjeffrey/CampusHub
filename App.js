@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'react-redux';
 
 const Stack = createNativeStackNavigator();
-import { Homescreen, Splashscreen } from './screens';
+import { Aboutscreen, AddTochatscreen, Chatscreen, Homescreen, Splashscreen } from './screens';
 import { Loginscreen } from './screens';
 import { Signupscreen } from './screens';
 import Store from './context/store';
@@ -20,11 +20,14 @@ export default function App() {
 
           <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="Splashscreen" component={Splashscreen} />
+          <Stack.Screen name="Aboutscreen" component={Aboutscreen} />
           <Stack.Screen name="Homescreen" component={Homescreen} />
       
         <Stack.Screen name="Signupscreen" component={Signupscreen} />
         <Stack.Screen name="Loginscreen" component={Loginscreen} />
-       
+        <Stack.Screen name="AddTochatscreen" component={AddTochatscreen} />
+        <Stack.Screen name="Chatscreen" component={Chatscreen} />
+        
       </Stack.Navigator>
   
   </Provider>

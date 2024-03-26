@@ -41,10 +41,21 @@ const Loginscreen = () => {
           console.log("Error: ", err.message); 
 
           if (err.message.includes("invalid-credential"))
-          {;
+          {
             setalert(true)
             setalertMessage("Wrong credentials")
            
+          }
+
+          if (err.message.includes("network-request-failed"))
+          {
+            setalert(false)
+            setalertMessage("Check Internet Connection")
+           
+            setInterval(() => {
+              setalert(false)
+              
+            }, 2000);
           }
 
           else if (err.message.includes("user-not-found")) {
@@ -55,6 +66,8 @@ const Loginscreen = () => {
           setalert(false)
           
         }, 2000);
+
+        
           }
 
           else{
