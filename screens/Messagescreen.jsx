@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Logo } from "../assets";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator } from "react-native";
@@ -15,12 +15,15 @@ import { firestoreDB } from "../config/firebase.config";
 const Messagescreen = () => {
   const navigation =useNavigation()
   const user = useSelector((state) => state.user.user);
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(true);
   const [Chats, setChats] = useState(null)
 
 
-  const Move = () =>{
-    navigation.navigate("Loginscreen")
+  const Move = () =>{ 
+  
+      navigation.navigate("AddTochatscreen")
+      
+
   }
 
   useLayoutEffect(() => {
@@ -108,14 +111,13 @@ const Messagescreen = () => {
                   <ActivityIndicator size={"large"} color={"#0DC7BA"} />
                 </View>
            
-              
-              
+      
               
             ) : (
               <>
               {
-                chats && chats?.length > 0 ?(<>
-                {chats?.map(room => {<MessageCard key={room._id} room={room} />})}
+                Chats && Chats?.length > 0 ?(<>
+                {Chats?.map(room => {<MessageCard key={room._id} room={room} />})}
                 
                 </>
                 

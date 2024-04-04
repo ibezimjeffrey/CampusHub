@@ -49,13 +49,13 @@ const Loginscreen = () => {
 
           if (err.message.includes("network-request-failed"))
           {
-            setalert(false)
+            setalert(true)
             setalertMessage("Check Internet Connection")
            
             setInterval(() => {
               setalert(false)
               
-            }, 2000);
+            }, 9000);
           }
 
           else if (err.message.includes("user-not-found")) {

@@ -4,11 +4,12 @@ import { useNavigation } from '@react-navigation/native'
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { Image } from 'react-native'
 import { useSelector } from 'react-redux'
-import { setDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { firestoreDB } from '../config/firebase.config'
 
 const AddTochatscreen = () => {
-  const navigation = useNavigation()
+  const navigation =useNavigation()
+    
   const user = useSelector((state) => state.user.user);
 
   
@@ -16,6 +17,7 @@ const AddTochatscreen = () => {
 
   const createNewChat = async () =>{
     let id = `${Date.now()}`
+    
 
     const _doc = {
       _id : id,
@@ -23,13 +25,15 @@ const AddTochatscreen = () => {
       chatName: addChat
     }
 
+     
+    try {
+      await setDoc(doc(firestoreDB, "chats", id), _doc);
+      setaddChat("");
+      navigation.goBack();
+    } catch (err) {
+      alert("Error: " + err);
+    }
     
-      setDoc((firestoreDB, "chats", id), _doc).then(()=>{
-        setaddChat("")
-        navigation.replace("Homescreen")
-      }).catch((err) =>{
-        alert("Error: ", err)
-      })
     
   }
 

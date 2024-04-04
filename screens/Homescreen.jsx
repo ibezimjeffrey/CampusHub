@@ -51,7 +51,7 @@ const Tab = createBottomTabNavigator();
 
 const Homescreen = () => {
   return (
-    <NavigationContainer independent={true}> 
+  
       <Tab.Navigator 
         screenOptions={({ route } ) => ({
           headerShown: false,
@@ -81,10 +81,10 @@ const Homescreen = () => {
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Post" component={Post} />
-        <Tab.Screen name="Messages" component={Chat} />
+        <Tab.Screen name="Messages" component={Messages} />
         <Tab.Screen name="Profile" component={Profile} />
       </Tab.Navigator>
-    </NavigationContainer>
+
   );
 }
 

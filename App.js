@@ -19,6 +19,8 @@ export default function App() {
   <Provider store={Store}>
 
           <Stack.Navigator screenOptions={{headerShown: false}}>
+
+            
           <Stack.Screen name="Splashscreen" component={Splashscreen} />
           <Stack.Screen name="Aboutscreen" component={Aboutscreen} />
           <Stack.Screen name="Homescreen" component={Homescreen} />
