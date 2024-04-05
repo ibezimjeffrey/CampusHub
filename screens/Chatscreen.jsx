@@ -1,10 +1,11 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { Entypo, FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const Chatscreen = (route) => {
-    const {room} = route.params;
+const Chatscreen = ({route}) => {
+  const { room } = route.params
+
     const navigation = useNavigation()
   return (
     <View className= "flex-1">
@@ -19,7 +20,11 @@ const Chatscreen = (route) => {
     <View className="flex-row items-center justify-center space-x-3">
 
     <View className="w-12 h-12 rounded-full border border-white flex items-center justify-between">
-    <FontAwesome name='users' size={24} color={"#fbfbfb"}/>
+      <View className="top-3">
+      <FontAwesome name='users' size={24} color={"#fbfbfb"}/>
+
+      </View>
+    
     </View>
 
     <View>
@@ -33,7 +38,17 @@ const Chatscreen = (route) => {
   
 
     <View className="flex-row items-center justify-center space-x-3">
+      <TouchableOpacity>
+      <FontAwesome5 name='video' size={24} color={"#fbfbfb"}/>
+      </TouchableOpacity>
 
+      <TouchableOpacity>
+      <FontAwesome name='phone' size={24} color={"#fbfbfb"}/>
+      </TouchableOpacity>
+
+      <TouchableOpacity>
+      <Entypo name='dots-three-vertical' size={24} color={"#fbfbfb"}/>
+      </TouchableOpacity>
       
 
 

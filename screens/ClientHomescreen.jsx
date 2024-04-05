@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, View,SafeAreaView,TouchableOpacity } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Logo } from '../assets';
 import { Image } from 'react-native-elements';
@@ -12,6 +12,8 @@ import { useEffect } from 'react';
 const ClientHomescreen = () => {
     const user = useSelector((state) => state.user.user)
       const [greeting, setGreeting] = useState('');
+      const navigate = useNavigation()
+      
       
       useEffect(() => {
         const date = new Date();
@@ -41,8 +43,7 @@ const ClientHomescreen = () => {
 
  
 
-  <TouchableOpacity className="w-12 h-12 left-80 rounded-full border border-primary flex">
-
+  <TouchableOpacity className="w-12 h-12 left-80 rounded-full border border-primary flex" >
   <Image 
   source={{uri:user?.profilePic}} resizeMode='cover' 
   className=' w-full h-full'

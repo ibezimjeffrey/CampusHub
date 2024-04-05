@@ -54,7 +54,7 @@ const Messagescreen = () => {
           </Text>
 
           <Text className="text-primaryText text-sm">
-            hello hello hello hello hello hello hello
+            Hello
           </Text>
         </View>
 
@@ -117,12 +117,13 @@ const Messagescreen = () => {
               <>
               {
                 Chats && Chats?.length > 0 ?(<>
-                {Chats?.map(room => {<MessageCard key={room._id} room={room} />})}
+                {Chats?.map(room => <MessageCard key={room._id} room={room} />)}
                 
                 </>
                 
                 ):(
                   <>
+                  
                   </>
                 )
               }
