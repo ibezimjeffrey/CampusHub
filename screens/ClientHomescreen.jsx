@@ -43,7 +43,7 @@ const ClientHomescreen = () => {
 
  
 
-  <TouchableOpacity className="w-12 h-12 left-80 rounded-full border border-primary flex" >
+  <TouchableOpacity onPress={()=>{navigate.navigate("Profilescreen")}} className="w-12 h-12 left-80 rounded-full border border-primary flex" >
   <Image 
   source={{uri:user?.profilePic}} resizeMode='cover' 
   className=' w-full h-full'

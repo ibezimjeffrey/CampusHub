@@ -37,6 +37,7 @@ const Signupscreen = () => {
           _id: userCred?.user.uid,
           fullName: name,
           profilePic: avatar,
+          email: email,
           providerData: userCred.user.providerData,
      
           

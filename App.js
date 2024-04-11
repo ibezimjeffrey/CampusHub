@@ -11,9 +11,12 @@ import { Aboutscreen, AddTochatscreen, Chatscreen, Homescreen, Splashscreen } fr
 import { Loginscreen } from './screens';
 import { Signupscreen } from './screens';
 import Store from './context/store';
+import {Profilescreen} from './screens';
+import { LogBox } from 'react-native';
 
 
 export default function App() {
+  LogBox.ignoreAllLogs()
   return (
 <NavigationContainer>
   <Provider store={Store}>
@@ -29,7 +32,7 @@ export default function App() {
         <Stack.Screen name="Loginscreen" component={Loginscreen} />
         <Stack.Screen name="AddTochatscreen" component={AddTochatscreen} />
         <Stack.Screen name="Chatscreen" component={Chatscreen} />
-        
+        <Stack.Screen name="Profilescreen" component={Profilescreen} />
       </Stack.Navigator>
   
   </Provider>

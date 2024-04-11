@@ -24,13 +24,13 @@ import { useLayoutEffect } from "react";
 import { Image } from "react-native";
 
 const Chatscreen = ({ route }) => {
+  
   const { room } = route.params;
   const [isLoading, setisLoading] = useState(true);
   const [message, setmessage] = useState("")
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user)
   const [messages, setmessages] = useState("")
-  const j = 2
 
 
 
@@ -118,122 +118,125 @@ const Chatscreen = ({ route }) => {
           <>
             <ScrollView>
               
-              {isLoading ? 
-              
-              <>
-            <ActivityIndicator size={"large"} color={"#0DC7BA"}/>
-            
-            </> : 
-            
-            <>
-            {messages?.map((msg,i) => msg.user.providerData.email === user.providerData.email ? (<>
-            <View className="m-1" key={j}>
-              <View style={{alignSelf:"flex-end"}} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-primary w-auto relative ">
-                <Text className="text-base font-semibold text-white">
-                  {msg.message}
+              {isLoading ? (
+                 <>
+                 <View className="w-full flex items-center justify-center">
+                 <ActivityIndicator size={"large"} color={"#0DC7BA"}/>
 
-                </Text>
-          
-              </View>
-          
-            </View>
+                 </View>
+                 
+            
+                 </>
 
-            <View style={{alignSelf: "flex-end"}}>
-              {msg?.timeStamp?.seconds && (
-                <Text className="text-[12px] text-black font-semibold">
-                  {new Date(
-                    parseInt(msg?.timeStamp?.seconds)*1000
-                  ).toLocaleTimeString("en-US",{
-                    hour:"numeric",
-                    minute:"numeric",
-                    hour12: false
-                  })}
-                </Text>
               )
+              
              
+            : 
 
-
-
-
-                
-              }
-
-            </View>
-            
-            
-            </>
-            
-            ) : 
-            
-            
-            
             (
             
             <>
-            
-            <View key={i} style={{alignSelf:"flex-start"}} className="flex items-center justify-start space-x-2">
-              <View>
-                <Image
-                className="w-12 h-12 rounded-full" resizeMode="cover"
-                source={{uri:msg?.user?.profilePic}}/>
+            {
+              messages?.map((msg,i)=> 
+              msg.user.email === user.email ? (
+                <View className='m-1' key={i}>
+                  <View style={{alignSelf:"flex-end"}}
+                  className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-primary w-auto relative ">
+                    <Text className="text-base font-semibold text-white">
+                      {msg.message}
 
-<View className="m-1"  >
-              <View  className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-gray-200 w-auto relative ">
-                <Text className="text-base font-semibold text-black">
-                  {msg.message}
+                    </Text>
 
-                </Text>
-          
-              </View>
-                           
-            </View>
+                  </View>
 
-            <View style={{alignSelf: "flex-start"}}>
-              {msg?.timeStamp?.seconds && (
-                <Text className="text-[12px] text-black font-semibold">
-                  {new Date(
-                    parseInt(msg?.timeStamp?.seconds)*1000
-                  ).toLocaleTimeString("en-US",{
-                    hour:"numeric",
-                    minute:"numeric",
-                    hour12: false
-                  })}
-                </Text>
+                  <View style={{alignSelf: "flex-end"}}>
+                    {msg?.timeStamp?.seconds && (
+                      <Text className="text-[12px] text-black font-semibold">
+                        {new Date(
+                          parseInt(msg?.timeStamp?.seconds)*1000).toLocaleTimeString("en-US",
+                        {
+                          hour:"numeric",
+                          minute:"numeric",
+                          hour12: false,
+                        })
+                        }
+
+                      </Text>
+                    )}
+
+                  </View>
+
+                </View>
               )
-             
+              :
+              (
+
+                <View className="flex items-center justify-start space-x-2" style={{alignSelf: "flex-start"}} key={i}>
+                  <View className="flex-row items-center justify-center space-x-2">
+                    <Image
+                    className="w-12 h-12 rounded-full"
+                    resizeMode="cover"
+                    source={{uri:msg?.user?.profilePic}}/>
+
+<View className='m-1' >
+                  <View 
+                  className="px-4 py-2 rounded-tr-2xl rounded-tl-2xl rounded-br-2xl bg-gray-300 w-auto relative ">
+                    <Text className="text-base font-semibold text-white">
+                      {msg.message}
+
+                    </Text>
+
+                  </View>
+
+                  <View style={{alignSelf: "flex-start"}}>
+                    {msg?.timeStamp?.seconds && (
+                      <Text className="text-[12px] text-black font-semibold">
+                        {new Date(
+                          parseInt(msg?.timeStamp?.seconds)*1000).toLocaleTimeString("en-US",
+                        {
+                          hour:"numeric",
+                          minute:"numeric",
+                          hour12: false,
+                        })
+                        }
+
+                      </Text>
+                    )}
+
+                  </View>
+
+                </View>
+                    
+
+                  </View>
 
 
-
-
-                
-              }
-
-            </View>
-
-
-
-
-              </View>
-
-            </View>
+                </View>
+              )
+            )
+            }
             
-            </>)
+            
+            
+            </>
+            
             
             )}
             
-            
-            
-    
-
-            
-
-
-            
-            </>
-
-            }
-            
             </ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             <View className='w-full flex-row items-center justify-center px-8'>

@@ -4,70 +4,65 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Logo } from '../assets';
 import { Image } from 'react-native-elements';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useState,  } from 'react';
 import { useEffect } from 'react';
-
-
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
+import { firebaseAuth } from '../config/firebase.config';
 const Profilescreen = () => {
+   const navigation =useNavigation()
     const user = useSelector((state) => state.user.user)  
-  return (
-    <ScrollView>
-   <View className="Flex-1">
+    const dispatch = useDispatch()
+    const logout = async() =>{
+      await firebaseAuth.signOut().then(()=>{
+        dispatch(SET_USER_NULL())
+        navigation.replace("Loginscreen")
 
 
-
+      })
+    }
     
-<SafeAreaView>
-  <View className="w-full flex-row items-center left-2 py-3">
-  
-  <TouchableOpacity className="w-32 h-32  rounded-full border border-primary flex">
+  return (
 
-  <Image 
-  source={{uri:user?.profilePic}} resizeMode='cover' 
-  className=' w-full h-full'
+    <SafeAreaView className="flex-1 "> 
+
+    <View className="w-full flex-row items-center justify-between px-4">
+    <TouchableOpacity onPress={()=>{navigation.goBack()}}>
+      <MaterialIcons name='chevron-left' size={32} color={"#555"}/>
+    </TouchableOpacity>
+
+    <TouchableOpacity>
+      <Entypo name='dots-three-vertical' size={24} color={"#555"}/>
+    </TouchableOpacity>
+    
+    </View>
+
+    <View className="items-center justify-center">
+      <View className="relative border-2 border-primary p-1 rounded-full">
+      <Image 
+   source={{uri:user?.profilePic}} resizeMode='cover' 
+  className=' w-24 h-24'
   /> 
 
-  </TouchableOpacity>
+      </View>
+
+      <Text className="text-xl font-semibold pt-3">{user?.fullName}</Text>
+      <Text className="text-base font-semibold text-primaryText">{user?.providerData.uid}</Text>
+
+    </View>
+
+    <TouchableOpacity onPress={logout} className="w-full px-6 py-4 flex-row items-center justify-center">
+    <Text className="text-lg font-semibold text-primaryBold px-3">Logout</Text>
+    </TouchableOpacity>
+
+    
+
+    </SafeAreaView>
+ 
 
 
-
-
-
-  </View>
-  <View className=" flex-row items-center left-2 relative top-1">
-<Text className=" text-3xl text-black" >{user?.fullName}</Text>
-
-</View>
-<TouchableOpacity
-
-         >
-
-            <View  className="w-13 h-8 px-2 relative top-9 rounded-xl bg-gray-300 flex items-center justify-center">
-                 <Text className='py-2 text-white text-xl font-semibold -my-2'>Edit Profile</Text>
-            </View>
-
-           
-
-
-          </TouchableOpacity>
-
-
-
-          <View className=" left-2 relative py-11 top-9">
-    <Text className="text-3xl text-black">About Me</Text>
-
-</View>
   
-</SafeAreaView>
-
-
-
-
-
-</View>
-
-</ScrollView>
   )
 }
 

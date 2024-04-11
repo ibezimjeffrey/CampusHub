@@ -80,7 +80,7 @@ const Messagescreen = () => {
 
 
 
-          <TouchableOpacity className="w-12 h-12 rounded-full border border-primary flex">
+          <TouchableOpacity onPress={()=>{navigation.navigate("Profilescreen")}} className="w-12 h-12 rounded-full border border-primary flex">
             <Image
               source={{ uri: user?.profilePic }}
               resizeMode="cover"

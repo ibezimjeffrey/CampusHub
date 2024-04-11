@@ -66,8 +66,6 @@ const Homescreen = () => {
               iconName = focused ? 'add-circle' : 'add-circle-outline';
             } else if (route.name === 'Messages') {
               iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-            } else if (route.name === 'Profile') {
-              iconName = focused ? 'person' : 'person-outline';
             }
 
       
@@ -82,7 +80,7 @@ const Homescreen = () => {
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Post" component={Post} />
         <Tab.Screen name="Messages" component={Messages} />
-        <Tab.Screen name="Profile" component={Profile} />
+        
       </Tab.Navigator>
 
   );
