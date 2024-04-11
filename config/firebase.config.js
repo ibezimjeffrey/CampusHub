@@ -7,12 +7,12 @@ import {getFirestore} from "firebase/firestore"
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAFPWSwqm8T4Ie4fGDlCrPuUHFEz_9qCXI",
-  authDomain: "campushub-a0853.firebaseapp.com",
-  projectId: "campushub-a0853",
-  storageBucket: "campushub-a0853.appspot.com",
-  messagingSenderId: "705288717163",
-  appId: "1:705288717163:web:7f0a2d5327d917709fc22e"
+  apiKey: "AIzaSyBOKtEdH5B7xnrxYLdRxj02pxrJNMiKHeo",
+  authDomain: "campushub-3a5cb.firebaseapp.com",
+  projectId: "campushub-3a5cb",
+  storageBucket: "campushub-3a5cb.appspot.com",
+  messagingSenderId: "388219904737",
+  appId: "1:388219904737:web:3eb60c279d0f2d3f684da0"
 };
 
 const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
