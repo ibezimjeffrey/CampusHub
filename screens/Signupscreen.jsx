@@ -44,7 +44,7 @@ const Signupscreen = () => {
 
         setDoc(doc(firestoreDB, "users", userCred?.user.uid), data).then(
           ()=>{
-            navigation.navigate("Aboutscreen")
+            navigation.replace("Aboutscreen")
           }
         )
       })
@@ -157,7 +157,7 @@ const Signupscreen = () => {
           <TouchableOpacity onPress={handleSignup}
           className="w-full px-4 rounded-xl bg-primary my-3 flex items-center justify-center">
 
-            <Text className='py-2 text-white text-xl font-semibold'>Sign up</Text>
+            <Text className='py-2 text-white text-xl font-semibold'>Next</Text>
 
 
           </TouchableOpacity>

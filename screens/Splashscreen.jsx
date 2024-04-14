@@ -16,33 +16,28 @@ const Splashscreen = () => {
 
     }, [])
 
-    const checkLoggedUser = async() =>{
-        firebaseAuth.onAuthStateChanged((userCred) =>{
-            if(userCred?.uid){
-                getDoc(doc(firestoreDB, 'users', userCred?.uid )).then(DocumentSnapshot =>{
-                    if(DocumentSnapshot.exists){
+    const checkLoggedUser = async () => {
+      firebaseAuth.onAuthStateChanged((userCred) => {
+          if (userCred?.uid) {
+              getDoc(doc(firestoreDB, 'users', userCred?.uid)).then(DocumentSnapshot => {
+                  if (DocumentSnapshot.exists) {
                       console.log("User Data", DocumentSnapshot.data())
-                      dispatch(SET_USER(DocumentSnapshot.data()))
-                
-                    }
-                    
-                  }).then(() =>{
-                    setTimeout(() => {
-                        navigation.replace("Homescreen")
-                        
-                    }, 2000);
-                  })
-
-            }
-            else{
+                      dispatch(SET_USER(DocumentSnapshot.data()));
+                  }
+              }).then(() => {
+                  setTimeout(() => {
+                      navigation.replace("Homescreen"); 
+                  });
+              })
+          } else {
               setTimeout(() => {
-                navigation.replace("Loginscreen")
-                
-            }, 2000);
-
-            }
-        })
-    }
+                  navigation.replace("Loginscreen");
+              }, 2000);
+          }
+      })
+  }
+  
+  
   return (
     <View className = "flex-1 items-center justify-center space-y-24">
         <Image source = {Logo} className="w-24 h-24" resizeMode="contain"/>

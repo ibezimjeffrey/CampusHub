@@ -9,7 +9,9 @@ import { useState,  } from 'react';
 import { useEffect } from 'react';
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
-import { firebaseAuth } from '../config/firebase.config';
+import { firebaseAuth, firestoreDB } from '../config/firebase.config';
+import { useLayoutEffect } from 'react';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 const Profilescreen = () => {
    const navigation =useNavigation()
     const user = useSelector((state) => state.user.user)  
@@ -22,6 +24,25 @@ const Profilescreen = () => {
 
       })
     }
+
+    const [Details, setDetails] = useState("")
+
+    useLayoutEffect(()=>{
+      const msgQuery = query(
+        collection(firestoreDB, "users", user._id
+        , "details"),
+      )
+    
+      const unsubscribe = onSnapshot(msgQuery, (QuerySnapshot)=>{
+        const upMsg = QuerySnapshot.docs.map(doc => doc.data())
+        setDetails(upMsg)
+      })
+  
+      return unsubscribe
+  
+      
+    })
+
     
   return (
 
@@ -47,8 +68,8 @@ const Profilescreen = () => {
 
       </View>
 
-      <Text className="text-xl font-semibold pt-3">{user?.fullName}</Text>
-      <Text className="text-base font-semibold text-primaryText">{user?.providerData.uid}</Text>
+      <Text className="text-xl font-semibold pt-3">{user.fullName}</Text>
+      <Text className="text-base font-semibold text-primaryText">{user.email}</Text>
 
     </View>
 
@@ -56,9 +77,16 @@ const Profilescreen = () => {
     <Text className="text-lg font-semibold text-primaryBold px-3">Logout</Text>
     </TouchableOpacity>
 
-    
 
+
+ 
+  <View>
+  <Text>{Details.length > 0 ? Details[0].Hostel : ''}</Text>
+</View>
+
+  
     </SafeAreaView>
+    
  
 
 

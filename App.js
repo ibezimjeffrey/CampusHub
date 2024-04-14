@@ -25,11 +25,12 @@ export default function App() {
 
             
           <Stack.Screen name="Splashscreen" component={Splashscreen} />
+          <Stack.Screen name="Signupscreen" component={Signupscreen} />
+          <Stack.Screen name="Loginscreen" component={Loginscreen} />
           <Stack.Screen name="Aboutscreen" component={Aboutscreen} />
           <Stack.Screen name="Homescreen" component={Homescreen} />
       
-        <Stack.Screen name="Signupscreen" component={Signupscreen} />
-        <Stack.Screen name="Loginscreen" component={Loginscreen} />
+        
         <Stack.Screen name="AddTochatscreen" component={AddTochatscreen} />
         <Stack.Screen name="Chatscreen" component={Chatscreen} />
         <Stack.Screen name="Profilescreen" component={Profilescreen} />

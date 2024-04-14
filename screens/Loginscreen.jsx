@@ -131,7 +131,7 @@ const Loginscreen = () => {
           {/* {login button} */}
 
 
-          <TouchableOpacity onPress={HandleLogin} className="w-full px-4 px-2 rounded-xl bg-primary my-3 flex items-center justify-center">
+          <TouchableOpacity onPress={HandleLogin} className="w-full px-4  rounded-xl bg-primary my-3 flex items-center justify-center">
 
             <Text className='py-2 text-white text-xl font-semibold'>Sign in</Text>
 

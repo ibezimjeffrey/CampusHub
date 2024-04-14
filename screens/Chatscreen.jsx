@@ -49,6 +49,7 @@ const Chatscreen = ({ route }) => {
 
   } 
 
+
   useLayoutEffect(()=>{
     const msgQuery = query(
       collection(firestoreDB, "chats", room?._id, "messages"),
@@ -65,6 +66,8 @@ const Chatscreen = ({ route }) => {
 
     
   })
+
+  
   return (
     <View className="flex-1">
       <View className="w-full bg-primary px-4 py-6 flex-[0.20]">
@@ -137,9 +140,10 @@ const Chatscreen = ({ route }) => {
             
             <>
             {
-              messages?.map((msg,i)=> 
-              msg.user.email === user.email ? (
+              
+              messages?.map((msg,i)=> msg.user.email === user.email ? (
                 <View className='m-1' key={i}>
+                  
                   <View style={{alignSelf:"flex-end"}}
                   className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-primary w-auto relative ">
                     <Text className="text-base font-semibold text-white">
@@ -173,7 +177,7 @@ const Chatscreen = ({ route }) => {
 
                 <View className="flex items-center justify-start space-x-2" style={{alignSelf: "flex-start"}} key={i}>
                   <View className="flex-row items-center justify-center space-x-2">
-                    <Image
+                    <Image 
                     className="w-12 h-12 rounded-full"
                     resizeMode="cover"
                     source={{uri:msg?.user?.profilePic}}/>
