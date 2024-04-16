@@ -124,7 +124,7 @@ const Chatscreen = ({ route }) => {
               {isLoading ? (
                  <>
                  <View className="w-full flex items-center justify-center">
-                 <ActivityIndicator size={"large"} color={"#0DC7BA"}/>
+                 <ActivityIndicator size={"large"} color={"#43C651"}/>
 
                  </View>
                  

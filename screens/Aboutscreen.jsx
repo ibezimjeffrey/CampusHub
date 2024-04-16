@@ -16,6 +16,7 @@ const Aboutscreen = () => {
   const [value2, setvalue2] = useState(""); 
   const [statevalue2, setstatevalue2] = useState("")
 
+  
   const handleTextChange = (text) => {
     setvalue(text); 
     setstatevalue(text); 
@@ -71,11 +72,11 @@ const Aboutscreen = () => {
           <ScrollView>
           <View className="w-full h-full bg-white flex  justify-start py-6 space-y-6">
           <Text className="py-2 text-primaryText text-xl font-semibold">Let's get to know you</Text>
-          <Text className="left-5 text-xl">What hostel are you in?</Text>
+          <Text className="left-5 text-xl">What course are you studying?</Text>
 
           <TextInput
         className="border rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2"
-        placeholder="e.g Pod Living..."
+        placeholder="e.g Business Administration..."
         onChangeText={handleTextChange}
         value={value}
         

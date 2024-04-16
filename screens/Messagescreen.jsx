@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
-import { Logo } from "../assets";
+import { Logo, Logo1, Logo2 } from "../assets";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
@@ -64,7 +64,7 @@ const Messagescreen = () => {
   };
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-white">
       <SafeAreaView>
 
 
@@ -73,9 +73,9 @@ const Messagescreen = () => {
 
         
           <Image 
-            source={Logo}
+            source={Logo2}
             resizeMode="contain"
-            className=" w-full h-full absolute left-6"
+            className=" w-full h-full left-4 items-center"
           />
 
 
@@ -84,7 +84,7 @@ const Messagescreen = () => {
             <Image
               source={{ uri: user?.profilePic }}
               resizeMode="cover"
-              className=" w-full h-full"
+              className=" w-full h-full "
             />
           </TouchableOpacity>
         </View>
@@ -108,7 +108,7 @@ const Messagescreen = () => {
             {isLoading ? (
               
                 <View className="w-full flex items-center justify-center">
-                  <ActivityIndicator size={"large"} color={"#0DC7BA"} />
+                  <ActivityIndicator size={"large"} color={"#43C651"} />
                 </View>
            
       

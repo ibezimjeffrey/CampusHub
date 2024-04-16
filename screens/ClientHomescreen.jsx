@@ -35,10 +35,10 @@ const ClientHomescreen = () => {
     
   
   return (
-   <View className="Flex-1">
+   <View className="Flex-1 bg-white">
     
 <SafeAreaView>
-  <View className="w-full flex-row items-center justify-between px-4 py-2">
+  <View className="w-full flex-row items-center justify-between px-4 py-2 bg-white">
   
 
  
@@ -57,7 +57,7 @@ const ClientHomescreen = () => {
 
   </View>
 
-  <View className="">
+  <View >
     <Text className=" text-2xl text-primary ">{greeting} 
     <Text className=" text-2xl text-primaryBold " >{user?.fullName}</Text> </Text>
    

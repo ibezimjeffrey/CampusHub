@@ -1,6 +1,6 @@
 import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { BGImage, Logo } from '../assets'
+import { BGImage, Logo, Logo1 } from '../assets'
 import { Userinput } from '../components'
 import { useNavigation } from '@react-navigation/native'
 import { signInWithEmailAndPassword } from 'firebase/auth'
@@ -100,10 +100,11 @@ const Loginscreen = () => {
             <View className= 'w-full h-full bg-white flex items-center justify-start py-6 px-6 space-y-6'> 
 
             <Image 
-        source={Logo} resizeMode='contain' 
-        style={{width: 136, height: 136}}/> 
+            className="top-2 left-8"
+        source={Logo1} resizeMode='contain' 
+        style={{width: 636, height: 136}}/> 
 
-        <Text className="py-2 text-primaryText text-xl font-semibold">Welcome Back</Text>
+   
 
         <View className="w-full flex items-center justify-center">
 

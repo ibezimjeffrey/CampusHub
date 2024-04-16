@@ -46,7 +46,7 @@ const Userinput = ({ Placeholder, isPass, setstateValue, setgetEmailValidationSt
 
       <MaterialIcons name={icon} size={24} color={"#6c6c6c"} />
       <TextInput
-        className="flex-1 text-base text-primaryText font-semibold -mt-1"
+        className="flex-1 text-primaryText font-semibold -mt-1"
         placeholder={Placeholder}
         value={value}
         onChangeText={handleTextChange}

@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Image, Dimensions, TouchableOpacity, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { BGImage, Logo } from '../assets'
 import { Userinput } from '../components'
@@ -9,7 +9,7 @@ import { BlurView } from 'expo-blur';
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth, firestoreDB } from '../config/firebase.config'
 import { doc, setDoc } from 'firebase/firestore'
-import {CheckBox} from 'react-native-elements'
+
 
 
 
@@ -56,7 +56,22 @@ const Signupscreen = () => {
   const navigation= useNavigation();
   return (
     
+    
+    
       <View className= 'flex-1 items-center justify-start'>
+
+<KeyboardAvoidingView
+          
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1}}
+          
+        >
+          <>
+        
+
+        <ScrollView style={{ backgroundColor: 'white' }}>
+
+      
        
         <Image 
         source={BGImage} resizeMode='cover' 
@@ -93,7 +108,7 @@ const Signupscreen = () => {
         )}
         
             <View className= 'w-full h-full bg-white relative flex items-center justify-start py-6 px-6 space-y-6'> 
-            <Text className="py-2 text-primaryText text-xl font-semibold">Join CampusHub</Text>
+         
             <View className="w-full flex items-center justify-center relative -my-4">
       <TouchableOpacity onPress={()=> setAVATARmenu(true)}
       className="w-20 h-20 p-1 rounded-full border-2 border-primary relative">
@@ -163,7 +178,7 @@ const Signupscreen = () => {
           </TouchableOpacity>
 
           <View className="w-full flex-row py-2 justify-center space-x-2">
-            <Text className="text-base text-primaryText">Have an Acoount?</Text>
+            <Text className="text-base text-primaryText">Have an Account?</Text>
           </View>
 
           <TouchableOpacity onPress={()=> navigation.navigate("Loginscreen")} >
@@ -176,6 +191,12 @@ const Signupscreen = () => {
         </View>
 
             </View>
+            
+          
+            
+              </ScrollView>
+              </>
+              </KeyboardAvoidingView>
       
     </View>
   )
