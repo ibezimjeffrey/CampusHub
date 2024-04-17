@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {AddTochatscreen, ClientHomescreen, Messagescreen, Profilescreen} from './index.js';
+import {AddTochatscreen, ClientHomescreen, Messagescreen, Postscreen, Profilescreen} from './index.js';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
 
@@ -22,9 +22,7 @@ function Search() {
 
 function Post() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Post</Text>
-    </View>
+    <Postscreen/>
   );
 }
 

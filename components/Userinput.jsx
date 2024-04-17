@@ -52,6 +52,7 @@ const Userinput = ({ Placeholder, isPass, setstateValue, setgetEmailValidationSt
         onChangeText={handleTextChange}
         secureTextEntry={isPass && showPass}
         
+        
       
       />
 
