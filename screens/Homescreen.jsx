@@ -65,6 +65,9 @@ const Homescreen = () => {
             } else if (route.name === 'Messages') {
               iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
             }
+            else if (route.name === 'Profile') {
+              iconName = focused ? 'person' : 'person';
+            }
 
       
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -78,6 +81,7 @@ const Homescreen = () => {
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Post" component={Post} />
         <Tab.Screen name="Messages" component={Messages} />
+        <Tab.Screen name="Profile" component={Profile} />
         
       </Tab.Navigator>
 

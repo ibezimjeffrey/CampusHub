@@ -70,17 +70,22 @@ const Profilescreen = () => {
     
 
     <SafeAreaView className="flex-1 "> 
+    <ScrollView>
+
+    
 
     <View className="w-full flex-row items-center justify-between px-4">
-    <TouchableOpacity onPress={()=>{navigation.goBack()}}>
-      <MaterialIcons name='chevron-left' size={32} color={"#555"}/>
-    </TouchableOpacity>
-
-    <TouchableOpacity>
-      <Entypo name='dots-three-vertical' size={24} color={"#555"}/>
-    </TouchableOpacity>
+   
     
     </View>
+
+<View style={{left:140}}>
+<TouchableOpacity onPress={logout} className="w-full px-6 py-4 flex-row items-center justify-center">
+            <Text className="text-lg font-semibold text-primaryBold px-3">Logout</Text>
+          </TouchableOpacity>
+
+</View>
+   
 
     <View className="items-center justify-center">
       <View className="relative border-2 border-primary p-1 rounded-full">
@@ -139,16 +144,14 @@ const Profilescreen = () => {
             </View>
           </View>
 
-          <TouchableOpacity onPress={logout} className="w-full px-6 py-4 flex-row items-center justify-center">
-            <Text className="text-lg font-semibold text-primaryBold px-3">Logout</Text>
-          </TouchableOpacity>
+         
 
         
         </>
       )}
 
   </>
-
+  </ScrollView>
 
 
 
