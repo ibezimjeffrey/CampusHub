@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View,SafeAreaView,TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, View,SafeAreaView,TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Logo } from '../assets';
@@ -73,16 +73,24 @@ const ClientHomescreen = () => {
 
       const PostingCard = ({ post, index }) => {
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("Chatscreen", { userID: user._id })} className="w-full flex-row items-center justify-start py-2">
-            <View className="w-16 h-16 rounded-full flex items-center border-2 border-primary p-1 justify-center">
-              <Text>{post.Type}</Text>
-              <Text>{post.Budget}</Text>
-            </View>
-           
-          </TouchableOpacity>
+          <View className="rounded-xl w-[350px] flex py-2">
+            <TouchableOpacity onPress={() => {}}>
+              <View style={{ left: 30 }} className="bg-neutral-200 rounded-xl w-[350px] h-[150px] border-1 relative">
+                <Image
+                  source={{ uri: post?.user?.profilePic }}
+                  resizeMode='cover'
+                  className='w-24 h-24 absolute top-2 left-2'
+                />
+                <Text className="text-black text-2xl absolute top-2 ">{post.JobDetails}</Text>
+                <Text className="text-gray-500 text-xl absolute top-9">{post.Location}</Text>
+                <View style={{top:110}} className="w-full h-1 border bg-primaryBold absolute"></View>
+                <Text className="text-primary text-xl absolute bottom-2 left-2">{post.Type}</Text>
+                <Text className="text-primaryBold text-xl absolute bottom-2 right-2">₦{post.Budget}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         );
       };
-      
       
     
   
@@ -91,9 +99,16 @@ const ClientHomescreen = () => {
   
   return (
    <View className="Flex-1 bg-white">
+
     
 <SafeAreaView>
+<ScrollView >
+
   <View className="w-full flex-row items-center justify-between px-4 py-2 bg-white">
+
+  
+      
+     
   
 
  
@@ -136,7 +151,7 @@ const ClientHomescreen = () => {
         </>
       ) : (
         <>
-          <View className="border border-y-emerald-600 top-4 py-9 flex-row items-center justify-between space-x-4 my-2">
+         
             
               <Text style={styles.dosisText} className="text-xl text-primaryBold">
                 {Postings.length > 0 ? (<>
@@ -148,14 +163,14 @@ const ClientHomescreen = () => {
                 ) : ''}
               </Text>
          
-          </View>
+         
         </>
       )}
 
   </>
 
 
-
+  </ScrollView>
 
 
   

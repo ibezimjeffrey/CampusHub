@@ -27,6 +27,13 @@ const Postscreen = () => {
   const handleTextChange = (text) => {
     setvalue(text); 
     setstatevalue(text); 
+    {
+      value.length > 18 ? (
+        console.log("bad boy")
+      ) : (
+        console.log("good boy")
+      )
+    }
   };
 
   const handleTextChange1 = (text) => {

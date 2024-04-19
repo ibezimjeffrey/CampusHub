@@ -43,7 +43,7 @@ const Messagescreen = () => {
 
   const MessageCard = ({room}) => {
     return (
-      <TouchableOpacity onPress={()=>navigation.navigate("Chatscreen", {room:room})} className="w-full flex-row items-center justify-start py-2">
+      <TouchableOpacity onPress={()=>navigation.navigate("Chatscreen", {room:room})} className="w-full   flex-row items-center justify-start py-2">
         <View className="w-16 h-16 rounded-full flex items-center border-2 border-primary p-1 justify-center">
           <FontAwesome name="users" size={24} color={"#555"} />
         </View>
@@ -67,11 +67,7 @@ const Messagescreen = () => {
     <View className="flex-1 bg-white">
       <SafeAreaView>
 
-
-
-        <View className=" flex-row py-2">
-
-        
+        <View className=" flex-row py-2">        
           <Image 
             source={Logo2}
             resizeMode="contain"
