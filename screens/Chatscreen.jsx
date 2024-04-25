@@ -112,7 +112,7 @@ const Chatscreen = ({ route }) => {
         </View>
       </View>
 
-      <View className="w-full bg-white px-4 py-6 rounded-3xl flex-1 rounded-t-[50px] -mt-10">
+      <View className="w-full bg-gray-100 px-4 py-6 rounded-3xl flex-1 rounded-t-[50px] -mt-10">
         <KeyboardAvoidingView
           className="flex-1"
           behavior={Platform.OS === "ios" ? "padding" : "height"}

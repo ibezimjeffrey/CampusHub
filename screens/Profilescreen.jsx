@@ -69,12 +69,12 @@ const Profilescreen = () => {
 
     
 
-    <SafeAreaView className="flex-1 "> 
+    <SafeAreaView className="flex-1 bg-white"> 
     <ScrollView>
 
     
 
-    <View className="w-full flex-row items-center justify-between px-4">
+    <View className="w-full flex-row items-center justify-between px-4 bg-white">
    
     
     </View>

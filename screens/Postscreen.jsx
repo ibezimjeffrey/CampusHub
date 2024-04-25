@@ -21,6 +21,7 @@ const Postscreen = () => {
   const [statevalue3, setstatevalue3] = useState("")
   const [value4, setvalue4] = useState(""); 
   const [statevalue4, setstatevalue4] = useState("")
+  const [isLong, setisLong] = useState(true)
   const navigation= useNavigation();
   const user = useSelector((state) => state.user.user)
 
@@ -28,13 +29,16 @@ const Postscreen = () => {
     setvalue(text); 
     setstatevalue(text); 
     {
-      value.length > 18 ? (
-        console.log("bad boy")
+      value.length > 20 ? (
+        setisLong(false)
       ) : (
-        console.log("good boy")
+        setisLong(true)
+
       )
     }
   };
+
+
 
   const handleTextChange1 = (text) => {
     setvalue1(text); 
@@ -72,7 +76,7 @@ const Postscreen = () => {
   };
 
   const handlePost = async () => {
-    const id = `${user._id}-${Date.now()}`; // Generate a unique ID
+    const id = `${user._id}-${Date.now()}`; 
     const _doc = {
       _id: id,
       JobDetails: value,
@@ -96,7 +100,7 @@ const Postscreen = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white">
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView>
           
@@ -108,7 +112,7 @@ const Postscreen = () => {
           </View>
             <Text className="left-5 text-xl">Job Details</Text>
             <TextInput
-              className="border border-primary rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2"
+              className={`border border-primary rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2 ${!isLong && value.length > 0 ? "border-red-500" : "border-primary"}`}
               placeholder="Title Here"
               onChangeText={handleTextChange}
               value={value}
