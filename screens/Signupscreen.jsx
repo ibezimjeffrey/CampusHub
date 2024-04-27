@@ -10,9 +10,6 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth, firestoreDB } from '../config/firebase.config'
 import { doc, setDoc } from 'firebase/firestore'
 
-
-
-
 const Signupscreen = () => {
   const screenwidth = Math.round(Dimensions.get("window").width)
   const screenHeight = Math.round(Dimensions.get("window").height)
