@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platfor
 import { Entypo, FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 
 const Chatscreen = ({ route }) => {
@@ -16,38 +16,50 @@ const Chatscreen = ({ route }) => {
 
   useLayoutEffect(() => {
     const msgQuery = query(
-      collection(firestoreDB, "chats", post._id, "messages"),
+      collection(firestoreDB, 'messages'),
+      
+      where('idRoom', '==', post.idRoom), 
       orderBy("timeStamp", "asc")
     );
-
+  
     const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
       const upMsg = querySnapshot.docs.map(doc => doc.data());
       setMessages(upMsg);
       setIsLoading(false);
     });
-
+  
     return unsubscribe;
-  }, []);
+  }, [post._id]); // Include post._id in the dependency array
+  
 
   const sendMessage = async () => {
     const timeStamp = serverTimestamp();
-    const id = `${Date.now()}`;
     const newMessage = {
-      _id: id,
-      roomId: post._id, // Updated to post._id instead of post.id
+      _id: post.idRoom,
+      roomId: post._id,
       timeStamp: timeStamp,
       message: message,
       user: user,
+      receipient: post.user._id,
+      idRoom: post.idRoom
     };
 
     setMessage('');
+   
 
     try {
-      await addDoc(collection(doc(firestoreDB, 'chats', post._id), 'messages'), newMessage);
+      await addDoc(collection(firestoreDB, "messages"), newMessage)
+      
     } catch (error) {
       alert('Error sending message: ' + error);
     }
   };
+
+
+
+  
+
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -67,7 +79,7 @@ const Chatscreen = ({ route }) => {
 
               <View>
                 <Text className="text-gray-50 text-base font-semibold capitalize">
-                  {post.chatName}
+                  {post.user.fullName}
                 </Text>
                 <Text className="text-gray-100 text-sm font-semibold capitalize">
                   online
@@ -104,8 +116,10 @@ const Chatscreen = ({ route }) => {
                     <ActivityIndicator size={"large"} color={"#43C651"} />
                   </View>
                 ) : (
+                  
                   <>
-                    {messages?.map((msg, i) => (
+                  {messages?.map((msg, i) => (
+                    msg.user._id === user._id ? (
                       <View className='m-1' key={i}>
                         <View style={{ alignSelf: "flex-end" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-primary w-auto relative ">
                           <Text className="text-base font-semibold text-white">
@@ -124,8 +138,28 @@ const Chatscreen = ({ route }) => {
                           )}
                         </View>
                       </View>
-                    ))}
-                  </>
+                    ) : (
+                      <View className='m-1' key={i}>
+                        <View style={{ alignSelf: "flex-start" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-gray-400 w-auto relative ">
+                          <Text className="text-base font-semibold text-white">
+                            {msg.message}
+                          </Text>
+                        </View>
+                        <View style={{ alignSelf: "flex-start" }}>
+                          {msg?.timeStamp?.seconds && (
+                            <Text className="text-[12px] text-black font-semibold">
+                              {new Date(parseInt(msg?.timeStamp?.seconds) * 1000).toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: false,
+                              })}
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+                    )
+                  ))}
+                </>
                 )}
               </ScrollView>
 

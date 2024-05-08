@@ -11,28 +11,56 @@ const DetailsScreen = ({ route }) => {
   const { post } = route.params;
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
+  const room_id = `${user._id}-${Date.now()}-${new Date().getSeconds()}`;
+
+  const othersideview = async () => {
+    const newid = `${post.User._id}-${Date.now()}`;
+
+    const _doc1 = {
+      index: post.User._id,
+      _id: newid,
+      user: user,
+      chatName: post.User.fullName,
+      jobName: post.JobDetails,
+      profilePic: post.User.profilePic,
+      idRoom: room_id
+      
+    };
+
+    try {
+      await setDoc(doc(firestoreDB, "chats", newid), _doc1);
+      navigation.navigate("Homescreen", { post: post });
+      alert(post.User.fullName + ' has been added to chats');
+    } catch (err) {
+      alert("Error: " + err);
+    }
+  }
 
   const createNewChat = async () => {
     const id = `${user._id}-${Date.now()}`;
+    
 
     const _doc = {
       index: user._id,
       _id: id,
       user: post.User,
       chatName: post.User.fullName,
-      jobName: post.JobDetails
+      jobName: post.JobDetails,
+      idRoom: room_id
+      
+      
 
     };
 
     try {
       await setDoc(doc(firestoreDB, "chats", id), _doc);
-      navigation.navigate("Homescreen", { post: post });
-      alert(post.User.fullName + ' has been added to chats');
+      othersideview()
     } catch (err) {
       alert("Error: " + err);
     }
   };
 
+  
   return (
 
     

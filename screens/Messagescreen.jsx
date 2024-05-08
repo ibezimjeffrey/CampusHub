@@ -35,10 +35,14 @@ const Messagescreen = () => {
   }, []);
 
   const MessageCard = ({ room }) => {
+    const currentUser = useSelector((state) => state.user.user);
+  
+    const isCurrentUserRoomCreator = currentUser._id === room.index;
+  
     return (
       <TouchableOpacity onPress={() => navigation.navigate("Chatscreen", { post: room })} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10 }}>
         <View style={{ width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
-          <Image source={{ uri: room.user.profilePic }} resizeMode="contain" style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: "#0F0" }} />
+          <Image source={{ uri: isCurrentUserRoomCreator ? room.user.profilePic : room.profilePic }} resizeMode="contain" style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: "#0F0" }} />
         </View>
         <View style={{ flex: 1, justifyContent: "flex-start", marginLeft: 10 }}>
           <Text style={{ fontSize: 16, fontWeight: "bold", color: "#333" }}>{room.jobName} Job</Text>
@@ -47,6 +51,8 @@ const Messagescreen = () => {
       </TouchableOpacity>
     );
   };
+  
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: "#FFF" }}>

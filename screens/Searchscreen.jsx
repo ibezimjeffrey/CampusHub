@@ -3,23 +3,26 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator,
 import { firestoreDB } from '../config/firebase.config';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { Entypo } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
 
 const Searchscreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
-  const [searchPerformed, setSearchPerformed] = useState(false); // Track if search has been performed
+  const [searchPerformed, setSearchPerformed] = useState(false); 
 
   const clearSearch = () => {
     setSearchTerm('');
     setIsLoading(false);
     setSearchResults([]);
-    setSearchPerformed(false); // Reset searchPerformed state
+    setSearchPerformed(false); 
   };
 
   const handleSearch = () => {
     setIsLoading(true);
-    setSearchPerformed(true); // Set searchPerformed to true when search is performed
+    setSearchPerformed(true); 
     const msgQuery = query(collection(firestoreDB, 'postings'));
     onSnapshot(msgQuery, (QuerySnapshot) => {
       const postings = QuerySnapshot.docs.map((doc) => doc.data());
@@ -74,22 +77,21 @@ const Searchscreen = () => {
           <ActivityIndicator size="large" color="blue" />
         ) : searchResults.length > 0 ? (
           <ScrollView>
-            {searchResults.map((result, index) => (
+            {searchResults.map((post, index) => (
               <View className="rounded-xl w-[350px] flex py-2" key={index}>
-                <TouchableOpacity onPress={() => {}}>
-                  <View style={{ left: 30 }} className="bg-neutral-200 rounded-xl w-[350px] h-[150px] border-1 relative shadow">
-                    <Image
-                      source={{ uri: result.User.profilePic }}
-                      resizeMode='cover'
-                      className='w-12 h-12 relative top-2 left-12'
-                    />
-                    <Text className="text-black text-2xl absolute top-10 ">{result.JobDetails}</Text>
-                    <Text style={{top:20}} className="text-gray-500 text-xl absolute">{result.Location}</Text>
-                    <View style={{top:110}} className="w-full h-1 border bg-primaryBold absolute"></View>
-                    <Text className="text-primary text-xl absolute bottom-2 left-2">{result.Type}</Text>
-                    <Text className="text-primaryBold text-base absolute bottom-2 right-2">Fixed Price / ₦{result.Budget}</Text>
-                  </View>
-                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {navigation.navigate("DetailsScreen", { post })}}>
+          <View style={{ left: 30 }} className="bg-neutral-200 rounded-xl w-[350px] h-[150px] border-1 relative shadow">
+          <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{alignSelf:'flex-end'}} />
+
+            <Text className="text-black text-2xl absolute top-10">{post.JobDetails}</Text>
+            <Text style={{ top: 20 }} className="text-gray-500 text-xl absolute">
+              {post.Location}
+            </Text>
+            <View style={{ top: 110 }} className="w-full h-1 border bg-primaryBold absolute"></View>
+            <Text className="text-primary text-xl absolute bottom-2 left-2">{post.Type}</Text>
+            <Text className="text-primaryBold text-base absolute bottom-2 right-2">Fixed Price / ₦{post.Budget}</Text>
+          </View>
+        </TouchableOpacity>
               </View>
             ))}
           </ScrollView>
