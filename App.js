@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Provider } from 'react-redux';
-
+import "react-native-reanimated"
 const Stack = createNativeStackNavigator();
 import { Aboutscreen, AddTochatscreen, Chatscreen, DetailsScreen, Homescreen, Messagescreen, Postscreen, Searchscreen, Splashscreen } from './screens';
 import { Loginscreen } from './screens';
