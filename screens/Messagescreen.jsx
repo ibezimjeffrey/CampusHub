@@ -68,7 +68,7 @@ const Messagescreen = () => {
             <Image source={{ uri: user?.profilePic }} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25 }} />
           </TouchableOpacity>
         </View>
-        <ScrollView style={{ paddingHorizontal: 10, paddingTop: 10 }}>
+        <ScrollView className="h-full" style={{ paddingHorizontal: 10, paddingTop: 10 }}>
           <View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 10 }}>
               <Text style={{ fontSize: 20, fontWeight: "bold", color: "#333" }}>Messages</Text>

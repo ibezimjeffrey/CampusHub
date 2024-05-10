@@ -67,7 +67,7 @@ const Signupscreen = () => {
         style={{ flex: 1 }}
       >
         <>
-          <ScrollView style={{ backgroundColor: 'white' }}>
+          <ScrollView className="h-full" style={{ backgroundColor: 'white' }}>
             <Image
               source={BGImage} resizeMode='cover'
               className='h-20'
@@ -76,7 +76,7 @@ const Signupscreen = () => {
             {AVATARmenu && (
               <>
                 <View className="absolute inset-0 z-10" style={{ width: screenwidth, height: screenHeight }}>
-                  <ScrollView>
+                  <ScrollView className="h-full">
                     <BlurView className="w-full h-full px-4 py-16 flex-row flex-wrap items-center justify-evenly" tint='light' intensity={40} style={{ width: screenwidth, height: screenHeight }}>
                       {avatars?.map((item) => (
                         <TouchableOpacity onPress={() => HandleAVATAR(item)}

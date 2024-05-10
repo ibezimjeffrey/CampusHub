@@ -70,7 +70,7 @@ const Profilescreen = () => {
     
 
     <SafeAreaView className="flex-1 bg-white"> 
-    <ScrollView>
+    <ScrollView className="h-full">
 
     
 

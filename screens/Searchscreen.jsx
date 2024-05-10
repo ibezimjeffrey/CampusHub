@@ -76,7 +76,7 @@ const Searchscreen = () => {
         {isLoading ? (
           <ActivityIndicator size="large" color="blue" />
         ) : searchResults.length > 0 ? (
-          <ScrollView>
+          <ScrollView className="h-full">
             {searchResults.map((post, index) => (
               <View className="rounded-xl w-[350px] flex py-2" key={index}>
                 <TouchableOpacity onPress={() => {navigation.navigate("DetailsScreen", { post })}}>

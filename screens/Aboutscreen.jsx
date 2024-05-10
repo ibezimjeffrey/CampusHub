@@ -69,7 +69,7 @@ const Aboutscreen = () => {
         >
 
           <>
-          <ScrollView>
+          <ScrollView >
           <View className="w-full h-full bg-white flex  justify-start py-6 space-y-6">
           <Text className="py-2 text-primaryText text-xl font-semibold">Let's get to know you</Text>
           <Text className="left-5 text-xl">What course are you studying?</Text>

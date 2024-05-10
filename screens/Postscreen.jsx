@@ -94,6 +94,7 @@ const Postscreen = () => {
         setvalue2("");
         setvalue3("");
         setvalue4("");
+        alert("Job successfully posted");
         navigation.navigate("Home");
       })
       .catch(err => alert(err));
@@ -102,7 +103,7 @@ const Postscreen = () => {
   return (
     <SafeAreaView className="bg-white">
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <ScrollView>
+        <ScrollView className="h-full">
           
           <View className="w-full h-full bg-white flex  justify-start py-6 space-y-6">
           <View className="items-center">

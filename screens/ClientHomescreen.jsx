@@ -3,7 +3,7 @@ import { Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, ScrollVi
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'react-native-elements';
 import { useSelector } from 'react-redux';
-import { collection, query, onSnapshot } from 'firebase/firestore';
+import { collection, query, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 import { useFonts, Dosis_400Regular } from '@expo-google-fonts/dosis';
 import { StyleSheet } from 'react-native';
@@ -14,7 +14,7 @@ const ClientHomescreen = () => {
   const navigate = useNavigation();
 
   const [greeting, setGreeting] = useState('');
-  const [Postings, setPostings] = useState(null);
+  const [Postings, setPostings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -35,7 +35,7 @@ const ClientHomescreen = () => {
   useEffect(() => {
     const msgQuery = query(collection(firestoreDB, 'postings'));
     const unsubscribe = onSnapshot(msgQuery, (QuerySnapshot) => {
-      const upMsg = QuerySnapshot.docs.map((doc) => doc.data());
+      const upMsg = QuerySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setPostings(upMsg);
       setIsLoading(false);
     });
@@ -52,11 +52,13 @@ const ClientHomescreen = () => {
   
 
   const PostingCard = ({ post }) => {
+    const isCurrentUserPost = post.User._id === user._id;
+
     return (
       <View className="rounded-xl w-[350px] flex py-2">
-        <TouchableOpacity onPress={() => {navigate.navigate("DetailsScreen", { post })}}>
+        <TouchableOpacity onPress={() => navigate.navigate("DetailsScreen", { post })}>
           <View style={{ left: 30 }} className="bg-neutral-200 rounded-xl w-[350px] h-[150px] border-1 relative shadow">
-            <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{alignSelf:'flex-end'}} />
+            <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{ alignSelf:'flex-end' }} />
             <Text className="text-black text-2xl absolute top-10">{post.JobDetails}</Text>
             <Text style={{ top: 20 }} className="text-gray-500 text-xl absolute">
               {post.Location}
@@ -64,20 +66,17 @@ const ClientHomescreen = () => {
             <View style={{ top: 110 }} className="w-full h-1 border bg-primaryBold absolute"></View>
             <Text className="text-primary text-xl absolute bottom-2 left-2">{post.Type}</Text>
             <Text className="text-primaryBold text-base absolute bottom-2 right-2">Fixed Price / ₦{post.Budget}</Text>
+         
           </View>
         </TouchableOpacity>
       </View>
     );
   };
 
-  
-
   return (
     <View className="Flex-1 bg-white">
       <SafeAreaView>
-        <ScrollView>
-       
-
+        <ScrollView className="h-full">
           <View>
             <Text className="text-2xl text-primary">
               {greeting}
@@ -85,12 +84,24 @@ const ClientHomescreen = () => {
             </Text>
           </View>
 
-         
+          <View className="flex-row flex justify-between items-end">
 
           <View className="top-11 bottom-11 mb-11">
             <Text className="text-2xl text-black">Available Jobs</Text>
           </View>
 
+        <TouchableOpacity onPress={()=>{navigate.navigate("AllPostsscreen", {user:user})}}>
+        <View className=" right-7">
+            <Text className="text-1xl text-black">My Posts</Text>
+          </View>
+
+        </TouchableOpacity>
+         
+
+
+          </View>
+
+          
           {isLoading ? (
             <View className="w-full flex items-center justify-center">
               <ActivityIndicator size={'large'} color={'#43C651'} />
@@ -111,6 +122,5 @@ const ClientHomescreen = () => {
     </View>
   );
 };
-
 
 export default ClientHomescreen;

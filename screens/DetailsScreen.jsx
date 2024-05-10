@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Image } from 'react-native';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { doc, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { firestoreDB } from '../config/firebase.config';
 import { Entypo } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ const DetailsScreen = ({ route }) => {
   const { post } = route.params;
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
+  const [isUserPosted, setIsUserPosted] = useState(post.User._id === user._id);
   const room_id = `${user._id}-${Date.now()}-${new Date().getSeconds()}`;
 
   const othersideview = async () => {
@@ -35,6 +36,16 @@ const DetailsScreen = ({ route }) => {
       alert("Error: " + err);
     }
   }
+
+
+  const removePost = async (postIdToRemove) => {
+    try {
+      await deleteDoc(doc(firestoreDB, 'postings', postIdToRemove));
+      navigation.navigate("Homescreen")
+    } catch (error) {
+      console.error('Error removing document: ', error);
+    }
+  };
 
   const createNewChat = async () => {
     const id = `${user._id}-${Date.now()}`;
@@ -62,15 +73,10 @@ const DetailsScreen = ({ route }) => {
 
   
   return (
-
-    
     <View style={styles.container}>
-
-       
       <View className="bottom-2">
-     
-      <Image source={{ uri: post.User.profilePic }} resizeMode="contain" className="w-24 h-24 relative top-2"/>     
-       </View>
+        <Image source={{ uri: post.User.profilePic }} resizeMode="contain" className="w-24 h-24 relative top-2"/>     
+      </View>
       <Text style={styles.detailText}>{post.User.fullName}</Text>
       <Text style={styles.title}>{post.JobDetails}</Text>
       <Text style={styles.description}>{post.Description}</Text>
@@ -79,11 +85,21 @@ const DetailsScreen = ({ route }) => {
         <Text style={styles.detailText}>Type: {post.Type}</Text>
         <Text style={styles.detailText}>Budget: ₦{post.Budget}</Text>
       </View>
-      <TouchableOpacity
-        style={styles.applyButton}
-        onPress={createNewChat}>
-        <Text style={styles.applyButtonText}>Apply</Text>
-      </TouchableOpacity>
+      {!isUserPosted && (
+        <TouchableOpacity
+          style={styles.applyButton}
+          onPress={createNewChat}>
+          <Text style={styles.applyButtonText}>Apply</Text>
+        </TouchableOpacity>
+      )}
+
+{isUserPosted && (
+        <TouchableOpacity
+          style={styles.applyButton1}
+          onPress={()=>removePost(post.id)}>
+          <Text style={styles.applyButtonText}>Remove Job</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -116,6 +132,12 @@ const styles = StyleSheet.create({
   },
   applyButton: {
     backgroundColor: '#007BFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  applyButton1: {
+    backgroundColor: '#FF0000',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

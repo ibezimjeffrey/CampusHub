@@ -13,3 +13,5 @@ export { default as Chatscreen} from "./Chatscreen";
 export { default as Postscreen} from "./Postscreen";
 export { default as Searchscreen } from "./Searchscreen";
 export { default as DetailsScreen } from "./DetailsScreen";
+export { default as ViewProfilescreen } from "./viewProfilescreen";
+export { default as AllPostsscreen } from "./AllPostsscreen";

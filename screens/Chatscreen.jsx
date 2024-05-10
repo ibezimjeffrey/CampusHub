@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform, ActivityIndicator, TextInput, Image } from 'react-native';
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform, ActivityIndicator, TextInput, Image, Linking } from 'react-native';
 import { Entypo, FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -55,6 +55,15 @@ const Chatscreen = ({ route }) => {
     }
   };
 
+  const viewProfile = () =>{
+    navigation.navigate("ViewProfilescreen",{ post: post })
+
+  }
+
+  const makePhoneCall = () => {
+   
+    Linking.openURL(`tel:${post.user.email}`);
+  };
 
 
   
@@ -71,34 +80,36 @@ const Chatscreen = ({ route }) => {
             </TouchableOpacity>
 
             <View className="flex-row items-center justify-center space-x-3">
+              
+
+             
               <View>
+              <TouchableOpacity onPress={viewProfile}>
                 <View >
                   <Image source={{ uri: post.user.profilePic }} resizeMode="contain" className=" rounded-full w-12 h-12 border-2 border-primaryBold" />
                 </View>
+                </TouchableOpacity>
               </View>
 
               <View>
+                <TouchableOpacity onPress={viewProfile}>
                 <Text className="text-gray-50 text-base font-semibold capitalize">
                   {post.user.fullName}
                 </Text>
-                <Text className="text-gray-100 text-sm font-semibold capitalize">
-                  online
-                </Text>
+
+                </TouchableOpacity>
+                
+                
+                
               </View>
+              
             </View>
 
             <View className="flex-row items-center justify-center space-x-3">
-              <TouchableOpacity>
-                <FontAwesome5 name="video" size={24} color={"#fbfbfb"} />
-              </TouchableOpacity>
+            
+              
 
-              <TouchableOpacity>
-                <FontAwesome name="phone" size={24} color={"#fbfbfb"} />
-              </TouchableOpacity>
-
-              <TouchableOpacity>
-                <Entypo name="dots-three-vertical" size={24} color={"#fbfbfb"} />
-              </TouchableOpacity>
+             
             </View>
           </View>
         </View>
@@ -110,7 +121,7 @@ const Chatscreen = ({ route }) => {
             keyboardVerticalOffset={160}
           >
             <>
-              <ScrollView>
+              <ScrollView className="h-full">
                 {isLoading ? (
                   <View className="w-full flex items-center justify-center">
                     <ActivityIndicator size={"large"} color={"#43C651"} />
@@ -192,3 +203,4 @@ const Chatscreen = ({ route }) => {
 };
 
 export default Chatscreen;
+
