@@ -11,13 +11,33 @@ import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { firebaseAuth, firestoreDB } from '../config/firebase.config';
 import { useLayoutEffect } from 'react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useFonts, Dosis_200ExtraLight, Dosis_400Regular, Dosis_800ExtraBold } from '@expo-google-fonts/dosis';
 import { StyleSheet } from 'react-native';
 const Profilescreen = () => {
    const navigation =useNavigation()
     const user = useSelector((state) => state.user.user)  
     const dispatch = useDispatch()
+    const [jobCount, setJobCount] = useState(0);
+    const [AllHires, setAllHires] = useState(0)
+
+
+    useEffect(() => {
+      const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', user._id)), (QuerySnapshot) => {
+        setAllHires(QuerySnapshot.docs.length);
+        
+      });
+      return unsubscribe;
+    }, [user._id]);
+
+    useEffect(() => {
+      const unsubscribe = onSnapshot(query(collection(firestoreDB, 'AllPostings'), where('User._id', '==', user._id)), (QuerySnapshot) => {
+        setJobCount(QuerySnapshot.docs.length);
+        
+      });
+      return unsubscribe;
+    }, [user._id]);
+
     
     const logout = async() =>{
       await firebaseAuth.signOut().then(()=>{
@@ -54,6 +74,11 @@ const Profilescreen = () => {
         fontSize: 20,
        
       },
+      dosisText1: {
+        fontFamily: 'Dosis_400Regular', 
+        fontSize: 16,
+       
+      },
     });
 
     const [fontsLoaded] = useFonts({
@@ -78,6 +103,7 @@ const Profilescreen = () => {
    
     
     </View>
+    
 
 <View style={{left:140}}>
 <TouchableOpacity onPress={logout} className="w-full px-6 py-4 flex-row items-center justify-center">
@@ -101,12 +127,41 @@ const Profilescreen = () => {
 
     </View>
 
+    
+
+    <View className="">
+      
+      <View className=" top-8  justify-start flex-row">
+
+      <Text className=" mr-11 text-2xl">
+        {jobCount}
+      </Text>
+      </View>
 
 
+      <View  className=" items-end justify-end flex-row">
+      <Text className=" text-2xl ">
+        {AllHires}
+      </Text>
 
+      </View>
 
+      
 
+      
+      </View>
+   
 
+    <View className="justify-between items-center flex-row mt-3 mb-8">
+      
+      <Text className="text-base text-gray-500" style={styles.dosisText1}>
+        Jobs posted
+      </Text>
+
+      <Text  className="text-base text-gray-500" style={styles.dosisText1}>
+        Hires
+      </Text>
+    </View>
 
     <>
     
@@ -120,7 +175,7 @@ const Profilescreen = () => {
         </>
       ) : (
         <>
-          <View className="border border-y-emerald-600 top-4 py-9 flex-row items-center justify-between space-x-4 my-2">
+          <View className="border border-y-emerald-600 top-1 py-3 flex-row items-center justify-between space-x-4 my-1">
             <Text style={styles.dosisText} className="text-xl text-primary">
               Course of study: 
               <Text style={styles.dosisText} className="text-xl text-primaryBold">
@@ -144,9 +199,6 @@ const Profilescreen = () => {
             </View>
           </View>
 
-         
-
-        
         </>
       )}
 

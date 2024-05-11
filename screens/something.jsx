@@ -1,282 +1,183 @@
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    KeyboardAvoidingView,
-    ScrollView,
-    Platform,
-    ActivityIndicator,
-    TextInput,
-  } from "react-native";
-  import React from "react";
-  import {
-    Entypo,
-    FontAwesome,
-    FontAwesome5,
-    MaterialIcons,
-  } from "@expo/vector-icons";
-  import { useNavigation } from "@react-navigation/native";
-  import { useState } from "react";
-  import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
-  import { useSelector } from "react-redux";
-  import { firestoreDB } from "../config/firebase.config";
-  import { useLayoutEffect } from "react";
-  import { Image } from "react-native";
-  
-  const Chatscreen = ({ route }) => {
-    
-    const { room } = route.params;
-    const [isLoading, setisLoading] = useState(true);
-    const [message, setmessage] = useState("")
-    const navigation = useNavigation();
-    const user = useSelector((state) => state.user.user)
-    const [messages, setmessages] = useState("")
-  
-  
-  
-    const sendmessage = async() => {
-      const timeStamp = serverTimestamp()
-      const id = `${Date.now()}`
-      const _doc = {
-        _id : id,
-        roomId : room._id,
-        timeStamp: timeStamp,
-        message: message,
-        user: user
-      }
-      setmessage("")
-      await addDoc(collection(doc(firestoreDB, "chats", room._id), "messages"),_doc).then(()=>{}).catch(err => alert(err))
-  
-    } 
-  
-  
-    useLayoutEffect(()=>{
-      const msgQuery = query(
-        collection(firestoreDB, "chats", room?._id, "messages"),
-        orderBy("timeStamp", "asc")
-      )
-    
-      const unsubscribe = onSnapshot(msgQuery, (QuerySnapshot)=>{
-        const upMsg = QuerySnapshot.docs.map(doc => doc.data())
-        setmessages(upMsg)
-        setisLoading(false)
-      })
-  
-      return unsubscribe
-  
-      
-    })
-  
-    
-    return (
-      <View className="flex-1">
-        <View className="w-full bg-primary px-4 py-6 flex-[0.20]">
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform, ActivityIndicator, TextInput, Image, Linking } from 'react-native';
+import { Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where, getDocs } from 'firebase/firestore';
+import { firestoreDB } from '../config/firebase.config';
+
+const Chatscreen = ({ route }) => {
+  const { post } = route.params;
+  const navigation = useNavigation();
+  const user = useSelector((state) => state.user.user);
+  const [isLoading, setIsLoading] = useState(true);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [isHired, setIsHired] = useState(false);
+
+  useLayoutEffect(() => {
+    const msgQuery = query(
+      collection(firestoreDB, 'messages'),
+      where('idRoom', '==', post.idRoom),
+      orderBy("timeStamp", "asc")
+    );
+
+    const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
+      const upMsg = querySnapshot.docs.map(doc => doc.data());
+      setMessages(upMsg);
+      setIsLoading(false);
+    });
+
+    return unsubscribe;
+  }, [post.idRoom]);
+
+  useEffect(() => {
+    const checkHiredStatus = async () => {
+      const statusSnapshot = await getDocs(query(collection(firestoreDB, 'Status'), where('idRoom', '==', post.idRoom), where('user._id', '==', user._id)));
+      setIsHired(!statusSnapshot.empty);
+    };
+
+    checkHiredStatus();
+  }, [post.idRoom, user._id]);
+
+  const sendMessage = async () => {
+    const timeStamp = serverTimestamp();
+    const newMessage = {
+      _id: post.idRoom,
+      roomId: post._id,
+      timeStamp: timeStamp,
+      message: message,
+      user: user,
+      recipient: post.user._id,
+      idRoom: post.idRoom
+    };
+
+    setMessage('');
+
+    try {
+      await addDoc(collection(firestoreDB, "messages"), newMessage);
+    } catch (error) {
+      alert('Error sending message: ' + error);
+    }
+  };
+
+  const viewProfile = () => {
+    navigation.navigate("ViewProfilescreen", { post: post });
+  };
+
+  const Employ = async () => {
+    const id = `${user._id}-${Date.now()}`;
+    const room_id = `${post.idRoom}-${Date.now()}-${new Date().getSeconds()}`;
+
+    const hireStatus = {
+      _id: id,
+      user: user,
+      recipient: post.user,
+      status: true,
+      idRoom: room_id
+    };
+
+    try {
+      await addDoc(collection(firestoreDB, "Status"), hireStatus);
+    } catch (error) {
+      alert('Error sending message: ' + error);
+    }
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+      <View className="w-full bg-primary px-4 py-6 flex-[0.20]">
           <View className="flex-row items-center justify-between w-full py-12 px-4 ">
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <MaterialIcons name="chevron-left" size={32} color={"#fbfbfb"} />
             </TouchableOpacity>
-  
+
             <View className="flex-row items-center justify-center space-x-3">
-              <View className="w-12 h-12 rounded-full border border-white flex items-center justify-between">
-                <View className="top-3">
-                  <FontAwesome name="users" size={24} color={"#fbfbfb"} />
-                </View>
-              </View>
-  
+              
+
+             
               <View>
-                <Text className="text-gray-50 text-base font-semibold capitalize">
-                  {room.chatName.length > 16
-                    ? `${room.chatName.slice(0, 16)}..`
-                    : room.chatName}
-                  {""}
-                </Text>
-                <Text className="text-gray-100 text-sm font-semibold capitalize">
-                  online
-                </Text>
+              <TouchableOpacity onPress={viewProfile}>
+                <View >
+                  <Image source={{ uri: post.user.profilePic }} resizeMode="contain" className=" rounded-full w-12 h-12 border-2 border-primaryBold" />
+                </View>
+                </TouchableOpacity>
               </View>
-            </View>
-  
-            <View className="flex-row items-center justify-center space-x-3">
-              <TouchableOpacity>
-                <FontAwesome5 name="video" size={24} color={"#fbfbfb"} />
-              </TouchableOpacity>
-  
-              <TouchableOpacity>
-                <FontAwesome name="phone" size={24} color={"#fbfbfb"} />
-              </TouchableOpacity>
-  
-              <TouchableOpacity>
-                <Entypo name="dots-three-vertical" size={24} color={"#fbfbfb"} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-  
-        <View className="w-full bg-gray-100 px-4 py-6 rounded-3xl flex-1 rounded-t-[50px] -mt-10">
-          <KeyboardAvoidingView
-            className="flex-1"
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={160}
-          >
-            <>
-              <ScrollView>
+
+              <View>
+                <TouchableOpacity onPress={viewProfile}>
+                <Text className="text-gray-50 text-base font-semibold capitalize">
+                  {post.user.fullName}
+                </Text>
+
+                </TouchableOpacity>
+
                 
-                {isLoading ? (
-                   <>
-                   <View className="w-full flex items-center justify-center">
-                   <ActivityIndicator size={"large"} color={"#43C651"}/>
-  
-                   </View>
-                   
-              
-                   </>
-  
-                )
-                
-               
-              : 
-  
-              (
-              
-              <>
-              {
-                
-                messages?.map((msg,i)=> msg.user.email === user.email ? (
-                  <View className='m-1' key={i}>
-                    
-                    <View style={{alignSelf:"flex-end"}}
-                    className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-primary w-auto relative ">
-                      <Text className="text-base font-semibold text-white">
-                        {msg.message}
-  
-                      </Text>
-  
-                    </View>
-  
-                    <View style={{alignSelf: "flex-end"}}>
-                      {msg?.timeStamp?.seconds && (
-                        <Text className="text-[12px] text-black font-semibold">
-                          {new Date(
-                            parseInt(msg?.timeStamp?.seconds)*1000).toLocaleTimeString("en-US",
-                          {
-                            hour:"numeric",
-                            minute:"numeric",
-                            hour12: false,
-                          })
-                          }
-  
-                        </Text>
-                      )}
-  
-                    </View>
-  
-                  </View>
-                )
-                :
-                (
-  
-                  <View className="flex items-center justify-start space-x-2" style={{alignSelf: "flex-start"}} key={i}>
-                    <View className="flex-row items-center justify-center space-x-2">
-                      <Image 
-                      className="w-12 h-12 rounded-full"
-                      resizeMode="cover"
-                      source={{uri:msg?.user?.profilePic}}/>
-  
-  <View className='m-1' >
-                    <View 
-                    className="px-4 py-2 rounded-tr-2xl rounded-tl-2xl rounded-br-2xl bg-gray-300 w-auto relative ">
-                      <Text className="text-base font-semibold text-white">
-                        {msg.message}
-  
-                      </Text>
-  
-                    </View>
-  
-                    <View style={{alignSelf: "flex-start"}}>
-                      {msg?.timeStamp?.seconds && (
-                        <Text className="text-[12px] text-black font-semibold">
-                          {new Date(
-                            parseInt(msg?.timeStamp?.seconds)*1000).toLocaleTimeString("en-US",
-                          {
-                            hour:"numeric",
-                            minute:"numeric",
-                            hour12: false,
-                          })
-                          }
-  
-                        </Text>
-                      )}
-  
-                    </View>
-  
-                  </View>
-                      
-  
-                    </View>
-  
-  
-                  </View>
-                )
-              )
-              }
-              
-              
-              
-              </>
-              
-              
+              </View>
+
+
+
+              {user._id !== post.index1 && (
+                <>
+                  {!Hired && status ? (
+                    <TouchableOpacity onPress={() => {}}>
+                      <View>
+                        <View className="border-1 left-7 bg-emerald-300 border-emerald-950 rounded-lg p-4">
+                          <Text className="font-bold text-zinc-950">HIRED</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={Employ}>
+                      <View>
+                        <View className="border-1 left-7 bg-red-400 border-emerald-950 rounded-lg p-4">
+                          <Text className="font-bold text-zinc-950">HIRE</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                </>
               )}
               
-              </ScrollView>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-              <View className='w-full flex-row items-center justify-center px-8'>
-  
-                <View className="bg-gray-200 rounded-2xl px-4 space-x-4 py-2 flex-row items-center justify-center">
-  
-                  <TouchableOpacity> 
-  
-                  <Entypo name="emoji-happy" size={24} color= "#555"/>
-  
+
+
+              
+            </View>
+
+            <View className="flex-row items-center justify-center space-x-3">
+            
+              
+
+             
+            </View>
+          </View>
+        
+        <View style={{ flex: 1, backgroundColor: 'gray', padding: 20 }}>
+          {/* Your message rendering code here */}
+          
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            {user._id !== post.index1 && (
+              <>
+                {!isHired && (
+                  <TouchableOpacity onPress={Employ}>
+                    <View style={{ borderWidth: 1, borderColor: 'red', borderRadius: 10, padding: 10 }}>
+                      <Text>HIRE</Text>
+                    </View>
                   </TouchableOpacity>
-  
-                  <TextInput className="flex-1 h-8 text-base text-primaryText font-semibold" placeholder="Type here..." placeholderTextColor={"#999"} value={message} onChangeText={(text) => {setmessage(text)}}>
-  
-                  </TextInput>
-  
-                  <TouchableOpacity>
-                    <Entypo name="mic" size={24} color={"#43c651"}/>
-                  </TouchableOpacity>
-  
-                  
-  
-  
-  
-  
-                </View>
-                <TouchableOpacity className="pl-4" onPress={sendmessage}>
-                    <FontAwesome name="send" size={24} color={"#43c651"}/>
-                  </TouchableOpacity>
-  
-              </View>
-            </>
-          </KeyboardAvoidingView>
+                )}
+                {isHired && (
+                  <View style={{ borderWidth: 1, borderColor: 'green', borderRadius: 10, padding: 10 }}>
+                    <Text>HIRED</Text>
+                  </View>
+                )}
+              </>
+            )}
+          </View>
         </View>
       </View>
-    );
-  };
-  
-  export default Chatscreen;
+    </View>
+  );
+};
+
+export default Chatscreen;

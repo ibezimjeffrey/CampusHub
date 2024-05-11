@@ -10,7 +10,7 @@ import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { firebaseAuth, firestoreDB } from '../config/firebase.config';
 import { useLayoutEffect } from 'react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useFonts, Dosis_200ExtraLight, Dosis_400Regular, Dosis_800ExtraBold } from '@expo-google-fonts/dosis';
 import { StyleSheet } from 'react-native';
 
@@ -18,9 +18,20 @@ const ViewProfilescreen = ({ route }) => {
     const { post } = route.params;
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [jobCount, setJobCount] = useState(0);
 
     const [Details, setDetails] = useState("");
     const [isLoading, setisLoading] = useState(true);
+    const [AllHires, setAllHires] = useState(0)
+
+
+    useEffect(() => {
+      const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', post.user._id)), (QuerySnapshot) => {
+        setAllHires(QuerySnapshot.docs.length);
+        
+      });
+      return unsubscribe;
+    }, [post._id]);
 
     useLayoutEffect(() => {
         const msgQuery = query(
@@ -66,6 +77,39 @@ const ViewProfilescreen = ({ route }) => {
                     <Text className="text-xl font-semibold pt-3">{post.user.fullName}</Text>
                     <Text className="text-base font-semibold text-primaryText">{post.user.email}</Text>
                 </View>
+                <View className="">
+      
+      <View className=" top-8  justify-start flex-row">
+
+      <Text className=" mr-11 text-2xl">
+        {jobCount}
+      </Text>
+      </View>
+
+
+      <View  className=" items-end justify-end flex-row">
+      <Text className=" text-2xl ">
+        {AllHires}
+      </Text>
+
+      </View>
+
+      
+
+      
+      </View>
+
+      <View className="justify-between items-center flex-row mt-3 mb-8">
+      
+      <Text className="text-base text-gray-500" style={styles.dosisText1}>
+        Jobs posted
+      </Text>
+
+      <Text  className="text-base text-gray-500" style={styles.dosisText1}>
+        Hires
+      </Text>
+    </View>
+
 
                 <>
                     {isLoading ? (

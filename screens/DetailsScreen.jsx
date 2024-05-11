@@ -24,7 +24,8 @@ const DetailsScreen = ({ route }) => {
       chatName: post.User.fullName,
       jobName: post.JobDetails,
       profilePic: post.User.profilePic,
-      idRoom: room_id
+      idRoom: room_id,
+      index1: user._id
       
     };
 
@@ -57,7 +58,8 @@ const DetailsScreen = ({ route }) => {
       user: post.User,
       chatName: post.User.fullName,
       jobName: post.JobDetails,
-      idRoom: room_id
+      idRoom: room_id,
+      index1: user._id
       
       
 

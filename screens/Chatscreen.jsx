@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platfor
 import { Entypo, FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 
 const Chatscreen = ({ route }) => {
@@ -13,6 +13,29 @@ const Chatscreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [Hired, setHired] = useState(true)
+  const [isBoss, setisBoss] = useState(post.user._id === user._id)
+const [status, setstatus] = useState(post.user_id === post.idRoom)
+
+const [isHired, setIsHired] = useState(false)
+  useLayoutEffect(() => {
+    const msgQuery = query(
+      collection(firestoreDB, 'messages'),
+      
+      where('idRoom', '==', post.idRoom), 
+      orderBy("timeStamp", "asc")
+    );
+  
+    const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
+      const upMsg = querySnapshot.docs.map(doc => doc.data());
+      setMessages(upMsg);
+      setIsLoading(false);
+    });
+  
+    
+    return unsubscribe;
+  }, [post._id]); 
+  
 
   useLayoutEffect(() => {
     const msgQuery = query(
@@ -28,8 +51,28 @@ const Chatscreen = ({ route }) => {
       setIsLoading(false);
     });
   
+    
     return unsubscribe;
-  }, [post._id]); // Include post._id in the dependency array
+  }, [post._id]); 
+
+
+
+  useEffect(() => {
+    const checkHiredStatus = async () => {
+      try {
+        const statusSnapshot = await getDocs(query(collection(firestoreDB, 'Status'), where('idRoom', '==', post.idRoom)));
+        setIsHired(!statusSnapshot.empty);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error checking hired status:', error);
+      }
+    };
+
+    checkHiredStatus();
+  }, [post.idRoom]);
+
+
+
   
 
   const sendMessage = async () => {
@@ -65,8 +108,23 @@ const Chatscreen = ({ route }) => {
     Linking.openURL(`tel:${post.user.email}`);
   };
 
-
-  
+  const Employ = async () => {
+    try {
+      const id = `${post.user._id}-${Date.now()}`;
+      const room_id = `${user._id}-${Date.now()}-${new Date().getSeconds()}`;
+      const hireStatus = {
+        _id: id,
+        user: user,
+        receipient: post.user,
+        status: true,
+        idRoom: room_id
+      };
+      await addDoc(collection(firestoreDB, 'Status'), hireStatus);
+      setIsHired(true);
+    } catch (error) {
+      console.error('Error hiring:', error);
+    }
+  };
 
 
 
@@ -98,10 +156,36 @@ const Chatscreen = ({ route }) => {
                 </Text>
 
                 </TouchableOpacity>
-                
-                
+
                 
               </View>
+
+
+
+              {user._id !== post.index1 && (
+                <>
+                  {isHired ? (
+                    <TouchableOpacity onPress={() => {}}>
+                      <View>
+                        <View className="border-1 left-7 bg-emerald-300 border-emerald-950 rounded-lg p-4">
+                          <Text className="font-bold text-zinc-950">HIRED</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={Employ}>
+                      <View>
+                        <View className="border-1 left-7 bg-red-400 border-emerald-950 rounded-lg p-4">
+                          <Text className="font-bold text-zinc-950">HIRE</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                </>
+              )}
+              
+
+
               
             </View>
 

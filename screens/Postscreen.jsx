@@ -94,6 +94,8 @@ const Postscreen = () => {
         setvalue2("");
         setvalue3("");
         setvalue4("");
+        addDoc(collection(firestoreDB, "AllPostings"), _doc)
+
         alert("Job successfully posted");
         navigation.navigate("Home");
       })
