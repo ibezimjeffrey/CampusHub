@@ -42,6 +42,7 @@ const DetailsScreen = ({ route }) => {
   const removePost = async (postIdToRemove) => {
     try {
       await deleteDoc(doc(firestoreDB, 'postings', postIdToRemove));
+      alert('Post successfully removed');
       navigation.navigate("Homescreen")
     } catch (error) {
       console.error('Error removing document: ', error);
@@ -79,9 +80,9 @@ const DetailsScreen = ({ route }) => {
       <View className="bottom-2">
         <Image source={{ uri: post.User.profilePic }} resizeMode="contain" className="w-24 h-24 relative top-2"/>     
       </View>
-      <Text style={styles.detailText}>{post.User.fullName}</Text>
+      <Text className="capitalize" style={styles.detailText}>{post.User.fullName}</Text>
       <Text style={styles.title}>{post.JobDetails}</Text>
-      <Text style={styles.description}>{post.Description}</Text>
+      <Text className="first-letter:capitalize" style={styles.description}>{post.Description}</Text>
       <View style={styles.detailsContainer}>
         <Text style={styles.detailText}>Location: {post.Location}</Text>
         <Text style={styles.detailText}>Type: {post.Type}</Text>

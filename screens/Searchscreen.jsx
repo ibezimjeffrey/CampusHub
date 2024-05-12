@@ -46,8 +46,8 @@ const Searchscreen = () => {
       <View>
         <View style={{ flexDirection: 'row' }}>
           <View className="w-[325px] top-4 justify-between px-4 py-2">
-            <View className="border-primary" style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 8, padding: 10 }}>
-              <Entypo name='magnifying-glass' size={24} color={"rgb(67 198 81)"} style={{ marginRight: 10 }} />
+            <View className="border-gray-400" style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 8, padding: 10 }}>
+              <Entypo name='magnifying-glass' size={24}  style={{ marginRight: 10 }} />
               <TextInput
                 style={{ flex: 1 }}
                 placeholder="Search job title"

@@ -109,13 +109,13 @@ const Postscreen = () => {
           
           <View className="w-full h-full bg-white flex  justify-start py-6 space-y-6">
           <View className="items-center">
-            <Text className=" text-primaryBold text-xl">
+            <Text style={{color:"#268290"}} className=" text-xl">
               Create Post
             </Text>
           </View>
             <Text className="left-5 text-xl">Job Details</Text>
             <TextInput
-              className={`border border-primary rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2 ${!isLong && value.length > 0 ? "border-red-500" : "border-primary"}`}
+              className={`border border-primary rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2 ${!isLong && value.length > 0 ? "border-red-500" : "border-gray-400"}`}
               placeholder="Title Here"
               onChangeText={handleTextChange}
               value={value}
@@ -123,7 +123,7 @@ const Postscreen = () => {
 
             <Text className="left-5 text-xl">Description</Text>
             <TextInput
-              className="border border-primary rounded-2xl w-[360px] h-[215px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
+              className="border border-gray-400 rounded-2xl w-[360px] h-[215px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
               placeholder= "Describe the job"
               multiline={true}
               onChangeText={handleTextChange1}
@@ -132,7 +132,7 @@ const Postscreen = () => {
 
             <Text className="left-5 text-xl">Location</Text>
             <TextInput
-              className="border border-primary rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
+              className="border border-gray-400 rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
               placeholder= "Where the freelancer would do the Job"
               onChangeText={handleTextChange2}
               value={value2}
@@ -140,17 +140,17 @@ const Postscreen = () => {
 
             <Text className="left-5 text-xl">Job Type</Text>
             <TextInput
-              className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 ${!isJob && value3.length > 0 ? "border-red-500" : "border-primary"}`}
+              className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 ${!isJob && value3.length > 0 ? "border-red-500" : "border-gray-400"}`}
               placeholder= "Remote or Physical"
               onChangeText={handleTextChange3}
               value={value3}
             />
 
-            <Text className="left-5 text-xl">Budget</Text>
-            <View className=" bottom-5">
+            <Text className=" relative left-5 text-xl">Budget</Text>
+            <View className=" relative bottom-5">
               <Text style={{ position: 'relative', left: 24,top: 55, color: 'black', fontSize: 16 }}> ₦</Text>
               <TextInput
-                className="border border-primary rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 "
+                className="border border-gray-400 rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 "
                 placeholder= "  Amount of money willing to pay"
                 onChangeText={handleTextChange4}
                 value= {value4}
@@ -158,7 +158,7 @@ const Postscreen = () => {
               />
             </View>
 
-            <TouchableOpacity onPress={handlePost} className="w-full px-4 rounded-xl bg-primary my-3 flex items-center justify-center">
+            <TouchableOpacity onPress={handlePost} className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
               <Text className='py-2 text-white text-xl font-semibold'>Post Job</Text>
             </TouchableOpacity>
           </View>

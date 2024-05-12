@@ -80,7 +80,7 @@ const ClientHomescreen = () => {
           <View>
             <Text className="text-2xl text-primary">
               {greeting}
-              <Text className="text-2xl text-primaryBold">{user?.fullName}</Text>
+              <Text className="text-2xl capitalize text-primaryBold">{user?.fullName}</Text>
             </Text>
           </View>
 

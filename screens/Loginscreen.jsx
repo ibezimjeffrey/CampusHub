@@ -86,27 +86,20 @@ const Loginscreen = () => {
 
   const navigation= useNavigation();
   return (
+    
       <View className= 'flex-1 items-center justify-start'>
-        <Image 
-        source={BGImage} resizeMode='cover' 
-        className='h-20'
-        style={{width: screenwidth}}/> 
-
+     
        
 
             
 
 
             <View className= 'w-full h-full bg-white flex items-center justify-start py-6 px-6 space-y-6'> 
-
-            <Image 
-            className="top-2 left-8"
-        source={Logo1} resizeMode='contain' 
-        style={{width: 636, height: 136}}/> 
+            
 
    
 
-        <View className="w-full flex items-center justify-center">
+        <View style={{marginTop:150}} className="w-full flex items-center justify-center">
 
           {alert && (
              <Text className="text-base text-red-500">{alertMessage}</Text>
@@ -132,7 +125,7 @@ const Loginscreen = () => {
           {/* {login button} */}
 
 
-          <TouchableOpacity onPress={HandleLogin} className="w-full px-4  rounded-xl bg-primary my-3 flex items-center justify-center">
+          <TouchableOpacity onPress={HandleLogin} className="w-full px-4  rounded-xl bg-primaryButton my-3 flex items-center justify-center">
 
             <Text className='py-2 text-white text-xl font-semibold'>Sign in</Text>
 
@@ -144,7 +137,7 @@ const Loginscreen = () => {
           </View>
 
           <TouchableOpacity onPress={()=> navigation.navigate("Signupscreen")} >
-            <Text className=" text-base font-semibold text-primaryBold">Create here</Text>
+            <Text className=" text-base font-semibold text-primaryButton">Create here</Text>
           </TouchableOpacity>
         
 

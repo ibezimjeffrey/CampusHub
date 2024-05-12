@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { Logo2 } from "../assets";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,7 +12,12 @@ import { firestoreDB } from "../config/firebase.config";
 
 const Messagescreen = () => {
   const navigation = useNavigation();
+
+
   const user = useSelector((state) => state.user.user);
+
+
+
   const [isLoading, setIsLoading] = useState(true);
   const [Chats, setChats] = useState(null);
 
@@ -40,14 +45,18 @@ const Messagescreen = () => {
     const isCurrentUserRoomCreator = currentUser._id === room.index;
   
     return (
-      <TouchableOpacity onPress={() => navigation.navigate("Chatscreen", { post: room })} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10 }}>
+      <TouchableOpacity className="border-primaryBold border rounded-xl mt-2" onPress={() => navigation.navigate("Chatscreen", { post: room })} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10 }}>
         <View style={{ width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
-          <Image source={{ uri: isCurrentUserRoomCreator ? room.user.profilePic : room.profilePic }} resizeMode="contain" style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: "#0F0" }} />
+          <Image source={{ uri: isCurrentUserRoomCreator ? room.user.profilePic : room.profilePic }} resizeMode="contain" style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 1, borderColor: "#000000" }} />
+        </View>
+        <View>
+          
         </View>
         <View style={{ flex: 1, justifyContent: "flex-start", marginLeft: 10 }}>
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: "#333" }}>{room.jobName} Job</Text>
+          <Text className="capitalize" style={{ fontSize: 16, color: "#333" }}>{room.jobName} Job</Text>
         </View>
-        <Text style={{ fontSize: 16, color: "#00F", paddingRight: 10 }}>27 min</Text>
+       
+
       </TouchableOpacity>
     );
   };
@@ -57,21 +66,12 @@ const Messagescreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "#FFF" }}>
       <SafeAreaView>
-        <View style={{ flexDirection: "row", paddingVertical: 10 }}>
-              
-          <Image 
-            source={Logo2}
-            resizeMode="cover"
-            className=" w-full h-full left-4 items-center"
-          />         
-           <TouchableOpacity onPress={() => navigation.navigate("Profilescreen")} style={{ width: 60, height: 60, borderRadius: 30, borderWidth: 2, borderColor: "#0F0", justifyContent: "center", alignItems: "center", marginLeft: "auto", marginRight: 10 }}>
-            <Image source={{ uri: user?.profilePic }} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25 }} />
-          </TouchableOpacity>
-        </View>
+        
+       
         <ScrollView className="h-full" style={{ paddingHorizontal: 10, paddingTop: 10 }}>
           <View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 10 }}>
-              <Text style={{ fontSize: 20, fontWeight: "bold", color: "#333" }}>Messages</Text>
+              <Text style={{ fontSize: 20, color: "black" }}>Messages</Text>
              
             </View>
             {isLoading ? (
@@ -99,5 +99,17 @@ const Messagescreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 10,
+  },
+  logo: {
+    width: 1000,
+    height: 50,
+  },
+});
 
 export default Messagescreen;

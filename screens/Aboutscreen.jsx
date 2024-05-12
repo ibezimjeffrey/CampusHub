@@ -69,10 +69,10 @@ const Aboutscreen = () => {
         >
 
           <>
-          <ScrollView >
+          <ScrollView className="h-full">
           <View className="w-full h-full bg-white flex  justify-start py-6 space-y-6">
           <Text className="py-2 text-primaryText text-xl font-semibold">Let's get to know you</Text>
-          <Text className="left-5 text-xl">What course are you studying?</Text>
+          <Text className="left-5 text-base ">What course are you studying?</Text>
 
           <TextInput
         className="border rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2"
@@ -84,7 +84,7 @@ const Aboutscreen = () => {
       />
 
 
-      <Text className="left-5 text-xl">Tell us about yourself</Text>
+      <Text className="left-5 text-base">Tell us about yourself</Text>
 
 
       <TextInput
@@ -97,7 +97,7 @@ const Aboutscreen = () => {
       
       />
 
-<Text className="left-5 text-xl">What are your skills</Text>
+<Text className="left-5 text-base">What are your skills</Text>
 
 
 <TextInput
@@ -113,7 +113,7 @@ const Aboutscreen = () => {
       
 
 <TouchableOpacity onPress={handleAbout}
-          className="w-full px-4 rounded-xl bg-primary my-3 flex items-center justify-center">
+          className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
 
             <Text className='py-2 text-white text-xl font-semibold'>Ready to work!</Text>
 

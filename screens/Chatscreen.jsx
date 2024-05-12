@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
+import { BlurView } from 'expo-blur';
 
 const Chatscreen = ({ route }) => {
   const { post } = route.params;
@@ -60,7 +61,7 @@ const [isHired, setIsHired] = useState(false)
   useEffect(() => {
     const checkHiredStatus = async () => {
       try {
-        const statusSnapshot = await getDocs(query(collection(firestoreDB, 'Status'), where('idRoom', '==', post.idRoom)));
+        const statusSnapshot = await getDocs(query(collection(firestoreDB, 'Status'), where('post._id', '==', post._id)));
         setIsHired(!statusSnapshot.empty);
         setIsLoading(false);
       } catch (error) {
@@ -76,10 +77,17 @@ const [isHired, setIsHired] = useState(false)
   
 
   const sendMessage = async () => {
+
+    if (!message.trim()) {
+      alert('Please enter a message.');
+      return;
+    }
+
     const timeStamp = serverTimestamp();
     const newMessage = {
       _id: post.idRoom,
       roomId: post._id,
+      post:post,
       timeStamp: timeStamp,
       message: message,
       user: user,
@@ -117,7 +125,9 @@ const [isHired, setIsHired] = useState(false)
         user: user,
         receipient: post.user,
         status: true,
-        idRoom: room_id
+        idRoom: room_id,
+        post: post,
+
       };
       await addDoc(collection(firestoreDB, 'Status'), hireStatus);
       setIsHired(true);
@@ -130,9 +140,13 @@ const [isHired, setIsHired] = useState(false)
 
   return (
     <View style={{ flex: 1 }}>
+      
       <View className="flex-1">
-        <View className="w-full bg-primary px-4 py-6 flex-[0.20]">
+        
+        <BlurView className="w-full bg-slate-300 px-4 py-1 " tint='extraLight' intensity={40} >
+          
           <View className="flex-row items-center justify-between w-full py-12 px-4 ">
+            
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <MaterialIcons name="chevron-left" size={32} color={"#fbfbfb"} />
             </TouchableOpacity>
@@ -140,25 +154,28 @@ const [isHired, setIsHired] = useState(false)
             <View className="flex-row items-center justify-center space-x-3">
               
 
-             
-              <View>
-              <TouchableOpacity onPress={viewProfile}>
-                <View >
-                  <Image source={{ uri: post.user.profilePic }} resizeMode="contain" className=" rounded-full w-12 h-12 border-2 border-primaryBold" />
-                </View>
-                </TouchableOpacity>
-              </View>
+            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+  <TouchableOpacity onPress={viewProfile}>
+    <View>
+      <Image source={{ uri: post.user.profilePic }} resizeMode="contain" className="rounded-full w-12 h-12" />
+    </View>
+  </TouchableOpacity>
+  <TouchableOpacity onPress={viewProfile}>
+    <View >
+      <Text className="text-black text-base font-light capitalize shadow">
+        {post.user.fullName} 
+      </Text>
+      
+      
+    </View>
+  </TouchableOpacity>
 
-              <View>
-                <TouchableOpacity onPress={viewProfile}>
-                <Text className="text-gray-50 text-base font-semibold capitalize">
-                  {post.user.fullName}
-                </Text>
+  
+</View>
 
-                </TouchableOpacity>
 
-                
-              </View>
+
+
 
 
 
@@ -166,15 +183,15 @@ const [isHired, setIsHired] = useState(false)
                 <>
                   {isHired ? (
                     <TouchableOpacity onPress={() => {}}>
-                      <View>
-                        <View className="border-1 left-7 bg-emerald-300 border-emerald-950 rounded-lg p-4">
+                      <View style={{left:70}} className=" relative">
+                        <View style={{backgroundColor:"#b8ccee"}} className="border-1 left-7  border-emerald-950 rounded-lg p-4">
                           <Text className="font-bold text-zinc-950">HIRED</Text>
                         </View>
                       </View>
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity onPress={Employ}>
-                      <View>
+                      <View style={{left:70}} className=" relative">
                         <View className="border-1 left-7 bg-red-400 border-emerald-950 rounded-lg p-4">
                           <Text className="font-bold text-zinc-950">HIRE</Text>
                         </View>
@@ -196,13 +213,14 @@ const [isHired, setIsHired] = useState(false)
              
             </View>
           </View>
-        </View>
+        </BlurView>
 
-        <View className="w-full bg-gray-100 px-4 py-6 rounded-3xl flex-1 rounded-t-[50px] -mt-10">
+        <View className="w-full bg-gray-100 px-4 py-6 flex-1 -mt-10">
           <KeyboardAvoidingView
             className="flex-1"
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={160}
+            keyboardVerticalOffset={140}
+          
           >
             <>
               <ScrollView className="h-full">
@@ -216,14 +234,14 @@ const [isHired, setIsHired] = useState(false)
                   {messages?.map((msg, i) => (
                     msg.user._id === user._id ? (
                       <View className='m-1' key={i}>
-                        <View style={{ alignSelf: "flex-end" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-primary w-auto relative ">
+                        <View style={{ alignSelf: "flex-end" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-blue-400 w-auto relative ">
                           <Text className="text-base font-semibold text-white">
                             {msg.message}
                           </Text>
                         </View>
                         <View style={{ alignSelf: "flex-end" }}>
                           {msg?.timeStamp?.seconds && (
-                            <Text className="text-[12px] text-black font-semibold">
+                            <Text className="text-[12px] text-black ">
                               {new Date(parseInt(msg?.timeStamp?.seconds) * 1000).toLocaleTimeString("en-US", {
                                 hour: "numeric",
                                 minute: "numeric",
@@ -235,8 +253,8 @@ const [isHired, setIsHired] = useState(false)
                       </View>
                     ) : (
                       <View className='m-1' key={i}>
-                        <View style={{ alignSelf: "flex-start" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-gray-400 w-auto relative ">
-                          <Text className="text-base font-semibold text-white">
+                        <View style={{ alignSelf: "flex-start" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-gray-300 w-auto relative ">
+                          <Text className="text-base  text-black">
                             {msg.message}
                           </Text>
                         </View>
@@ -271,11 +289,11 @@ const [isHired, setIsHired] = useState(false)
                     onChangeText={(text) => { setMessage(text) }}
                   />
                   <TouchableOpacity>
-                    <Entypo name="mic" size={24} color="#43c651" />
+                    <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity className="pl-4" onPress={sendMessage}>
-                  <FontAwesome name="send" size={24} color="#43c651" />
+                  <FontAwesome name="send" size={24} color="light-blue" />
                 </TouchableOpacity>
               </View>
             </>

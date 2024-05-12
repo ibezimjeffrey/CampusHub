@@ -80,7 +80,7 @@ const Signupscreen = () => {
                     <BlurView className="w-full h-full px-4 py-16 flex-row flex-wrap items-center justify-evenly" tint='light' intensity={40} style={{ width: screenwidth, height: screenHeight }}>
                       {avatars?.map((item) => (
                         <TouchableOpacity onPress={() => HandleAVATAR(item)}
-                          key={item._id} style={{ width: 100, height: 100, margin: 10, borderRadius: 50, borderWidth: 2 }} className="border-primary">
+                          key={item._id} style={{ width: 100, height: 100, margin: 10, borderRadius: 50, borderWidth: 2 }} className="border-primaryButton">
                           <Image source={{ uri: item?.image?.asset?.url }} style={{ width: '100%', height: '100%', borderRadius: 50 }} resizeMode='cover' />
                         </TouchableOpacity>
                       ))}
@@ -93,9 +93,9 @@ const Signupscreen = () => {
             <View className='w-full h-full bg-white relative flex items-center justify-start py-6 px-6 space-y-6'>
               <View className="w-full flex items-center justify-center relative -my-4">
                 <TouchableOpacity onPress={() => setAVATARmenu(true)}
-                  className="w-20 h-20 p-1 rounded-full border-2 border-primary relative">
+                  className="w-20 h-20 p-1 rounded-full border-2 border-primaryButton relative">
                   <Image source={{ uri: avatar }} className="w-full h-full" resizeMode="contain" />
-                  <View className="w-6 h-6 bg-primary rounded-full absolute top-0 right-0 flex items-center justify-center">
+                  <View className="w-6 h-6 bg-primaryButton rounded-full absolute top-0 right-0 flex items-center justify-center">
                     <MaterialIcons name='edit' size={10} color={'#fff'} />
                   </View>
                 </TouchableOpacity>
@@ -125,14 +125,14 @@ const Signupscreen = () => {
                 {/* {login button} */}
                 <View className="w-full px-4  my-3 flex items-center flex-row justify-center"></View>
                 <TouchableOpacity onPress={handleSignup}
-                  className="w-full px-4 rounded-xl bg-primary my-3 flex items-center justify-center">
+                  className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
                   <Text className='py-2 text-white text-xl font-semibold'>Next</Text>
                 </TouchableOpacity>
                 <View className="w-full flex-row py-2 justify-center space-x-2">
                   <Text className="text-base text-primaryText">Have an Account?</Text>
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate("Loginscreen")} >
-                  <Text className=" text-base font-semibold text-primaryBold">Login here</Text>
+                  <Text className=" text-base font-semibold text-primaryButton">Login here</Text>
                 </TouchableOpacity>
               </View>
             </View>

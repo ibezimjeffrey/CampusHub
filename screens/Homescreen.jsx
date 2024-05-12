@@ -73,7 +73,7 @@ const Homescreen = () => {
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'green',
+          activeTintColor: '#268290',
           inactiveTintColor: 'gray',
         }}>
         <Tab.Screen name="Home" component={Home} />
