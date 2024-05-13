@@ -71,12 +71,12 @@ const Messagescreen = () => {
         <ScrollView className="h-full" style={{ paddingHorizontal: 10, paddingTop: 10 }}>
           <View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 10 }}>
-              <Text style={{ fontSize: 20, color: "black" }}>Messages</Text>
+              <Text style={{ fontSize: 20, color: "#268290" }}>Messages</Text>
              
             </View>
             {isLoading ? (
               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <ActivityIndicator size="large" color="#43C651" />
+                <ActivityIndicator size="large" color="#268290" />
               </View>
             ) : (
               <>

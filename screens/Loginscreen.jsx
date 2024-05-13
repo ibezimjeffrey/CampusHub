@@ -8,6 +8,7 @@ import { firebaseAuth, firestoreDB } from '../config/firebase.config'
 import { DocumentSnapshot, doc, getDoc } from 'firebase/firestore'
 import { useDispatch } from 'react-redux'
 import { SET_USER } from '../context/actions/userActions'
+import { ScrollView } from 'react-native'
 const Loginscreen = () => {
   const screenwidth = Math.round(Dimensions.get("window").width)
 
@@ -86,15 +87,19 @@ const Loginscreen = () => {
 
   const navigation= useNavigation();
   return (
-    
-      <View className= 'flex-1 items-center justify-start'>
+    <ScrollView className="h-full bg-white">
+
+   
+      <View className= 'flex-1 bg-white items-center justify-start'>
      
        
 
             
 
 
-            <View className= 'w-full h-full bg-white flex items-center justify-start py-6 px-6 space-y-6'> 
+            <View style={{top:100}} className= 'w-full h-full bg-white flex items-center justify-start py-12 px-6 space-y-6'> 
+            <Image source = {Logo} className="w-12 h-12" resizeMode="cover"/>
+            
             
 
    
@@ -122,7 +127,7 @@ const Loginscreen = () => {
            setstateValue ={setpassword}
             />
 
-          {/* {login button} */}
+          
 
 
           <TouchableOpacity onPress={HandleLogin} className="w-full px-4  rounded-xl bg-primaryButton my-3 flex items-center justify-center">
@@ -133,7 +138,7 @@ const Loginscreen = () => {
           </TouchableOpacity>
 
           <View className="w-full flex-row py-2 justify-center space-x-2">
-            <Text className="text-base text-primaryText">Don't have an Acoount?</Text>
+            <Text className="text-base font-thin text-primaryText">Don't have an Account?</Text>
           </View>
 
           <TouchableOpacity onPress={()=> navigation.navigate("Signupscreen")} >
@@ -147,7 +152,9 @@ const Loginscreen = () => {
 
             </View>
     </View>
+    </ScrollView>
   )
+  
 }
 
 export default Loginscreen

@@ -129,7 +129,7 @@ const Signupscreen = () => {
                   <Text className='py-2 text-white text-xl font-semibold'>Next</Text>
                 </TouchableOpacity>
                 <View className="w-full flex-row py-2 justify-center space-x-2">
-                  <Text className="text-base text-primaryText">Have an Account?</Text>
+                  <Text className="text-base font-thin text-primaryText">Have an Account?</Text>
                 </View>
                 <TouchableOpacity onPress={() => navigation.navigate("Loginscreen")} >
                   <Text className=" text-base font-semibold text-primaryButton">Login here</Text>

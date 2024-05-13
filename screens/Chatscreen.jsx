@@ -226,7 +226,7 @@ const [isHired, setIsHired] = useState(false)
               <ScrollView className="h-full">
                 {isLoading ? (
                   <View className="w-full flex items-center justify-center">
-                    <ActivityIndicator size={"large"} color={"#43C651"} />
+                    <ActivityIndicator size={"large"} color={"#268290"} />
                   </View>
                 ) : (
                   

@@ -81,11 +81,11 @@ const Profilescreen = () => {
         </View>
 
         <View className="mt-4">
-          <Text className="text-base">{details.length > 0 ? details[0].About : ''}</Text>
+          <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
         </View>
 
         <View className="flex-row justify-between items-center mt-4">
-          <Text className="text-base font-bold">Skills:</Text>
+          <Text className="text-base text-gray-500 font-bold">Skills:</Text>
           <View style={{borderColor:"#268290"}} className="border-2 rounded-full p-1">
             <Text>{details.length > 0 ? details[0].Skills : ''}</Text>
           </View>

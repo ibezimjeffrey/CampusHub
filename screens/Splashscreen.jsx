@@ -41,7 +41,7 @@ const Splashscreen = () => {
   return (
     <View className = "flex-1 items-center justify-center space-y-24">
         <Image source = {Logo} className="w-24 h-24" resizeMode="contain"/>
-        <ActivityIndicator size={"large"} color={"#43C651"}/>
+        <ActivityIndicator size={"large"} color={"#268290"}/>
 
     </View>
    

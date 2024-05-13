@@ -8,6 +8,7 @@ import { firestoreDB } from '../config/firebase.config';
 import { useFonts, Dosis_400Regular } from '@expo-google-fonts/dosis';
 import { StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 const ClientHomescreen = () => {
   const user = useSelector((state) => state.user.user);
@@ -57,16 +58,23 @@ const ClientHomescreen = () => {
     return (
       <View className="rounded-xl w-[350px] flex py-2">
         <TouchableOpacity onPress={() => navigate.navigate("DetailsScreen", { post })}>
-          <View style={{ left: 30 }} className="bg-neutral-200 rounded-xl w-[350px] h-[150px] border-1 relative shadow">
+          
+
+
+          <View style={{ left: 30 }} className="">
+          <BlurView className=" bg-slate-300 px-4 py-1 rounded-xl w-[350px] h-[150px] border-1 relative shadow " tint='extraLight' intensity={40} >
             <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{ alignSelf:'flex-end' }} />
-            <Text className="text-black text-2xl absolute top-10">{post.JobDetails}</Text>
-            <Text style={{ top: 20 }} className="text-gray-500 text-xl absolute">
+            <Text className="text-black text-2xl p-2 capitalize font-extralight absolute top-10">{post.JobDetails}</Text>
+            <Text style={{ top: 20 }} className="text-gray-500 p-2 capitalize text-xl absolute">
               {post.Location}
             </Text>
-            <View style={{ top: 110 }} className="w-full h-1 border bg-primaryBold absolute"></View>
-            <Text className="text-primary text-xl absolute bottom-2 left-2">{post.Type}</Text>
-            <Text className="text-primaryBold text-base absolute bottom-2 right-2">Fixed Price / ₦{post.Budget}</Text>
+            
+            <Text className="text-primaryButton  capitalize font-thin text-xl absolute bottom-2 left-2">{post.Type}</Text>
+            <Text className="text-black font-thin capitalize text-base absolute bottom-2 right-2">Fixed Price / ₦{post.Budget}</Text>
+            </BlurView>
          
+
+
           </View>
         </TouchableOpacity>
       </View>
@@ -78,21 +86,21 @@ const ClientHomescreen = () => {
       <SafeAreaView>
         <ScrollView className="h-full">
           <View>
-            <Text className="text-2xl text-primary">
+            <Text className=" text-black text-xl font-thin">
               {greeting}
-              <Text className="text-2xl capitalize text-primaryBold">{user?.fullName}</Text>
+              <Text className="text-2xl capitalize text-primaryButton">{user?.fullName}</Text>
             </Text>
           </View>
 
           <View className="flex-row flex justify-between items-end">
 
           <View className="top-11 bottom-11 mb-11">
-            <Text className="text-2xl text-black">Available Jobs</Text>
+            <Text className="text-2xl p-2 font-thin text-black"> </Text>
           </View>
 
         <TouchableOpacity onPress={()=>{navigate.navigate("AllPostsscreen", {user:user})}}>
         <View className=" right-7">
-            <Text className="text-1xl text-red-600 italic">My Posts</Text>
+            <Text className="text-1xl text-blue-300 italic">My Posts</Text>
           </View>
 
         </TouchableOpacity>
@@ -104,7 +112,7 @@ const ClientHomescreen = () => {
           
           {isLoading ? (
             <View className="w-full flex items-center justify-center">
-              <ActivityIndicator size={'large'} color={'#43C651'} />
+              <ActivityIndicator size={'large'} color={'#268290'} />
             </View>
           ) : (
             <View>
