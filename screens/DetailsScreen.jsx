@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { firestoreDB } from '../config/firebase.config';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 
 const DetailsScreen = ({ route }) => {
   const { post } = route.params;
@@ -76,10 +76,18 @@ const DetailsScreen = ({ route }) => {
 
   
   return (
+    
     <View style={styles.container}>
+       <TouchableOpacity onPress={() => navigation.goBack()}>
+        <MaterialIcons name='chevron-left' size={32} color={"black"}/>
+
+      </TouchableOpacity>
+      
+      
       <View className="bottom-2">
         <Image source={{ uri: post.User.profilePic }} resizeMode="contain" className="w-24 h-24 relative top-2"/>     
       </View>
+     
       <Text className="capitalize" style={styles.detailText}>{post.User.fullName}</Text>
       <Text style={styles.title}>{post.JobDetails}</Text>
       <Text className="first-letter:capitalize" style={styles.description}>{post.Description}</Text>

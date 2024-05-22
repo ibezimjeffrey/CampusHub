@@ -121,7 +121,9 @@ const ClientHomescreen = () => {
                   <PostingCard key={i} post={post} />
                 ))
               ) : (
+                <View className=" flex flex-column justify-center align-middle items-center">
                 <Text>No jobs available</Text>
+                </View>
               )}
             </View>
           )}

@@ -24,22 +24,22 @@ export default function App() {
           <Stack.Navigator screenOptions={{headerShown: false}}>
 
             
-          <Stack.Screen name="Splashscreen" component={Splashscreen} />
-          <Stack.Screen name="Signupscreen" component={Signupscreen} />
-          <Stack.Screen name="Loginscreen" component={Loginscreen} />
-          <Stack.Screen name="Aboutscreen" component={Aboutscreen} />
-          <Stack.Screen name="Homescreen" component={Homescreen} />
+          <Stack.Screen name="Splashscreen" options={{ gestureEnabled: false }} component={Splashscreen} />
+          <Stack.Screen name="Signupscreen" options={{ gestureEnabled: false }} component={Signupscreen} />
+          <Stack.Screen name="Loginscreen" options={{ gestureEnabled: false }} component={Loginscreen} />
+          <Stack.Screen name="Aboutscreen" options={{ gestureEnabled: false }} component={Aboutscreen} />
+          <Stack.Screen name="Homescreen" options={{ gestureEnabled: false }} component={Homescreen} />
       
         
-        <Stack.Screen name="AddTochatscreen" component={AddTochatscreen} />
-        <Stack.Screen name="Chatscreen" component={Chatscreen} />
-        <Stack.Screen name="Messagescreen" component={Messagescreen} />
-        <Stack.Screen name="Profilescreen" component={Profilescreen} />
-        <Stack.Screen name="Postscreen" component={Postscreen} />
-        <Stack.Screen name="Searchscreen" component={Searchscreen} />
-        <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
-        <Stack.Screen name="ViewProfilescreen" component={ViewProfilescreen} />
-        <Stack.Screen name="AllPostsscreen" component={AllPostsscreen} />
+        <Stack.Screen name="AddTochatscreen" options={{ gestureEnabled: false }} component={AddTochatscreen} />
+        <Stack.Screen name="Chatscreen"  component={Chatscreen} />
+        <Stack.Screen name="Messagescreen" options={{ gestureEnabled: false }} component={Messagescreen} />
+        <Stack.Screen name="Profilescreen" options={{ gestureEnabled: false }} component={Profilescreen} />
+        <Stack.Screen name="Postscreen" options={{ gestureEnabled: false }} component={Postscreen} />
+        <Stack.Screen name="Searchscreen" options={{ gestureEnabled: false }} component={Searchscreen} />
+        <Stack.Screen name="DetailsScreen"  component={DetailsScreen} />
+        <Stack.Screen name="ViewProfilescreen"  component={ViewProfilescreen} />
+        <Stack.Screen name="AllPostsscreen"  component={AllPostsscreen} />
         
 
       </Stack.Navigator>

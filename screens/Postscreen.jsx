@@ -76,6 +76,12 @@ const Postscreen = () => {
   };
 
   const handlePost = async () => {
+
+    if (!value.trim() || !value1.trim()|| !value2.trim()|| !value3.trim()|| !value4.trim() ) {
+      alert('Please fill in all details');
+      return;
+    }
+
     const id = `${user._id}-${Date.now()}`; 
     const _doc = {
       _id: id,
@@ -123,8 +129,9 @@ const Postscreen = () => {
 
             <Text className="left-5 text-xl">Description</Text>
             <TextInput
-              className="border border-gray-400 rounded-2xl w-[360px] h-[215px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
-              placeholder= "Describe the job"
+               className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 ${value1.length > 0 ? "border-gray-400" : "border-red-500 "}`}             
+
+               placeholder= "Describe the job"
               multiline={true}
               onChangeText={handleTextChange1}
               value={value1}
@@ -132,8 +139,7 @@ const Postscreen = () => {
 
             <Text className="left-5 text-xl">Location</Text>
             <TextInput
-              className="border border-gray-400 rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
-              placeholder= "Where the freelancer would do the Job"
+              className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 ${value2.length > 0 ? "border-gray-400" : "border-red-500 "}`}              placeholder= "Where the freelancer would do the Job"
               onChangeText={handleTextChange2}
               value={value2}
             />

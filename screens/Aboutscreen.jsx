@@ -35,10 +35,27 @@ const Aboutscreen = () => {
   const navigation= useNavigation();
   const user = useSelector((state) => state.user.user)
 
+  let wordCount = value1.trim().split(/\s+/).filter(word => word.length > 0).length;
+  let wordCount1 = value.trim().split(/\s+/).filter(word => word.length > 0).length;
+  let wordCount2 = value2.trim().split(/\s+/).filter(word => word.length > 0).length;
+
   const handleAbout = async () => {
-    // Split skills by comma and trim whitespace
-    const skillsArray = value2.split(',').map(skill => skill.trim());
-      
+    console.log("Button pressed"); // Debugging log
+    console.log("Values:", value, value1, value2); 
+
+    if (!value.trim() || !value1.trim() || !value2.trim()) {
+      alert('Please fill in all details');
+      return;
+    }
+
+    let wordCount = value1.trim().split(/\s+/).filter(word => word.length > 0).length;
+    if (wordCount < 15) {
+      alert('Minimum of 15 words');
+      return;
+    }
+
+    const skillsArray = value2.trim().split(',').map(skill => skill.trim());
+
     const _doc = {
       _id: user._id,
       Hostel: value,
@@ -46,15 +63,16 @@ const Aboutscreen = () => {
       Skills: skillsArray,
     };
 
-    await addDoc(collection(doc(firestoreDB, "users", user._id), "details"), _doc)
-      .then(() => {
-        navigation.navigate("Homescreen")
-      })
-      .catch(err => alert(err));
+    try {
+      await addDoc(collection(doc(firestoreDB, "users", user._id), "details"), _doc);
+      navigation.navigate("Homescreen");
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="h-full bg-white"> 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
@@ -63,22 +81,22 @@ const Aboutscreen = () => {
             <Text className="py-2 text-primaryText text-xl font-semibold">Let's get to know you</Text>
             <Text className="left-5 text-base ">What course are you studying?</Text>
             <TextInput
-              className="border rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2"
+              className= {`border rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2 `}
               placeholder="e.g Business Administration..."
               onChangeText={handleTextChange}
               value={value}
             />
             <Text className="left-5 text-base">Tell us about yourself</Text>
             <TextInput
-              className="border rounded-2xl w-[360px] h-[215px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
-              placeholder= "I am a..."
+              className={`border rounded-2xl w-[360px] h-[215px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}
+              placeholder= "(minimum of 15 words)"
               onChangeText={handleTextChange1}
               value={value1}
               multiline={true}
             />
             <Text className="left-5 text-base">What are your skills</Text>
             <TextInput
-              className="border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2"
+              className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}
               placeholder= "Coding, Graphic Design..."
               onChangeText={handleTextChange2}
               value={value2}
