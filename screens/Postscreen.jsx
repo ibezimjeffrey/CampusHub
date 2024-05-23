@@ -8,28 +8,46 @@ import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { firestoreDB } from '../config/firebase.config'
+import { Picker } from '@react-native-picker/picker';
 
 const Postscreen = () => {
   const [isJob, setisJob] = useState(false)
   const [value, setvalue] = useState(""); 
   const [statevalue, setstatevalue] = useState("")
   const [value1, setvalue1] = useState(""); 
+  const [otherJob, setotherJob] = useState("");
   const [statevalue1, setstatevalue1] = useState("")
+  
   const [value2, setvalue2] = useState(""); 
   const [statevalue2, setstatevalue2] = useState("")
-  const [value3, setvalue3] = useState(""); 
-  const [statevalue3, setstatevalue3] = useState("")
+
   const [value4, setvalue4] = useState(""); 
   const [statevalue4, setstatevalue4] = useState("")
   const [isLong, setisLong] = useState(true)
   const navigation= useNavigation();
   const user = useSelector((state) => state.user.user)
+  const currentDate = new Date();
+const day = String(currentDate.getDate()).padStart(2, '0');
+const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+const value3 = `${day}/${month}`;
 
   const handleTextChange = (text) => {
     setvalue(text); 
     setstatevalue(text); 
     {
-      value.length > 20 ? (
+      otherJob.length > 20 ? (
+        setisLong(false)
+      ) : (
+        setisLong(true)
+
+      )
+    }
+  };
+
+  const handleJobChange = (text) => {
+    setotherJob(text); 
+    {
+      otherJob.length > 20 ? (
         setisLong(false)
       ) : (
         setisLong(true)
@@ -50,30 +68,14 @@ const Postscreen = () => {
     setstatevalue2(text); 
   };
 
-  const handleTextChange3 = (text) => {
-    setvalue3(text);
-    switch(text.toLowerCase()) {
-      case "remote":
-        console.log("good remote");
-        setisJob(true);
-        break;
-      case "physical":
-        console.log("good physical");
-        setisJob(true);
-        break;
-      default:
-        setisJob(false);
-    }
-    if (statevalue3.toLowerCase() === "physical" && text.toLowerCase() !== "physical") {
-      setisJob(false);
-    }
-    setstatevalue3(text);
-  };
+  
 
   const handleTextChange4 = (text) => {
     setvalue4(text); 
     setstatevalue4(text); 
   };
+
+  let wordCount = otherJob.trim().split(/\s+/).filter(word => word.length > 0).length;
 
   const handlePost = async () => {
 
@@ -82,13 +84,24 @@ const Postscreen = () => {
       return;
     }
 
+    if (wordCount > 3) {
+      alert('Edit Job Title');
+      return;
+    }
+
     const id = `${user._id}-${Date.now()}`; 
+    const jobDetails = otherJob !== "" ? otherJob : value; 
+
     const _doc = {
       _id: id,
-      JobDetails: value,
+      JobDetails: jobDetails,
       Description: value1,
       Location: value2,
+
+
       Type: value3,
+
+
       Budget: value4,
       User: user
     };
@@ -98,7 +111,8 @@ const Postscreen = () => {
         setvalue("");
         setvalue1("");
         setvalue2("");
-        setvalue3("");
+        setotherJob("")
+        
         setvalue4("");
         addDoc(collection(firestoreDB, "AllPostings"), _doc)
 
@@ -120,16 +134,61 @@ const Postscreen = () => {
             </Text>
           </View>
             <Text className="left-5 text-xl">Job Details</Text>
-            <TextInput
-              className={`border border-primary rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2 ${!isLong && value.length > 0 ? "border-red-500" : "border-gray-400"}`}
-              placeholder="Title Here"
-              onChangeText={handleTextChange}
-              value={value}
-            />
+            <Picker
+            className="left-5"
+            
+  selectedValue={value}
+  onValueChange={(itemValue) => handleTextChange(itemValue)}
+  style={{ 
+    borderWidth: 1,
+    borderColor: value.length > 0 ? "#268290" : "gray",
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 1,
+    width:360
+  }}
+>
+  <Picker.Item label="Select job" value="" />
+  <Picker.Item label="Makeup Artist" value="Makeup Artist" />
+  <Picker.Item label="Catering services" value="Catering services" />
+  <Picker.Item label="Cleaning services" value="Cleaning services" />
+  <Picker.Item label="Personal Shopper" value="Personal Shopper" />
+  <Picker.Item label="Tutoring" value="Tutoring" />
+  <Picker.Item label="Nail Tech" value="Nail Tech" />
+  <Picker.Item label="Writer" value="Writer" />
+  <Picker.Item label="Hairstylist" value="Hairstylist" />
+  <Picker.Item label="Delivery" value="Delivery" />
+  <Picker.Item label="Graphic Designer" value="Graphic Designer" />
+  <Picker.Item label="Essay Editing" value="Essay Editing" />
+  <Picker.Item label="Fitness Training" value="Fitness Training" />
+  <Picker.Item label="Errand Running" value="Errand Running" />
+  <Picker.Item label="Photography" value="Photography" />
+  <Picker.Item label="Other" value="Other" />
+</Picker>
+{
+  value == "Other"?
+  
+  <TextInput
+  style={{borderColor: otherJob.length > 0 ? "#268290" : "gray"}}
+     className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}             
 
+     placeholder= "Add job"
+    multiline={true}
+    onChangeText={handleJobChange}
+    value={otherJob}
+  />
+
+  
+  :
+  (
+    console.log("")
+
+  )
+}
             <Text className="left-5 text-xl">Description</Text>
             <TextInput
-               className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 ${value1.length > 0 ? "border-gray-400" : "border-red-500 "}`}             
+            style={{borderColor: value1.length > 0 ? "#268290" : "gray"}}
+               className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}             
 
                placeholder= "Describe the job"
               multiline={true}
@@ -137,20 +196,40 @@ const Postscreen = () => {
               value={value1}
             />
 
-            <Text className="left-5 text-xl">Location</Text>
-            <TextInput
-              className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 ${value2.length > 0 ? "border-gray-400" : "border-red-500 "}`}              placeholder= "Where the freelancer would do the Job"
-              onChangeText={handleTextChange2}
-              value={value2}
-            />
 
-            <Text className="left-5 text-xl">Job Type</Text>
-            <TextInput
-              className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 ${!isJob && value3.length > 0 ? "border-red-500" : "border-gray-400"}`}
-              placeholder= "Remote or Physical"
-              onChangeText={handleTextChange3}
-              value={value3}
-            />
+<Text className="left-5 text-xl">Where would the job be taking place</Text>
+        
+            <Picker
+            className="left-5"
+  selectedValue={value2}
+  onValueChange={(itemValue) => handleTextChange2(itemValue)}
+  style={{ 
+    borderWidth: 1,
+    borderColor: value2.length > 0 ? "#268290" : "gray",
+    borderRadius: 20,
+    paddingHorizontal: 18, 
+    width:360
+  }}
+>
+  <Picker.Item label="Location" value="" />
+  <Picker.Item label="Remote" value="Remote" />
+  <Picker.Item label="Pod" value="Pod Hostel" />
+  <Picker.Item label="Cooperative" value="Cooperative" />
+  <Picker.Item label="Amethyst" value="Amethyst" />
+  <Picker.Item label="Cedar" value="Cedar" />
+  <Picker.Item label="Trezadel" value="Trezadel" />
+  <Picker.Item label="Faith" value="Faith" />
+  <Picker.Item label="EDC" value="EDC" />
+  <Picker.Item label="Pearl" value="Pearl" />
+  <Picker.Item label="Trinity" value="Trinity" />
+  <Picker.Item label="Cooperative Queens" value="Cooperative Queens" />
+  <Picker.Item label="Redwood" value="Redwood" />
+  <Picker.Item label="SST" value="SST" />
+  <Picker.Item label="TYD" value="TYD" />
+</Picker>
+
+            
+            
 
             <Text className=" relative left-5 text-xl">Budget</Text>
             <View className=" relative bottom-5">

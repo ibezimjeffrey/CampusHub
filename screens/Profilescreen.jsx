@@ -41,6 +41,7 @@ const Profilescreen = () => {
   }, []);
 
   const logout = async () => {
+    
     await firebaseAuth.signOut().then(() => {
       dispatch(SET_USER_NULL());
       navigation.replace('Loginscreen');
@@ -84,12 +85,16 @@ const Profilescreen = () => {
           <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
         </View>
 
-        <View className="flex-row justify-between items-center mt-4">
-          <Text className="text-base text-gray-500 font-bold">Skills:</Text>
-          <View style={{borderColor:"#268290"}} className="border-2 rounded-full p-1">
-            <Text>{details.length > 0 ? details[0].Skills : ''}</Text>
-          </View>
-        </View>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+
+  {details.length > 0 && typeof details[0].Skills === 'string' && (
+    details[0].Skills.split(', ').map((skill, index) => (
+      <View key={index} style={{ borderColor: "#268290", borderWidth: 1, borderRadius: 20, padding: 8, margin: 4 }}>
+        <Text className="capitalize">{skill}</Text>
+      </View>
+    ))
+  )}
+</View>
       </ScrollView>
     </SafeAreaView>
   );

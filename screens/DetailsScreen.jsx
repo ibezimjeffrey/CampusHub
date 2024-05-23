@@ -26,7 +26,6 @@ const DetailsScreen = ({ route }) => {
       profilePic: post.User.profilePic,
       idRoom: room_id,
       index1: user._id
-      
     };
 
     try {
@@ -38,12 +37,12 @@ const DetailsScreen = ({ route }) => {
     }
   }
 
-
   const removePost = async (postIdToRemove) => {
+
     try {
       await deleteDoc(doc(firestoreDB, 'postings', postIdToRemove));
       alert('Post successfully removed');
-      navigation.navigate("Homescreen")
+      navigation.navigate("Homescreen");
     } catch (error) {
       console.error('Error removing document: ', error);
     }
@@ -51,7 +50,6 @@ const DetailsScreen = ({ route }) => {
 
   const createNewChat = async () => {
     const id = `${user._id}-${Date.now()}`;
-    
 
     const _doc = {
       index: user._id,
@@ -61,31 +59,24 @@ const DetailsScreen = ({ route }) => {
       jobName: post.JobDetails,
       idRoom: room_id,
       index1: user._id
-      
-      
-
     };
 
     try {
       await setDoc(doc(firestoreDB, "chats", id), _doc);
-      othersideview()
+      othersideview();
     } catch (err) {
       alert("Error: " + err);
     }
   };
 
-  
   return (
-    
     <View style={styles.container}>
-       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <MaterialIcons name='chevron-left' size={32} color={"black"}/>
-
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <MaterialIcons name='chevron-left' size={32} color={"black"} />
       </TouchableOpacity>
       
-      
       <View className="bottom-2">
-        <Image source={{ uri: post.User.profilePic }} resizeMode="contain" className="w-24 h-24 relative top-2"/>     
+        <Image source={{ uri: post.User.profilePic }} resizeMode="contain" className="w-24 h-24 relative top-2" />
       </View>
      
       <Text className="capitalize" style={styles.detailText}>{post.User.fullName}</Text>
@@ -93,7 +84,7 @@ const DetailsScreen = ({ route }) => {
       <Text className="first-letter:capitalize" style={styles.description}>{post.Description}</Text>
       <View style={styles.detailsContainer}>
         <Text style={styles.detailText}>Location: {post.Location}</Text>
-        <Text style={styles.detailText}>Type: {post.Type}</Text>
+        <Text style={styles.detailText}>Date: {post.Type}</Text>
         <Text style={styles.detailText}>Budget: ₦{post.Budget}</Text>
       </View>
       {!isUserPosted && (
@@ -104,10 +95,10 @@ const DetailsScreen = ({ route }) => {
         </TouchableOpacity>
       )}
 
-{isUserPosted && (
+      {isUserPosted && (
         <TouchableOpacity
           style={styles.applyButton1}
-          onPress={()=>removePost(post.id)}>
+          onPress={() => removePost(post.id)}>
           <Text style={styles.applyButtonText}>Remove Job</Text>
         </TouchableOpacity>
       )}

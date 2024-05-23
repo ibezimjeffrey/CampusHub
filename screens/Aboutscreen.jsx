@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { addDoc, collection, doc } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 import { useSelector } from 'react-redux';
+import { Picker } from '@react-native-picker/picker';
 
 const Aboutscreen = () => {
   const [value, setvalue] = useState(""); 
@@ -60,7 +61,7 @@ const Aboutscreen = () => {
       _id: user._id,
       Hostel: value,
       About: value1,
-      Skills: skillsArray,
+      Skills: skillsArray.join(', '),
     };
 
     try {
@@ -79,13 +80,34 @@ const Aboutscreen = () => {
         <ScrollView className="h-full">
           <View className="w-full h-full bg-white flex  justify-start py-6 space-y-6">
             <Text className="py-2 text-primaryText text-xl font-semibold">Let's get to know you</Text>
-            <Text className="left-5 text-base ">What course are you studying?</Text>
-            <TextInput
-              className= {`border rounded-2xl w-[360px] left-5 px-4 py-9 flex-row items-center justify-between space-x-4 my-2 `}
-              placeholder="e.g Business Administration..."
-              onChangeText={handleTextChange}
-              value={value}
-            />
+    
+            <Picker
+            className="left-5"
+  selectedValue={value}
+  onValueChange={(itemValue) => handleTextChange(itemValue)}
+  style={{ 
+    borderWidth: 1,
+    borderColor: value.length > 0 ? "#268290" : "gray",
+    borderRadius: 20,
+    paddingHorizontal: 18, 
+    width:360,
+    left:20
+  }}
+>
+  <Picker.Item label="Course" value="" />
+  <Picker.Item label="Mass Communication" value="Mass Communication" />
+  <Picker.Item label="ISMS" value="ISMS" />
+  <Picker.Item label="Mechanical Engineering" value="Mechanical Engineering" />
+  <Picker.Item label="Business Administration" value="Business Administration" />
+  <Picker.Item label="Computer Science" value="Computer Science" />
+  <Picker.Item label="Electrical Engineering" value="Electrical Engineering" />
+  <Picker.Item label="Economics" value="Economics" />
+  <Picker.Item label="Software Engineering" value="Software Engineering" />
+  <Picker.Item label="Finance" value="Finance" />
+  <Picker.Item label="Accounting" value="Accounting" />
+</Picker>
+
+            
             <Text className="left-5 text-base">Tell us about yourself</Text>
             <TextInput
               className={`border rounded-2xl w-[360px] h-[215px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}
