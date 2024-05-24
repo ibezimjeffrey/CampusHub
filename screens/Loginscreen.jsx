@@ -9,8 +9,10 @@ import { DocumentSnapshot, doc, getDoc } from 'firebase/firestore'
 import { useDispatch } from 'react-redux'
 import { SET_USER } from '../context/actions/userActions'
 import { ScrollView } from 'react-native'
+import { ActivityIndicator } from 'react-native'
 const Loginscreen = () => {
   const screenwidth = Math.round(Dimensions.get("window").width)
+  const [isApplying, setIsApplying] = useState(false); 
 
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
@@ -22,6 +24,7 @@ const Loginscreen = () => {
   const dispatch =  useDispatch()
 
   const HandleLogin = async () =>{
+    setIsApplying(true);
     if (getEmailValidationStatus && email!= ""){
 
       await signInWithEmailAndPassword(firebaseAuth, email,password).then(userCred =>{
@@ -129,12 +132,16 @@ const Loginscreen = () => {
 
           
 
-
+          
           <TouchableOpacity onPress={HandleLogin} className="w-full px-4  rounded-xl bg-primaryButton my-3 flex items-center justify-center">
 
+          {isApplying ? (
+            <ActivityIndicator className="py-3" size="small" color="#ffffff" />
+          ) : (
             <Text className='py-2 text-white text-xl font-semibold'>Sign in</Text>
+          )}
 
-
+ 
           </TouchableOpacity>
 
           <View className="w-full flex-row py-2 justify-center space-x-2">

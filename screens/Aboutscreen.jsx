@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 
 const Aboutscreen = () => {
+  const [isApplying, setIsApplying] = useState(false); 
   const [value, setvalue] = useState(""); 
   const [statevalue, setstatevalue] = useState("")
 
@@ -41,8 +42,8 @@ const Aboutscreen = () => {
   let wordCount2 = value2.trim().split(/\s+/).filter(word => word.length > 0).length;
 
   const handleAbout = async () => {
-    console.log("Button pressed"); // Debugging log
-    console.log("Values:", value, value1, value2); 
+    setIsApplying(true);
+   
 
     if (!value.trim() || !value1.trim() || !value2.trim()) {
       alert('Please fill in all details');
@@ -127,7 +128,11 @@ const Aboutscreen = () => {
             <TouchableOpacity 
               onPress={handleAbout}
               className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
-              <Text className='py-2 text-white text-xl font-semibold'>Ready to work!</Text>
+              {isApplying ? (
+            <ActivityIndicator className="py-3" size="small" color="#ffffff" />
+          ) : (
+            <Text className='py-2 text-white text-xl font-semibold'>Ready to work!</Text>
+          )}
             </TouchableOpacity>
           </View>
         </ScrollView>

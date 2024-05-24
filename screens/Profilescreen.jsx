@@ -15,6 +15,7 @@ const Profilescreen = () => {
   const [allHires, setAllHires] = useState(0);
   const [details, setDetails] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isApplying, setIsApplying] = useState(false); 
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', user._id)), (querySnapshot) => {
@@ -41,7 +42,7 @@ const Profilescreen = () => {
   }, []);
 
   const logout = async () => {
-    
+    setIsApplying(true);
     await firebaseAuth.signOut().then(() => {
       dispatch(SET_USER_NULL());
       navigation.replace('Loginscreen');
@@ -53,11 +54,24 @@ const Profilescreen = () => {
       <ScrollView className="p-4">
         <View className="flex-row justify-between pt-4">
           <TouchableOpacity onPress={logout}>
+          {isApplying ? (
+            <ActivityIndicator className="py-3 w-8 h-12" size="large" color="#268290" />
+          ) : (
             <Text style={{color:"#268290"}} className=" font-bold text-lg">Logout</Text>
+          )}
+          
+            
           </TouchableOpacity>
         </View>
-        
-        <View className="items-center mt-8">
+
+        {isLoading ? (
+           <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+           <ActivityIndicator size="large" color="#268290" />
+         </View>
+          ) : (
+            <>
+           
+            <View className="items-center mt-8">
           <View className="rounded-full p-1">
             <Image source={{ uri: user?.profilePic }} resizeMode="cover" style={{ width: 100, height: 100 }} />
           </View>
@@ -95,6 +109,11 @@ const Profilescreen = () => {
     ))
   )}
 </View>
+</>
+            
+          )}
+        
+        
       </ScrollView>
     </SafeAreaView>
   );

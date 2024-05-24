@@ -45,7 +45,7 @@ const Messagescreen = () => {
     const isCurrentUserRoomCreator = currentUser._id === room.index;
   
     return (
-      <TouchableOpacity className="border-primaryBold border rounded-xl mt-2" onPress={() => navigation.navigate("Chatscreen", { post: room })} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10 }}>
+      <TouchableOpacity className="border-primaryButton border rounded-xl mt-2" onPress={() => navigation.navigate("Chatscreen", { post: room })} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10 }}>
         <View style={{ width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
           <Image source={{ uri: isCurrentUserRoomCreator ? room.user.profilePic : room.profilePic }} resizeMode="contain" style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 1, borderColor: "#000000" }} />
         </View>
@@ -69,7 +69,7 @@ const Messagescreen = () => {
         
        
         <ScrollView className="h-full" style={{ paddingHorizontal: 10, paddingTop: 10 }}>
-          <View>
+          <View className="h-full">
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 10 }}>
               <Text style={{ fontSize: 20, color: "#268290" }}>Messages</Text>
              

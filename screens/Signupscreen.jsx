@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, Dimensions, TouchableOpacity, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from 'react-native';
 import { BGImage, Logo } from '../assets';
 import Userinput from '../components/Userinput'; // Correct import statement
 import { useNavigation } from '@react-navigation/native';
@@ -22,6 +22,7 @@ const Signupscreen = () => {
   const [AVATARmenu, setAVATARmenu] = useState(false);
   const [getEmailValidationStatus, setgetEmailValidationStatus] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(null);
+  const [isApplying, setIsApplying] = useState(false);
 
   const HandleAVATAR = (item) => {
     setavatar(item?.image?.asset?.url);
@@ -64,22 +65,26 @@ const Signupscreen = () => {
   
 
   const handleSignup = async () => {
+    setIsApplying(true);
     if (!name.trim() || !email.trim()) {
+      setIsApplying(false);
       alert('Please fill in your details');
       return;
     }
 
     if (passwordStrength === "Weak") {
+      setIsApplying(false);
       alert('Enter a strong password');
       return;
     }
 
     if (getEmailValidationStatus === false) {
+      setIsApplying(false);
       alert('Enter school email address');
       return;
     }
     
-    getEmailValidationStatus
+ 
 
     if (getEmailValidationStatus && email !== "") {
       try {
@@ -92,18 +97,13 @@ const Signupscreen = () => {
           providerData: userCred.user.providerData,
         };
 
-        const actionCodeSettings = {
-          handleCodeInApp: true,
-          // Customize the message here
-          url: 'https://campushub-3a5cb.firebaseapp.com/',
-          message: "Hello Jeff baby, welcome", // Custom message
-        };
-
+       
         await sendEmailVerification(userCred.user, actionCodeSettings);
 
         await setDoc(doc(firestoreDB, "users", userCred?.user.uid), data);
         navigation.replace("Aboutscreen");
       } catch (error) {
+        setIsApplying(false);
         Alert.alert(error.message);
       }
     }
@@ -168,7 +168,11 @@ const Signupscreen = () => {
               {password !== "" && passwordStrength && <Text>Password Strength: {passwordStrength}</Text>}
               <TouchableOpacity onPress={handleSignup}
                 className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
-                <Text className='py-2 text-white text-xl font-semibold'>Next</Text>
+                {isApplying ? (
+            <ActivityIndicator className="py-3" size="small" color="#ffffff" />
+          ) : (
+            <Text className='py-2 text-white text-xl font-semibold'>Next</Text>
+          )}
               </TouchableOpacity>
               <View className="w-full flex-row py-2 justify-center space-x-2">
                 <Text className="text-base font-thin text-primaryText">Have an Account?</Text>

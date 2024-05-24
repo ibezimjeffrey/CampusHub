@@ -1,18 +1,19 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Image } from 'react-native';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Image, SafeAreaView, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { firestoreDB } from '../config/firebase.config';
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const DetailsScreen = ({ route }) => {
   const { post } = route.params;
-  const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
   const [isUserPosted, setIsUserPosted] = useState(post.User._id === user._id);
   const room_id = `${user._id}-${Date.now()}-${new Date().getSeconds()}`;
+  const [isApplying, setIsApplying] = useState(false); 
+
+  const navigation = useNavigation();
 
   const othersideview = async () => {
     const newid = `${post.User._id}-${Date.now()}`;
@@ -38,7 +39,7 @@ const DetailsScreen = ({ route }) => {
   }
 
   const removePost = async (postIdToRemove) => {
-
+    setIsApplying(true);
     try {
       await deleteDoc(doc(firestoreDB, 'postings', postIdToRemove));
       alert('Post successfully removed');
@@ -49,6 +50,7 @@ const DetailsScreen = ({ route }) => {
   };
 
   const createNewChat = async () => {
+    setIsApplying(true); 
     const id = `${user._id}-${Date.now()}`;
 
     const _doc = {
@@ -63,92 +65,67 @@ const DetailsScreen = ({ route }) => {
 
     try {
       await setDoc(doc(firestoreDB, "chats", id), _doc);
+      setIsApplying(false); 
       othersideview();
     } catch (err) {
+      setIsApplying(false); 
       alert("Error: " + err);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <MaterialIcons name='chevron-left' size={32} color={"black"} />
-      </TouchableOpacity>
-      
-      <View className="bottom-2">
-        <Image source={{ uri: post.User.profilePic }} resizeMode="contain" className="w-24 h-24 relative top-2" />
-      </View>
-     
-      <Text className="capitalize" style={styles.detailText}>{post.User.fullName}</Text>
-      <Text style={styles.title}>{post.JobDetails}</Text>
-      <Text className="first-letter:capitalize" style={styles.description}>{post.Description}</Text>
-      <View style={styles.detailsContainer}>
-        <Text style={styles.detailText}>Location: {post.Location}</Text>
-        <Text style={styles.detailText}>Date: {post.Type}</Text>
-        <Text style={styles.detailText}>Budget: ₦{post.Budget}</Text>
-      </View>
-      {!isUserPosted && (
-        <TouchableOpacity
-          style={styles.applyButton}
-          onPress={createNewChat}>
-          <Text style={styles.applyButtonText}>Apply</Text>
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-row items-center justify-center mt-10">
+        <TouchableOpacity onPress={() => navigation.goBack()} className="absolute left-4">
+          <MaterialIcons name='chevron-left' size={32} color={"#000"} />
         </TouchableOpacity>
-      )}
+        <Text className="text-2xl font-light">Job Details</Text>
+      </View>
 
-      {isUserPosted && (
-        <TouchableOpacity
-          style={styles.applyButton1}
-          onPress={() => removePost(post.id)}>
-          <Text style={styles.applyButtonText}>Remove Job</Text>
+      <View className="items-center mt-5">
+        <Image style={{borderColor:"#268290"}} source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-40 h-40 rounded-full border-2 " />
+        <Text className="text-xl font-extralight mt-2">{post.User.fullName}</Text>
+      </View>
+
+      <View className="px-4 mt-5">
+        <Text className="text-2xl text-gray-500 capitalize">{post.JobDetails}</Text>
+        <Text className="text-base mt-2">{post.Description}</Text>
+      </View>
+
+      <View className="flex-row justify-around mt-5">
+        <View className="flex items-center">
+          <MaterialIcons name='location-on' size={24} color={"#268290"} />
+          <Text className="text-base text-primaryButton mt-1">{post.Location}</Text>
+        </View>
+        <View className="flex items-center">
+          <MaterialIcons name='calendar-month' size={24} color={"#268290"} />
+          <Text className="text-base text-primaryButton mt-1">{post.Type}</Text>
+        </View>
+        <View className="flex items-center">
+          <MaterialIcons name='attach-money' size={24} color={"#268290"} />
+          <Text className="text-base text-primaryButton mt-1">{post.Budget}</Text>
+        </View>
+      </View>
+
+      {!isUserPosted ? (
+        <TouchableOpacity className="bg-primaryButton py-3 rounded-lg mt-5 mx-4 items-center" onPress={createNewChat}>
+          {isApplying ? (
+            <ActivityIndicator size="small" color="#ffffff" />
+          ) : (
+            <Text className="text-white font-bold">Apply Now</Text>
+          )}
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity className="bg-red-500 py-3 rounded-2xl mt-5 mx-4 items-center" onPress={() => removePost(post.id)}>
+          {isApplying ? (
+            <ActivityIndicator size="small" color="#ffffff" />
+          ) : (
+            <Text className="text-white font-bold">Remove Job</Text>
+          )}
         </TouchableOpacity>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  description: {
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  detailsContainer: {
-    marginBottom: 20,
-    alignSelf: 'stretch',
-  },
-  detailText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  applyButton: {
-    backgroundColor: '#007BFF',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  applyButton1: {
-    backgroundColor: '#FF0000',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  applyButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    textAlign: 'center',
-  },
-});
 
 export default DetailsScreen;

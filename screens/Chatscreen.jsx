@@ -156,11 +156,13 @@ const [isHired, setIsHired] = useState(false)
 
             <View style={{ flexDirection: 'column', alignItems: 'center' }}>
   <TouchableOpacity onPress={viewProfile}>
-    <View>
+
+    <View >
       <Image source={{ uri: post.user.profilePic }} resizeMode="contain" className="rounded-full w-12 h-12" />
     </View>
   </TouchableOpacity>
   <TouchableOpacity onPress={viewProfile}>
+
     <View >
       <Text className="text-black text-base font-light capitalize shadow">
         {post.user.fullName} 
@@ -184,7 +186,7 @@ const [isHired, setIsHired] = useState(false)
                   {isHired ? (
                     <TouchableOpacity onPress={() => {}}>
                       <View style={{left:70}} className=" relative">
-                        <View style={{backgroundColor:"#b8ccee"}} className="border-1 left-7  border-emerald-950 rounded-lg p-4">
+                        <View style={{backgroundColor:"#b8ccee"}} className="border-1 left-7 mr-8 border-emerald-950 rounded-lg p-4">
                           <Text className="font-bold text-zinc-950">HIRED</Text>
                         </View>
                       </View>
@@ -192,7 +194,7 @@ const [isHired, setIsHired] = useState(false)
                   ) : (
                     <TouchableOpacity onPress={Employ}>
                       <View style={{left:70}} className=" relative">
-                        <View className="border-1 left-7 bg-red-400 border-emerald-950 rounded-lg p-4">
+                        <View className="border-1 left-7 bg-red-400 border-emerald-950 mr-8 rounded-lg p-4">
                           <Text className="font-bold text-zinc-950">HIRE</Text>
                         </View>
                       </View>

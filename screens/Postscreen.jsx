@@ -1,4 +1,4 @@
-import { View, Text, Platform, TextInput } from 'react-native'
+import { View, Text, Platform, TextInput, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native'
@@ -11,6 +11,7 @@ import { firestoreDB } from '../config/firebase.config'
 import { Picker } from '@react-native-picker/picker';
 
 const Postscreen = () => {
+  const [isApplying, setIsApplying] = useState(false); 
   const [isJob, setisJob] = useState(false)
   const [value, setvalue] = useState(""); 
   const [statevalue, setstatevalue] = useState("")
@@ -78,6 +79,7 @@ const value3 = `${day}/${month}`;
   let wordCount = otherJob.trim().split(/\s+/).filter(word => word.length > 0).length;
 
   const handlePost = async () => {
+    setIsApplying(true);
 
     if (!value.trim() || !value1.trim()|| !value2.trim()|| !value3.trim()|| !value4.trim() ) {
       alert('Please fill in all details');
@@ -108,6 +110,7 @@ const value3 = `${day}/${month}`;
 
     await addDoc(collection(firestoreDB, "postings"), _doc)
       .then(() => {
+        setIsApplying(false)
         setvalue("");
         setvalue1("");
         setvalue2("");
@@ -134,7 +137,9 @@ const value3 = `${day}/${month}`;
             </Text>
           </View>
             <Text className="left-5 text-xl">Job Details</Text>
+            <View className="left-6">
             <Picker
+            
             className="left-5"
             
   selectedValue={value}
@@ -165,6 +170,9 @@ const value3 = `${day}/${month}`;
   <Picker.Item label="Photography" value="Photography" />
   <Picker.Item label="Other" value="Other" />
 </Picker>
+
+            </View>
+            
 {
   value == "Other"?
   
@@ -199,7 +207,8 @@ const value3 = `${day}/${month}`;
 
 <Text className="left-5 text-xl">Where would the job be taking place</Text>
         
-            <Picker
+        <View className="left-6">
+        <Picker
             className="left-5"
   selectedValue={value2}
   onValueChange={(itemValue) => handleTextChange2(itemValue)}
@@ -228,6 +237,9 @@ const value3 = `${day}/${month}`;
   <Picker.Item label="TYD" value="TYD" />
 </Picker>
 
+        </View>
+            
+
             
             
 
@@ -244,7 +256,11 @@ const value3 = `${day}/${month}`;
             </View>
 
             <TouchableOpacity onPress={handlePost} className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
-              <Text className='py-2 text-white text-xl font-semibold'>Post Job</Text>
+            {isApplying ? (
+            <ActivityIndicator className="py-3" size="small" color="#ffffff" />
+          ) : (
+            <Text className='py-2 text-white text-xl font-semibold'>Post Job</Text>
+          )}
             </TouchableOpacity>
           </View>
         </ScrollView>
