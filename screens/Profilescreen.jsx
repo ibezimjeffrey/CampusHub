@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import { firebaseAuth, firestoreDB } from '../config/firebase.config';
 import { useNavigation } from '@react-navigation/native';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { useFonts, Dosis_400Regular } from '@expo-google-fonts/dosis';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -19,6 +19,22 @@ const Profilescreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isApplying, setIsApplying] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+
+  const sendImage = async (imageUri) => {
+    
+    const newImageMessage = {
+      image: imageUri,
+    };
+
+    try {
+      await addDoc(collection(doc(firestoreDB, "users", user._id), "details"), newImageMessage);
+      console.log("Image sent");
+    } catch (error) {
+      alert('Error sending image: ' + error);
+    }
+  };
+
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', user._id)), (querySnapshot) => {
@@ -51,20 +67,31 @@ const Profilescreen = () => {
       return;
     }
   
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    let selecting = true;
+    let images = [];
   
-    if (!result.canceled) {
-      console.log('Image URI:', result.assets[0].uri);
-      setBackgroundImage(result.assets[0].uri);
-    } else {
-      console.log('Image selection canceled');
-    }
+    
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        
+        console.log(result.assets[0].uri)
+        
+      sendImage(result.assets[0].uri);
+      } else {
+        selecting = false;
+      }
+    
+  
+    
   };
+  
+
   
 
   const logout = async () => {
@@ -148,10 +175,10 @@ const Profilescreen = () => {
              
               
 
-              <View className=" left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+              <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
   {details.length > 0 && details[0].image && Array.isArray(details[0].image) && details[0].image.length > 0 ? (
     details[0].image.map((imageUri, index) => (
-      <Image key={index} resizeMode="cover" style={{ width: 100, height: 100, margin: 5 }} source={{ uri: imageUri }} />
+      <Image className="border-2 rounded-3xl border-primaryButton" key={index} resizeMode="cover" style={{ width: 100, height: 100, margin: 5 }} source={{ uri: imageUri }} />
     ))
   ) : (
     <View className="  w-full items-center">

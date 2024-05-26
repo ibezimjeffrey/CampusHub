@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform, ActivityIndicator, TextInput, Image, Linking } from 'react-native';
-import { Entypo, FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform, ActivityIndicator, TextInput, Image, Linking, Alert } from 'react-native';
+import { Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 import { BlurView } from 'expo-blur';
+import * as ImagePicker from 'expo-image-picker';
 
 const Chatscreen = ({ route }) => {
   const { post } = route.params;
@@ -14,49 +15,24 @@ const Chatscreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [Hired, setHired] = useState(true)
-  const [isBoss, setisBoss] = useState(post.user._id === user._id)
-const [status, setstatus] = useState(post.user_id === post.idRoom)
+  const [isHired, setIsHired] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]);
 
-const [isHired, setIsHired] = useState(false)
   useLayoutEffect(() => {
     const msgQuery = query(
       collection(firestoreDB, 'messages'),
-      
-      where('idRoom', '==', post.idRoom), 
+      where('idRoom', '==', post.idRoom),
       orderBy("timeStamp", "asc")
     );
-  
+
     const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
       const upMsg = querySnapshot.docs.map(doc => doc.data());
       setMessages(upMsg);
       setIsLoading(false);
     });
-  
-    
+
     return unsubscribe;
-  }, [post._id]); 
-  
-
-  useLayoutEffect(() => {
-    const msgQuery = query(
-      collection(firestoreDB, 'messages'),
-      
-      where('idRoom', '==', post.idRoom), 
-      orderBy("timeStamp", "asc")
-    );
-  
-    const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
-      const upMsg = querySnapshot.docs.map(doc => doc.data());
-      setMessages(upMsg);
-      setIsLoading(false);
-    });
-  
-    
-    return unsubscribe;
-  }, [post._id]); 
-
-
+  }, [post._id]);
 
   useEffect(() => {
     const checkHiredStatus = async () => {
@@ -72,12 +48,28 @@ const [isHired, setIsHired] = useState(false)
     checkHiredStatus();
   }, [post.idRoom]);
 
+  const sendImage = async (imageUri) => {
+    const timeStamp = serverTimestamp();
+    const newImageMessage = {
+      _id: post.idRoom,
+      roomId: post._id,
+      post: post,
+      timeStamp: timeStamp,
+      user: user,
+      receipient: post.user._id,
+      idRoom: post.idRoom,
+      image: imageUri,
+    };
 
-
-  
+    try {
+      await addDoc(collection(firestoreDB, "messages"), newImageMessage);
+      console.log("Image sent");
+    } catch (error) {
+      alert('Error sending image: ' + error);
+    }
+  };
 
   const sendMessage = async () => {
-
     if (!message.trim()) {
       alert('Please enter a message.');
       return;
@@ -87,32 +79,28 @@ const [isHired, setIsHired] = useState(false)
     const newMessage = {
       _id: post.idRoom,
       roomId: post._id,
-      post:post,
+      post: post,
       timeStamp: timeStamp,
       message: message,
       user: user,
       receipient: post.user._id,
-      idRoom: post.idRoom
+      idRoom: post.idRoom,
     };
 
     setMessage('');
-   
 
     try {
-      await addDoc(collection(firestoreDB, "messages"), newMessage)
-      
+      await addDoc(collection(firestoreDB, "messages"), newMessage);
     } catch (error) {
       alert('Error sending message: ' + error);
     }
   };
 
-  const viewProfile = () =>{
-    navigation.navigate("ViewProfilescreen",{ post: post })
-
-  }
+  const viewProfile = () => {
+    navigation.navigate("ViewProfilescreen", { post: post });
+  };
 
   const makePhoneCall = () => {
-   
     Linking.openURL(`tel:${post.user.email}`);
   };
 
@@ -127,12 +115,32 @@ const [isHired, setIsHired] = useState(false)
         status: true,
         idRoom: room_id,
         post: post,
-
       };
       await addDoc(collection(firestoreDB, 'Status'), hireStatus);
       setIsHired(true);
     } catch (error) {
       console.error('Error hiring:', error);
+    }
+  };
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Permission to access the camera roll is required!');
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const imageUri = result.assets[0].uri;
+      setSelectedImages(prevImages => [...prevImages, imageUri]);
+      sendImage(imageUri);
     }
   };
 
@@ -234,46 +242,51 @@ const [isHired, setIsHired] = useState(false)
                   
                   <>
                   {messages?.map((msg, i) => (
-                    msg.user._id === user._id ? (
-                      <View className='m-1' key={i}>
-                        <View style={{ alignSelf: "flex-end" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-blue-400 w-auto relative ">
-                          <Text className="text-base font-semibold text-white">
-                            {msg.message}
-                          </Text>
-                        </View>
-                        <View style={{ alignSelf: "flex-end" }}>
-                          {msg?.timeStamp?.seconds && (
-                            <Text className="text-[12px] text-black ">
-                              {new Date(parseInt(msg?.timeStamp?.seconds) * 1000).toLocaleTimeString("en-US", {
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: false,
-                              })}
-                            </Text>
-                          )}
-                        </View>
-                      </View>
-                    ) : (
-                      <View className='m-1' key={i}>
-                        <View style={{ alignSelf: "flex-start" }} className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-gray-300 w-auto relative ">
-                          <Text className="text-base  text-black">
-                            {msg.message}
-                          </Text>
-                        </View>
-                        <View style={{ alignSelf: "flex-start" }}>
-                          {msg?.timeStamp?.seconds && (
-                            <Text className="text-[12px] text-black font-semibold">
-                              {new Date(parseInt(msg?.timeStamp?.seconds) * 1000).toLocaleTimeString("en-US", {
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: false,
-                              })}
-                            </Text>
-                          )}
-                        </View>
-                      </View>
-                    )
-                  ))}
+  <View className='m-1' key={i}>
+    {msg.user._id === user._id ? (
+      <View style={{ alignSelf: "flex-end" }}>
+
+              {msg.image ? (
+          <Image source={{ uri: msg.image }} style={{ width: 150, height: 150, borderRadius: 10 }} />
+        ) : (
+          <View  className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl bg-blue-400 w-auto relative ">
+
+          <Text className="text-base font-semibold text-white">
+            {msg.message}
+          </Text>
+          </View>
+        )}
+   
+      </View>
+    ) : (
+      <View  style={{ alignSelf: "flex-start" }}>
+              {msg.image ? (
+          <Image source={{ uri: msg.image }} style={{ width: 150, height: 150, borderRadius: 10 }} />
+        ) : (
+          <View className="px-4 py-2 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl bg-gray-300 w-auto relative ">
+
+          <Text className="text-base  text-black">
+            {msg.message}
+          </Text>
+          </View>
+          
+        )}
+      </View>
+   
+    )}
+    <View style={{ alignSelf: msg.user._id === user._id ? "flex-end" : "flex-start" }}>
+      {msg?.timeStamp?.seconds && (
+        <Text className="text-[12px] text-black ">
+          {new Date(parseInt(msg?.timeStamp?.seconds) * 1000).toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: false,
+          })}
+        </Text>
+      )}
+    </View>
+  </View>
+))}
                 </>
                 )}
               </ScrollView>
@@ -290,7 +303,7 @@ const [isHired, setIsHired] = useState(false)
                     value={message}
                     onChangeText={(text) => { setMessage(text) }}
                   />
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={pickImage}>
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
                 </View>

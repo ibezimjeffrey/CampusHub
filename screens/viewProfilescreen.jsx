@@ -12,7 +12,7 @@ const ViewProfilescreen = ({ route }) => {
   const { post } = route.params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [jobCount, setJobCount] = useState(0);
+  const [jobCount, setjobCount] = useState(0);
   const [details, setDetails] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [allHires, setAllHires] = useState(0);
@@ -24,6 +24,14 @@ const ViewProfilescreen = ({ route }) => {
     });
     return unsubscribe;
   }, [post._id]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(query(collection(firestoreDB, 'AllPostings'), where('User._id', '==', post.user._id)), (querySnapshot) => {
+      setjobCount(querySnapshot.docs.length);
+      setIsLoading(false);
+    });
+    return unsubscribe;
+  }, [post.user._id]);
 
   useLayoutEffect(() => {
     const msgQuery = query(collection(firestoreDB, 'users', post.user._id, 'details'));
@@ -81,7 +89,7 @@ const ViewProfilescreen = ({ route }) => {
         </View>
 
         <View className="mt-4">
-          <Text className="text-base">{details.length > 0 ? details[0].About : ''}</Text>
+          <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
         </View>
 
         <View className="mt-4 " style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
