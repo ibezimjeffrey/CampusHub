@@ -83,12 +83,19 @@ const value3 = `${day}/${month}`;
 
     if (!value.trim() || !value1.trim()|| !value2.trim()|| !value3.trim()|| !value4.trim() ) {
       alert('Please fill in all details');
+      setIsApplying(false);
       return;
     }
 
     if (wordCount > 3) {
       alert('Edit Job Title');
+      setIsApplying(false);
       return;
+    }
+
+    if(!(!otherJob.trim()) && !(!value.trim())){
+      setotherJob("")
+      
     }
 
     const id = `${user._id}-${Date.now()}`; 

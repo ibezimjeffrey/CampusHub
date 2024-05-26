@@ -10,7 +10,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { firebaseAuth, firestoreDB } from '../config/firebase.config';
 import { doc, setDoc } from 'firebase/firestore';
 import {sendEmailVerification} from 'firebase/auth';
-import Mailer from 'react-native-mail';
+
 
 const Signupscreen = () => {
   const screenwidth = Math.round(Dimensions.get("window").width);
@@ -30,27 +30,7 @@ const Signupscreen = () => {
   };
 
 
-  const sendVerificationEmail = (email) => {
-    Mailer.mail({
-      subject: 'Verify Your Email Address',
-      recipients: [email],
-      body: `
-        <p>Hello,</p>
-        <p>Welcome to our app! To complete your registration, please verify your email address by clicking the link below:</p>
-        <p><a href="${verificationLink}">Verify Email Address</a></p>
-        <p>If you didn't sign up for our app, you can ignore this email.</p>
-        <p>Thanks,</p>
-        <p>Your App Team</p>
-      `,
-      isHTML: true,
-    }, (error, event) => {
-      if (error) {
-        console.error('Error:', error);
-      } else {
-        console.log('Email sent successfully!');
-      }
-    });
-  };
+  
 
   const checkPasswordStrength = (password) => {
     if (password.length >= 8) {
@@ -98,7 +78,7 @@ const Signupscreen = () => {
         };
 
        
-        await sendEmailVerification(userCred.user, actionCodeSettings);
+       
 
         await setDoc(doc(firestoreDB, "users", userCred?.user.uid), data);
         navigation.replace("Aboutscreen");

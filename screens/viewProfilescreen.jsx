@@ -16,10 +16,11 @@ const ViewProfilescreen = ({ route }) => {
   const [details, setDetails] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [allHires, setAllHires] = useState(0);
-
+  const [isApplying, setIsApplying] = useState(false);
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', post.user._id)), (querySnapshot) => {
       setAllHires(querySnapshot.docs.length);
+      setIsLoading(false);
     });
     return unsubscribe;
   }, [post._id]);
@@ -45,10 +46,16 @@ const ViewProfilescreen = ({ route }) => {
       <ScrollView className="p-4">
         <View className="flex-row items-center justify-between pt-4">
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialIcons name="chevron-left" size={32} color="blue" />
+            <MaterialIcons name="chevron-left" size={32} color="#268290" />
           </TouchableOpacity>
         </View>
-        
+        {isLoading ? (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <ActivityIndicator size="large" color="#268290" />
+            </View>
+             ) : (
+              <>
+           
         <View className="items-center mt-8">
           <View className="rounded-full p-1">
             <Image source={{ uri: post.user.profilePic }} resizeMode="cover" style={{ width: 100, height: 100 }} />
@@ -77,7 +84,7 @@ const ViewProfilescreen = ({ route }) => {
           <Text className="text-base">{details.length > 0 ? details[0].About : ''}</Text>
         </View>
 
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        <View className="mt-4 " style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
 
   {details.length > 0 && typeof details[0].Skills === 'string' && (
     details[0].Skills.split(', ').map((skill, index) => (
@@ -87,6 +94,32 @@ const ViewProfilescreen = ({ route }) => {
     ))
   )}
 </View>
+
+
+              <View className="w-full flex-row items-center ">
+              <Text className="mt-5 font-semibold">Portfolio</Text>
+              
+
+              </View>
+
+
+<View className=" left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+  {details.length > 0 && details[0].image && Array.isArray(details[0].image) && details[0].image.length > 0 ? (
+    details[0].image.map((imageUri, index) => (
+      <Image className="border-2 rounded-3xl border-primaryButton" key={index} resizeMode="cover" style={{ width: 100, height: 100, margin: 5 }} source={{ uri: imageUri }} />
+    ))
+  ) : (
+    <View className="  w-full items-center">
+    <Text className="font-extralight italic" style={{ fontSize: 16 }}>Nothing on portfolio</Text>
+    
+  </View>
+  )}
+</View>
+
+</>
+          )}
+
+
       </ScrollView>
     </SafeAreaView>
   );

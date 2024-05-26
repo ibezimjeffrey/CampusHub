@@ -6,17 +6,56 @@ import { addDoc, collection, doc } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 import { useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'react-native';
 
 const Aboutscreen = () => {
   const [isApplying, setIsApplying] = useState(false); 
   const [value, setvalue] = useState(""); 
   const [statevalue, setstatevalue] = useState("")
+  const [Imagee, setImagee] = useState(null)
+  const [selectedImages, setSelectedImages] = useState([]);
+
 
   const [value1, setvalue1] = useState(""); 
   const [statevalue1, setstatevalue1] = useState("")
 
   const [value2, setvalue2] = useState(""); 
   const [statevalue2, setstatevalue2] = useState("")
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Permission to access the camera roll is required!');
+      return;
+    }
+  
+    let selecting = true;
+    let images = [];
+  
+    
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        images.push(result.assets[0].uri);
+      } else {
+        selecting = false;
+      }
+    
+  
+    if (images.length > 0) {
+      setSelectedImages(prevImages => [...prevImages, ...images]);
+      alert("Images successfully added");
+    } else {
+      console.log('Image selection canceled');
+    }
+  };
+  
 
   
   const handleTextChange = (text) => {
@@ -47,12 +86,14 @@ const Aboutscreen = () => {
 
     if (!value.trim() || !value1.trim() || !value2.trim()) {
       alert('Please fill in all details');
+      setIsApplying(false);
       return;
     }
 
     let wordCount = value1.trim().split(/\s+/).filter(word => word.length > 0).length;
     if (wordCount < 15) {
       alert('Minimum of 15 words');
+      setIsApplying(false);
       return;
     }
 
@@ -63,6 +104,7 @@ const Aboutscreen = () => {
       Hostel: value,
       About: value1,
       Skills: skillsArray.join(', '),
+      image: selectedImages
     };
 
     try {
@@ -117,7 +159,7 @@ const Aboutscreen = () => {
               value={value1}
               multiline={true}
             />
-            <Text className="left-5 text-base">What are your skills</Text>
+            <Text className="left-5 text-base" >What are your skills</Text>
             <TextInput
               className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}
               placeholder= "Coding, Graphic Design..."
@@ -125,6 +167,44 @@ const Aboutscreen = () => {
               value={value2}
               multiline={true}
             />
+
+<TouchableOpacity 
+  style={{
+    width: 200,
+    height: 200,
+    borderColor: '#268290',
+    borderWidth: 2,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  }} 
+  className="self-center"
+  onPress={pickImage} 
+>
+  <View>
+    <Text style={{ color: '#268290', textAlign: 'center', marginBottom: 10 }} className="text-base">
+      Upload Images of your work
+    </Text>
+  </View>
+</TouchableOpacity>
+
+
+            
+<View className="left-5 flex-row flex-wrap">
+            {selectedImages.map((imageUri, index) => (
+              <Image key={index} resizeMode="cover" style={{ width: 100, height: 100, margin: 5 }} source={{ uri: imageUri }} />
+            ))}
+          </View>
+           
+            
+
             <TouchableOpacity 
               onPress={handleAbout}
               className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
