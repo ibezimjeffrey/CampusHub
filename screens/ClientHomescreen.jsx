@@ -94,7 +94,7 @@ const ClientHomescreen = () => {
 
           <View className="flex-row flex justify-between items-end">
 
-          <View className="top-11 bottom-11 mb-11">
+          <View >
             <Text className="text-2xl p-2 font-thin text-black"> </Text>
           </View>
 

@@ -46,6 +46,7 @@ const Loginscreen = () => {
 
           if (err.message.includes("invalid-credential"))
           {
+            setIsApplying(false);
             setalert(true)
             setalertMessage("Wrong credentials")
            
@@ -53,6 +54,7 @@ const Loginscreen = () => {
 
           if (err.message.includes("network-request-failed"))
           {
+            setIsApplying(false);
             setalert(true)
             setalertMessage("Check Internet Connection")
            
@@ -63,6 +65,7 @@ const Loginscreen = () => {
           }
 
           else if (err.message.includes("user-not-found")) {
+            setIsApplying(false);
             setalert(true)
           setalertMessage("User not found")
           
@@ -75,12 +78,15 @@ const Loginscreen = () => {
           }
 
           else{
+
             setalert(true)
+            setIsApplying(false);
             setalertMessage("Invalid Email Address")
 
           }
 
           setInterval(() => {
+            setIsApplying(false);
             setalert(false)
             
           }, 2000);

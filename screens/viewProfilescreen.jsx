@@ -17,6 +17,19 @@ const ViewProfilescreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [allHires, setAllHires] = useState(0);
   const [isApplying, setIsApplying] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [portfolioImages, setPortfolioImages] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(query(collection(firestoreDB, 'portfolio'), where('user._id', '==', post.user._id)), (querySnapshot) => {
+      const images = querySnapshot.docs.map(doc => doc.data().image).flat();
+      setPortfolioImages(images);
+      console.log(images.length > 0); 
+    });
+    return unsubscribe;
+  }, [post._id]);
+  
+
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', post.user._id)), (querySnapshot) => {
       setAllHires(querySnapshot.docs.length);
@@ -111,18 +124,55 @@ const ViewProfilescreen = ({ route }) => {
               </View>
 
 
-<View className=" left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+
+              <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
   {details.length > 0 && details[0].image && Array.isArray(details[0].image) && details[0].image.length > 0 ? (
-    details[0].image.map((imageUri, index) => (
-      <Image className="border-2 rounded-3xl border-primaryButton" key={index} resizeMode="cover" style={{ width: 100, height: 100, margin: 5 }} source={{ uri: imageUri }} />
-    ))
+    <>
+      {details[0].image.map((imageUri, index) => (
+        <Image
+          className="border-2 rounded-3xl border-primaryButton"
+          key={index}
+          resizeMode="cover"
+          style={{ width: 100, height: 100, margin: 5 }}
+          source={{ uri: imageUri }}
+        />
+      ))}
+      {/* Render portfolio images next to details collection images */}
+      {portfolioImages.length > 0 && (
+        portfolioImages.map((imageUri, index) => (
+          <Image
+            className="border-2 rounded-3xl border-primaryButton"
+            key={index}
+            resizeMode="cover"
+            style={{ width: 100, height: 100, margin: 5 }}
+            source={{ uri: imageUri }}
+          />
+        ))
+      )}
+    </>
   ) : (
-    <View className="  w-full items-center">
-    <Text className="font-extralight italic" style={{ fontSize: 16 }}>Nothing on portfolio</Text>
-    
-  </View>
+    portfolioImages.length > 0 ? (
+      portfolioImages.map((imageUri, index) => (
+        <Image
+          className="border-2 rounded-3xl border-primaryButton"
+          key={index}
+          resizeMode="cover"
+          style={{ width: 100, height: 100, margin: 5 }}
+          source={{ uri: imageUri }}
+        />
+      ))
+    ) : (
+      <View className='right-5 w-full justify-center items-center'>
+        <Text className="italic font-extralight">Nothing on portfolio</Text>
+      </View>
+    )
   )}
 </View>
+
+
+
+
+
 
 </>
           )}

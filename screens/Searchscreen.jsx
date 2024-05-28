@@ -47,29 +47,34 @@ const Searchscreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, padding: 20 }}>
       <View>
-        <View style={{ flexDirection: 'row' }}>
-          <View className="w-[325px] top-4 justify-between px-4 py-2">
-            <View className="border-gray-400" style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 8, padding: 10 }}>
-              <Entypo name='magnifying-glass' size={24} style={{ marginRight: 10 }} />
-              <TextInput
-                style={{ flex: 1 }}
-                placeholder="Search job title"
-                value={searchTerm}
-                keyboardType='web-search'
-                onSubmitEditing={() => {
-                  if (searchTerm.trim() !== '') { // Check if searchTerm is not empty
-                    handleSearch(); // Call handleSearch only if searchTerm is not empty
-                  }
-                }}
-                onChangeText={(text) => setSearchTerm(text)}
-                onKeyPress={handleKeyPress} // Call handleKeyPress on key press
-              />
-            </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+  <View style={{ flex: 1 }}>
+    <View className="w-[325px] top-4 left-4" style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 8, padding: 10 }}>
+      <Entypo name='magnifying-glass' size={24} style={{ marginRight: 10 }} />
+      <TextInput
+        style={{ flex: 1 }}
+        placeholder="Search job title"
+        value={searchTerm}
+        keyboardType='web-search'
+        onSubmitEditing={() => {
+          if (searchTerm.trim() !== '') {
+            handleSearch();
+          }
+        }}
+        onChangeText={(text) => setSearchTerm(text)}
+        onKeyPress={handleKeyPress}
+      />
+    </View>
+  </View>
+  <View className=" right-3 top-3">
+  <TouchableOpacity onPress={clearSearch}>
+    <Text className="text-xl" style={{ color: '#268290' }}>Clear</Text>
+  </TouchableOpacity>
 
-            <TouchableOpacity onPress={clearSearch}>
-              <Text style={{ color: 'red' }}>Clear</Text>
-            </TouchableOpacity>
-          </View>
+  </View>
+  
+
+
         </View>
 
         {searchPerformed && !isLoading && searchResults.length === 0 && (
@@ -83,7 +88,7 @@ const Searchscreen = () => {
         ) : searchResults.length > 0 ? (
           <ScrollView className="h-full">
             {searchResults.map((post, index) => (
-              <View className="rounded-xl w-[350px] flex py-2" key={index}>
+              <View className="rounded-xl w-[350px] flex py-2 top-5" key={index}>
                 <TouchableOpacity onPress={() => { navigation.navigate("DetailsScreen", { post }) }}>
                   <BlurView style={{ left: 30 }} className=" bg-slate-300 px-4 py-1 rounded-xl w-[350px] h-[150px] border-1 relative shadow " tint='extraLight' intensity={40} >
                     <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{ alignSelf: 'flex-end' }} />

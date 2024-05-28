@@ -238,6 +238,7 @@ const value3 = `${day}/${month}`;
   <Picker.Item label="EDC" value="EDC" />
   <Picker.Item label="Pearl" value="Pearl" />
   <Picker.Item label="Trinity" value="Trinity" />
+  <Picker.Item label="Asther Hall" value="Asther Hall" />
   <Picker.Item label="Cooperative Queens" value="Cooperative Queens" />
   <Picker.Item label="Redwood" value="Redwood" />
   <Picker.Item label="SST" value="SST" />
@@ -262,7 +263,7 @@ const value3 = `${day}/${month}`;
               />
             </View>
 
-            <TouchableOpacity onPress={handlePost} className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
+            <TouchableOpacity onPress={handlePost} className="w-[360px] left-5 px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
             {isApplying ? (
             <ActivityIndicator className="py-3" size="small" color="#ffffff" />
           ) : (
