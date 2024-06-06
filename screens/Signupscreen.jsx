@@ -81,10 +81,12 @@ const Signupscreen = () => {
        
 
         await setDoc(doc(firestoreDB, "users", userCred?.user.uid), data);
+        await sendEmailVerification(userCred.user)
+        alert('Email verification link sent');
         navigation.replace("Aboutscreen");
       } catch (error) {
         setIsApplying(false);
-        Alert.alert(error.message);
+        Alert.alert("Email already in use");
       }
     }
   };

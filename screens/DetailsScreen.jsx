@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, SafeAreaView, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
-import { deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { firestoreDB } from '../config/firebase.config';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -10,10 +10,28 @@ const DetailsScreen = ({ route }) => {
   const { post } = route.params;
   const user = useSelector((state) => state.user.user);
   const [isUserPosted, setIsUserPosted] = useState(post.User._id === user._id);
-  const room_id = `${user._id}-${Date.now()}-${new Date().getSeconds()}`;
-  const [isApplying, setIsApplying] = useState(false); 
+  const room_id = `${user._id}-${post._id}`;
+  const [isApplying, setIsApplying] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
 
   const navigation = useNavigation();
+  const identifier =  `${user._id}-${post.User._id}-${post._id}`;
+
+  useEffect(() => {
+    const checkIfApplied = async () => {
+      const chatQuery = query(
+        collection(firestoreDB, 'chats'),
+        where('idRoom', '==', room_id)
+      );
+
+      const querySnapshot = await getDocs(chatQuery);
+      if (!querySnapshot.empty) {
+        setHasApplied(true);
+      }
+    };
+
+    checkIfApplied();
+  }, [user._id, room_id]);
 
   const othersideview = async () => {
     const newid = `${post.User._id}-${Date.now()}`;
@@ -50,7 +68,21 @@ const DetailsScreen = ({ route }) => {
   };
 
   const createNewChat = async () => {
-    setIsApplying(true); 
+    setIsApplying(true);
+
+    // Check if the user has already applied
+    const chatQuery = query(
+      collection(firestoreDB, 'chats'),
+      where('idRoom', '==', room_id)
+    );
+
+    const querySnapshot = await getDocs(chatQuery);
+    if (!querySnapshot.empty) {
+      setIsApplying(false);
+      alert("You have already applied for this job.");
+      return;
+    }
+
     const id = `${user._id}-${Date.now()}`;
 
     const _doc = {
@@ -65,10 +97,10 @@ const DetailsScreen = ({ route }) => {
 
     try {
       await setDoc(doc(firestoreDB, "chats", id), _doc);
-      setIsApplying(false); 
+      setIsApplying(false);
       othersideview();
     } catch (err) {
-      setIsApplying(false); 
+      setIsApplying(false);
       alert("Error: " + err);
     }
   };
@@ -108,13 +140,19 @@ const DetailsScreen = ({ route }) => {
       </View>
 
       {!isUserPosted ? (
-        <TouchableOpacity className="bg-primaryButton py-3 rounded-lg mt-5 mx-4 items-center" onPress={createNewChat}>
-          {isApplying ? (
-            <ActivityIndicator size="small" color="#ffffff" />
-          ) : (
-            <Text className="text-white font-bold">Apply Now</Text>
-          )}
-        </TouchableOpacity>
+        hasApplied ? (
+          <View className="bg-gray-300 py-3 rounded-lg mt-5 mx-4 items-center">
+            <Text className="text-white font-bold">Already Applied</Text>
+          </View>
+        ) : (
+          <TouchableOpacity className="bg-primaryButton py-3 rounded-lg mt-5 mx-4 items-center" onPress={createNewChat}>
+            {isApplying ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text className="text-white font-bold">Apply Now</Text>
+            )}
+          </TouchableOpacity>
+        )
       ) : (
         <TouchableOpacity className="bg-red-500 py-3 rounded-2xl mt-5 mx-4 items-center" onPress={() => removePost(post.id)}>
           {isApplying ? (

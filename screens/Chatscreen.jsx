@@ -13,11 +13,14 @@ const Chatscreen = ({ route }) => {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading1, setIsLoading1] = useState(true);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [isHired, setIsHired] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
+
+  
   useLayoutEffect(() => {
     const msgQuery = query(
       collection(firestoreDB, 'messages'),
@@ -39,6 +42,7 @@ const Chatscreen = ({ route }) => {
       try {
         const statusSnapshot = await getDocs(query(collection(firestoreDB, 'Status'), where('post._id', '==', post._id)));
         setIsHired(!statusSnapshot.empty);
+        setIsLoading1(false)
         setIsLoading(false);
       } catch (error) {
         console.error('Error checking hired status:', error);
@@ -151,79 +155,60 @@ const Chatscreen = ({ route }) => {
       
       <View className="flex-1">
         
-        <BlurView className="w-full bg-slate-300 px-4 py-1 " tint='extraLight' intensity={40} >
-          
-          <View className="flex-row items-center justify-between w-full py-12 px-4 ">
-            
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <MaterialIcons name="chevron-left" size={32} color={"#fbfbfb"} />
-            </TouchableOpacity>
+      <BlurView className="w-full bg-slate-300 px-4 py-1" tint='extraLight' intensity={40}>
+  <View className="flex-row items-center justify-between w-full py-12 px-4">
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+      <MaterialIcons name="chevron-left" size={32} color={"#fbfbfb"} />
+    </TouchableOpacity>
 
-            <View className="flex-row items-center justify-center space-x-3">
-              
-
-            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-  <TouchableOpacity onPress={viewProfile}>
-
-    <View >
-      <Image source={{ uri: post.user.profilePic }} resizeMode="contain" className="rounded-full w-12 h-12" />
-    </View>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={viewProfile}>
-
-    <View >
-      <Text className="text-black text-base font-light capitalize shadow">
-        {post.user.fullName} 
-      </Text>
-      
-      
-    </View>
-  </TouchableOpacity>
-
-  
-</View>
-
-
-
-
-
-
-
-              {user._id !== post.index1 && (
-                <>
-                  {isHired ? (
-                    <TouchableOpacity onPress={() => {}}>
-                      <View style={{left:70}} className=" relative">
-                        <View style={{backgroundColor:"#b8ccee"}} className="border-1 left-7 mr-8 border-emerald-950 rounded-lg p-4">
-                          <Text className="font-bold text-zinc-950">HIRED</Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={Employ}>
-                      <View style={{left:70}} className=" relative">
-                        <View className="border-1 left-7 bg-red-400 border-emerald-950 mr-8 rounded-lg p-4">
-                          <Text className="font-bold text-zinc-950">HIRE</Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                </>
-              )}
-              
-
-
-              
-            </View>
-
-            <View className="flex-row items-center justify-center space-x-3">
-            
-              
-
-             
-            </View>
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+        <TouchableOpacity onPress={viewProfile}>
+          <View>
+            <Image source={{ uri: post.user.profilePic }} resizeMode="contain" className="rounded-full  w-12 h-12" />
           </View>
-        </BlurView>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={viewProfile}>
+          <View>
+            <Text className="text-black text-base font-light capitalize shadow">
+              {post.user.fullName}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </View>
+
+    <View style={{ alignItems: 'flex-end' }}>
+      {isLoading1 ? (
+        <View>
+          </View>
+      ) : (
+        user._id !== post.index1 && (
+          <>
+            {isHired ? (
+              <TouchableOpacity onPress={() => { }}>
+                <View style={{ left: 20 }} className="relative">
+                  <View style={{ backgroundColor: "#b8ccee" }} className="border-1 left-7 mr-8 border-emerald-950 rounded-lg p-4">
+                    <Text className="font-bold text-zinc-950">HIRED</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={Employ}>
+                <View style={{ left: 20 }} className="relative">
+                  <View className="border-1 left-7 bg-red-400 border-emerald-950 mr-8 rounded-lg p-4">
+                    <Text className="font-bold text-zinc-950">HIRE</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+          </>
+        )
+      )}
+    </View>
+  </View>
+</BlurView>
+
 
         <View className="w-full bg-gray-100 px-4 py-6 flex-1 -mt-10">
           <KeyboardAvoidingView

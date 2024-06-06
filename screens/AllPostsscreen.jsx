@@ -62,7 +62,7 @@ const AllPostsscreen = ({route}) => {
     
     <View>
         <ScrollView className="h-full"> 
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigate.goBack()}>
               <MaterialIcons name="chevron-left" size={32} color={"#000000"} />
             </TouchableOpacity>
         <View className="items-center">

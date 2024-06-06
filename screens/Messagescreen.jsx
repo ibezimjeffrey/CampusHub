@@ -45,19 +45,40 @@ const Messagescreen = () => {
     const isCurrentUserRoomCreator = currentUser._id === room.index;
   
     return (
-      <TouchableOpacity className="border-primaryButton border rounded-xl mt-2" onPress={() => navigation.navigate("Chatscreen", { post: room })} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 10 }}>
-        <View style={{ width: 60, height: 60, justifyContent: "center", alignItems: "center" }}>
-          <Image source={{ uri: isCurrentUserRoomCreator ? room.user.profilePic : room.profilePic }} resizeMode="contain" style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 1, borderColor: "#000000" }} />
-        </View>
-        <View>
-          
-        </View>
-        <View style={{ flex: 1, justifyContent: "flex-start", marginLeft: 10 }}>
-          <Text className="capitalize" style={{ fontSize: 16, color: "#333" }}>{room.jobName} Job</Text>
-        </View>
-       
+      <TouchableOpacity 
+  className="border-primaryButton border rounded-xl mt-2 shadow-md" 
+  onPress={() => navigation.navigate("Chatscreen", { post: room })} 
+  style={{ 
+    flexDirection: "row", 
+    alignItems: "center", 
+    justifyContent: "space-between", 
+    paddingVertical: 10, 
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 20
+  }}
+>
+  <View style={{ width: 60, height: 60, justifyContent: "center", alignItems: "center", backgroundColor: "#F0F0F0", borderRadius: 30 }}>
+    <Image 
+      source={{ uri: isCurrentUserRoomCreator ? room.user.profilePic : room.profilePic }} 
+      resizeMode="contain" 
+      style={{ width: 50, height: 50, borderRadius: 25 }} 
+    />
+  </View>
+  
+  <View style={{ flex: 1, marginLeft: 20 }}>
+    <View style={{ borderBottomWidth: 2, borderColor: "#D3D3D3" }}>
+      <Text style={{ fontSize: 18, color: "#333", fontWeight: "300", textTransform: "capitalize" }}>
+        {isCurrentUserRoomCreator ? room.jobName : "Babby"} Job
+      </Text>
+    </View>
+    <View style={{ borderTopWidth: 2, borderColor: "#D3D3D3", paddingTop: 5 }}>
+      <Text style={{ fontSize: 16, color: "#666", textTransform: "capitalize" }}>
+        {isCurrentUserRoomCreator ? room.user.fullName : "Babby"}
+      </Text>
+    </View>
+  </View>
+</TouchableOpacity>
 
-      </TouchableOpacity>
     );
   };
   

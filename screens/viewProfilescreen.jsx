@@ -12,7 +12,7 @@ const ViewProfilescreen = ({ route }) => {
   const { post } = route.params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [jobCount, setjobCount] = useState(0);
+  const [jobCount, setJobCount] = useState(0);
   const [details, setDetails] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [allHires, setAllHires] = useState(0);
@@ -24,11 +24,9 @@ const ViewProfilescreen = ({ route }) => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'portfolio'), where('user._id', '==', post.user._id)), (querySnapshot) => {
       const images = querySnapshot.docs.map(doc => doc.data().image).flat();
       setPortfolioImages(images);
-      console.log(images.length > 0); 
     });
     return unsubscribe;
   }, [post._id]);
-  
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', post.user._id)), (querySnapshot) => {
@@ -40,7 +38,7 @@ const ViewProfilescreen = ({ route }) => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'AllPostings'), where('User._id', '==', post.user._id)), (querySnapshot) => {
-      setjobCount(querySnapshot.docs.length);
+      setJobCount(querySnapshot.docs.length);
       setIsLoading(false);
     });
     return unsubscribe;
@@ -71,113 +69,73 @@ const ViewProfilescreen = ({ route }) => {
           </TouchableOpacity>
         </View>
         {isLoading ? (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-              <ActivityIndicator size="large" color="#268290" />
-            </View>
-             ) : (
-              <>
-           
-        <View className="items-center mt-8">
-          <View className="rounded-full p-1">
-            <Image source={{ uri: post.user.profilePic }} resizeMode="cover" style={{ width: 100, height: 100 }} />
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <ActivityIndicator size="large" color="#268290" />
           </View>
-
-          <Text className="text-2xl capitalize font-bold pt-4">{post.user.fullName}</Text>
-          <Text className="text-base font-bold text-gray-500">{post.user.email}</Text>
-        </View>
-
-        <View className="flex-row justify-between mt-4">
-          <View className="items-center">
-            <Text className="text-2xl">{jobCount}</Text>
-            <Text className="text-gray-500">Jobs posted</Text>
-          </View>
-          <View className="items-center">
-            <Text className="text-2xl">{allHires}</Text>
-            <Text className="text-gray-500">Hires</Text>
-          </View>
-        </View>
-
-        <View className="mt-4">
-          <Text className="text-base text-gray-500">Course of study: <Text className="text-base font-bold">{details.length > 0 ? details[0].Hostel : ''}</Text></Text>
-        </View>
-
-        <View className="mt-4">
-          <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
-        </View>
-
-        <View className="mt-4 " style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-
-  {details.length > 0 && typeof details[0].Skills === 'string' && (
-    details[0].Skills.split(', ').map((skill, index) => (
-      <View key={index} style={{ borderColor: "#268290", borderWidth: 1, borderRadius: 20, padding: 8, margin: 4 }}>
-        <Text className="capitalize">{skill}</Text>
-      </View>
-    ))
-  )}
-</View>
-
-
-              <View className="w-full flex-row items-center ">
-              <Text className="mt-5 font-semibold">Portfolio</Text>
-              
-
+        ) : (
+          <>
+            <View className="items-center mt-8">
+              <View className="rounded-full p-1">
+                <Image source={{ uri: post.user.profilePic }} resizeMode="cover" style={{ width: 100, height: 100 }} />
               </View>
-
-
-
-              <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
-  {details.length > 0 && details[0].image && Array.isArray(details[0].image) && details[0].image.length > 0 ? (
-    <>
-      {details[0].image.map((imageUri, index) => (
-        <Image
-          className="border-2 rounded-3xl border-primaryButton"
-          key={index}
-          resizeMode="cover"
-          style={{ width: 100, height: 100, margin: 5 }}
-          source={{ uri: imageUri }}
-        />
-      ))}
-      {/* Render portfolio images next to details collection images */}
-      {portfolioImages.length > 0 && (
-        portfolioImages.map((imageUri, index) => (
-          <Image
-            className="border-2 rounded-3xl border-primaryButton"
-            key={index}
-            resizeMode="cover"
-            style={{ width: 100, height: 100, margin: 5 }}
-            source={{ uri: imageUri }}
-          />
-        ))
-      )}
-    </>
-  ) : (
-    portfolioImages.length > 0 ? (
-      portfolioImages.map((imageUri, index) => (
-        <Image
-          className="border-2 rounded-3xl border-primaryButton"
-          key={index}
-          resizeMode="cover"
-          style={{ width: 100, height: 100, margin: 5 }}
-          source={{ uri: imageUri }}
-        />
-      ))
-    ) : (
-      <View className='right-5 w-full justify-center items-center'>
-        <Text className="italic font-extralight">Nothing on portfolio</Text>
-      </View>
-    )
-  )}
-</View>
-
-
-
-
-
-
-</>
-          )}
-
-
+              <Text className="text-2xl capitalize font-bold pt-4">{post.user.fullName}</Text>
+              <Text className="text-base font-bold text-gray-500">{post.user.email}</Text>
+            </View>
+            <View className="flex-row justify-between mt-4">
+              <View className="items-center">
+                <Text className="text-2xl">{jobCount}</Text>
+                <Text className="text-gray-500">Jobs posted</Text>
+              </View>
+              <View className="items-center">
+                <Text className="text-2xl">{allHires}</Text>
+                <Text className="text-gray-500">Hires</Text>
+              </View>
+            </View>
+            <View className="mt-4">
+              <Text className="text-base text-gray-500">Course of study: <Text className="text-base font-bold">{details.length > 0 ? details[0].Hostel : ''}</Text></Text>
+            </View>
+            <View className="mt-4">
+              <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
+            </View>
+            <View className="mt-4" style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              {details.length > 0 && typeof details[0].Skills === 'string' && (
+                details[0].Skills.split(', ').map((skill, index) => (
+                  <View key={index} style={{ borderColor: "#268290", borderWidth: 1, borderRadius: 20, padding: 8, margin: 4 }}>
+                    <Text className="capitalize">{skill}</Text>
+                  </View>
+                ))
+              )}
+            </View>
+            <View className="w-full flex-row items-center">
+              <Text className="mt-5 font-semibold">Portfolio</Text>
+            </View>
+            <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+              {details.length > 0 && details[0].images && Array.isArray(details[0].images) && details[0].images.length > 0 && details[0].images.map((imageUri, index) => (
+                <Image
+                  className="border-2 rounded-3xl border-primaryButton"
+                  key={index}
+                  resizeMode="cover"
+                  style={{ width: 100, height: 100, margin: 5 }}
+                  source={{ uri: imageUri }}
+                />
+              ))}
+              {portfolioImages.length > 0 && portfolioImages.map((imageUri, index) => (
+                <Image
+                  className="border-2 rounded-3xl border-primaryButton"
+                  key={index}
+                  resizeMode="cover"
+                  style={{ width: 100, height: 100, margin: 5 }}
+                  source={{ uri: imageUri }}
+                />
+              ))}
+              {details.length === 0 && portfolioImages.length === 0 && (
+                <View className='right-5 w-full justify-center items-center'>
+                  <Text className="italic font-extralight">Nothing on portfolio</Text>
+                </View>
+              )}
+            </View>
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

@@ -18,17 +18,42 @@ const Profilescreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isApplying, setIsApplying] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
+  
   const [portfolioImages, setPortfolioImages] = useState([]);
   const id = `${user._id}-${Date.now()}`; 
-  const sendImage = async (image) => {
-    const newImageMessage = {
-      _id: id,
-      user: user,
-      image: image
-    };
+
+  const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dmtgcnjxv/image/upload';
+  const CLOUDINARY_UPLOAD_PRESET = 'umdj7bkg';
+
+  const sendImage = async (imageUri) => {
+    const formData = new FormData();
+    formData.append('file', {
+      uri: imageUri,
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
     try {
+      const response = await fetch(CLOUDINARY_URL, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const responseData = await response.json();
+      const imageUrl = responseData.secure_url;
+
+      const newImageMessage = {
+        _id: id,
+        user: user,
+        image: imageUrl,
+      };
+
       await addDoc(collection(firestoreDB, "portfolio"), newImageMessage);
+      alert("Images successfully added");
       console.log("Image sent");
     } catch (error) {
       alert('Error sending image: ' + error);
@@ -43,7 +68,6 @@ const Profilescreen = () => {
     });
   };
 
-
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'Status'), where('receipient._id', '==', user._id)), (querySnapshot) => {
       setAllHires(querySnapshot.docs.length);
@@ -53,14 +77,12 @@ const Profilescreen = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'portfolio'), where('user._id', '==', user._id)), (querySnapshot) => {
-      const images = querySnapshot.docs.map(doc => doc.data().image).flat();
+      const images = querySnapshot.docs.map(doc => doc.data().image);
       setPortfolioImages(images);
       console.log(images.length > 0); 
     });
     return unsubscribe;
   }, [user._id]);
-  
-  
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'AllPostings'), where('User._id', '==', user._id)), (querySnapshot) => {
@@ -85,26 +107,23 @@ const Profilescreen = () => {
       Alert.alert('Permission Denied', 'Permission to access the camera roll is required!');
       return;
     }
-  
-    let images = [];
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-  
+
     if (!result.canceled) {
-      images.push(result.assets[0].uri);
-      setSelectedImages(prevImages => [...prevImages, ...images]); // Concatenate new image with existing images
-      alert("Images successfully added");
-      sendImage(result.assets[0].uri);
+      const imageUri = result.assets[0].uri;
+      setSelectedImages(prevImages => [...prevImages, imageUri]);
+      sendImage(imageUri);
     } else {
       console.log('Image selection canceled');
     }
   };
-  
-  
+
   return (
     <SafeAreaView className="flex-1">
       <ScrollView className="p-4">
@@ -172,50 +191,34 @@ const Profilescreen = () => {
             </TouchableOpacity>
 
             <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
-  {details.length > 0 && details[0].image && Array.isArray(details[0].image) && details[0].image.length > 0 ? (
-    <>
-      {details[0].image.map((imageUri, index) => (
-        <Image
-          className="border-2 rounded-3xl border-primaryButton"
-          key={index}
-          resizeMode="cover"
-          style={{ width: 100, height: 100, margin: 5 }}
-          source={{ uri: imageUri }}
-        />
-      ))}
-      {/* Render portfolio images next to details collection images */}
-      {portfolioImages.length > 0 && (
-        portfolioImages.map((imageUri, index) => (
-          <Image
-            className="border-2 rounded-3xl border-primaryButton"
-            key={index}
-            resizeMode="cover"
-            style={{ width: 100, height: 100, margin: 5 }}
-            source={{ uri: imageUri }}
-          />
-        ))
-      )}
-    </>
-  ) : (
-    portfolioImages.length > 0 ? (
-      portfolioImages.map((imageUri, index) => (
-        <Image
-          className="border-2 rounded-3xl border-primaryButton"
-          key={index}
-          resizeMode="cover"
-          style={{ width: 100, height: 100, margin: 5 }}
-          source={{ uri: imageUri }}
-        />
-      ))
-    ) : (
-      <View className='right-5 w-full justify-center items-center'>
-        <Text className="italic font-extralight">Nothing on portfolio</Text>
-      </View>
-    )
-  )}
-</View>
+              {details.length > 0 && details[0].images && Array.isArray(details[0].images) && details[0].images.length > 0 ? (
+                details[0].images.map((imageUri, index) => (
+                  <Image
+                    className="border-2 rounded-3xl border-primaryButton"
+                    key={index}
+                    resizeMode="cover"
+                    style={{ width: 100, height: 100, margin: 5 }}
+                    source={{ uri: imageUri }}
+                  />
+                ))
+              ) : null}
 
-
+              {portfolioImages.length > 0 ? (
+                portfolioImages.map((imageUri, index) => (
+                  <Image
+                    className="border-2 rounded-3xl border-primaryButton"
+                    key={index}
+                    resizeMode="cover"
+                    style={{ width: 100, height: 100, margin: 5 }}
+                    source={{ uri: imageUri }}
+                  />
+                ))
+              ) : (
+                <View className='right-5 w-full justify-center items-center'>
+                  <Text className="italic font-extralight">Nothing on portfolio</Text>
+                </View>
+              )}
+            </View>
           </>
         )}
       </ScrollView>
