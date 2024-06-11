@@ -83,6 +83,8 @@ const DetailsScreen = ({ route }) => {
       return;
     }
 
+  
+
     const id = `${user._id}-${Date.now()}`;
 
     const _doc = {
@@ -103,6 +105,11 @@ const DetailsScreen = ({ route }) => {
       setIsApplying(false);
       alert("Error: " + err);
     }
+  };
+
+  const formatBudget = (budget) => {
+    if (!budget) return '';
+    return budget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   return (
@@ -134,8 +141,8 @@ const DetailsScreen = ({ route }) => {
           <Text className="text-base text-primaryButton mt-1">{post.Type}</Text>
         </View>
         <View className="flex items-center">
-          <MaterialIcons name='attach-money' size={24} color={"#268290"} />
-          <Text className="text-base text-primaryButton mt-1">{post.Budget}</Text>
+          <Text className="" style={{fontSize:24, color:"#268290"}}>₦</Text>
+          <Text className="text-base text-primaryButton">{formatBudget(post.Budget)}</Text>
         </View>
       </View>
 

@@ -72,10 +72,13 @@ const value3 = `${day}/${month}`;
   
 
   const handleTextChange4 = (text) => {
-    setvalue4(text); 
-    setstatevalue4(text); 
+    // Remove non-numeric characters
+    const numericText = text.replace(/[^0-9]/g, '');
+    // Format the number with commas
+    const formattedText = numericText ? Number(numericText).toLocaleString() : '';
+    setvalue4(formattedText);
+    setstatevalue4(formattedText);
   };
-
   let wordCount = otherJob.trim().split(/\s+/).filter(word => word.length > 0).length;
 
   const handlePost = async () => {
@@ -86,6 +89,15 @@ const value3 = `${day}/${month}`;
       setIsApplying(false);
       return;
     }
+
+    const numericBudget = parseInt(value4.replace(/,/g, ''), 10);
+
+    if (numericBudget > 500000) {
+      alert('Budget has to be lower than N1,000,000');
+      setIsApplying(false);
+      return;
+    }
+
 
     if (wordCount > 3) {
       alert('Edit Job Title');
@@ -252,16 +264,21 @@ const value3 = `${day}/${month}`;
             
 
             <Text className=" relative left-5 text-xl">Budget</Text>
-            <View className=" relative bottom-5">
-              <Text style={{ position: 'relative', left: 24,top: 55, color: 'black', fontSize: 16 }}> ₦</Text>
-              <TextInput
-                className="border border-gray-400 rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 "
-                placeholder= "  Amount of money willing to pay"
-                onChangeText={handleTextChange4}
-                value= {value4}
-                keyboardType="numeric"
-              />
-            </View>
+
+            <View className="relative bottom-5 ">
+    <Text style={{ position: 'relative', left: 24, top: 55, color: 'black', fontSize: 16 }}> ₦</Text>
+
+    <TextInput
+      className="border border-gray-400 rounded-2xl w-[360px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5"
+      onChangeText={handleTextChange4}
+      value={value4}
+      keyboardType="numeric"
+    />
+
+
+  </View>
+
+
 
             <TouchableOpacity onPress={handlePost} className="w-[360px] left-5 px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
             {isApplying ? (

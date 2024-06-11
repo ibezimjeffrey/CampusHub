@@ -94,6 +94,12 @@ const ViewProfilescreen = ({ route }) => {
             <View className="mt-4">
               <Text className="text-base text-gray-500">Course of study: <Text className="text-base font-bold">{details.length > 0 ? details[0].Hostel : ''}</Text></Text>
             </View>
+
+            <View className="mt-2">
+            <Text className="mt-5 font-semibold">About {post.user.fullName}</Text>
+
+            </View>
+
             <View className="mt-4">
               <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
             </View>

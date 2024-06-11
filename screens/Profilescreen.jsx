@@ -18,7 +18,7 @@ const Profilescreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isApplying, setIsApplying] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-  
+  const [Finish, setFinish] = useState(true)
   const [portfolioImages, setPortfolioImages] = useState([]);
   const id = `${user._id}-${Date.now()}`; 
 
@@ -80,6 +80,7 @@ const Profilescreen = () => {
       const images = querySnapshot.docs.map(doc => doc.data().image);
       setPortfolioImages(images);
       console.log(images.length > 0); 
+      setFinish(false)
     });
     return unsubscribe;
   }, [user._id]);
@@ -167,6 +168,14 @@ const Profilescreen = () => {
               <Text className="text-base text-gray-500">Course of study: <Text className="font-bold">{details.length > 0 ? details[0].Hostel : ''}</Text></Text>
             </View>
 
+            
+            <View className="mt-2">
+            <Text className="mt-5 font-semibold">About {user.fullName}</Text>
+
+            </View>
+            
+
+
             <View className="mt-4">
               <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
             </View>
@@ -180,7 +189,6 @@ const Profilescreen = () => {
                 ))
               )}
             </View>
-
             <TouchableOpacity onPress={pickImage}>
               <View className="w-full flex-row items-center ">
                 <Text className="mt-5 font-semibold">Portfolio</Text>
@@ -190,35 +198,43 @@ const Profilescreen = () => {
               </View>
             </TouchableOpacity>
 
-            <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
-              {details.length > 0 && details[0].images && Array.isArray(details[0].images) && details[0].images.length > 0 ? (
-                details[0].images.map((imageUri, index) => (
-                  <Image
-                    className="border-2 rounded-3xl border-primaryButton"
-                    key={index}
-                    resizeMode="cover"
-                    style={{ width: 100, height: 100, margin: 5 }}
-                    source={{ uri: imageUri }}
-                  />
-                ))
-              ) : null}
+            {/* Conditional rendering of the activity indicator */}
+            {Finish ? (
+              <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color="#268290" />
+              </View>
+            ) : (
+              <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+                {/* Rendering images */}
+                {details.length > 0 && details[0].images && Array.isArray(details[0].images) && details[0].images.length > 0 ? (
+                  details[0].images.map((imageUri, index) => (
+                    <Image
+                      className="border-2 rounded-3xl border-primaryButton"
+                      key={index}
+                      resizeMode="cover"
+                      style={{ width: 100, height: 100, margin: 5 }}
+                      source={{ uri: imageUri }}
+                    />
+                  ))
+                ) : null}
 
-              {portfolioImages.length > 0 ? (
-                portfolioImages.map((imageUri, index) => (
-                  <Image
-                    className="border-2 rounded-3xl border-primaryButton"
-                    key={index}
-                    resizeMode="cover"
-                    style={{ width: 100, height: 100, margin: 5 }}
-                    source={{ uri: imageUri }}
-                  />
-                ))
-              ) : (
-                <View className='right-5 w-full justify-center items-center'>
-                  <Text className="italic font-extralight">Nothing on portfolio</Text>
-                </View>
-              )}
-            </View>
+                {portfolioImages.length > 0 ? (
+                  portfolioImages.map((imageUri, index) => (
+                    <Image
+                      className="border-2 rounded-3xl border-primaryButton"
+                      key={index}
+                      resizeMode="cover"
+                      style={{ width: 100, height: 100, margin: 5 }}
+                      source={{ uri: imageUri }}
+                    />
+                  ))
+                ) : (
+                  <View className='right-5 w-full justify-center items-center'>
+                    <Text className="italic font-extralight">Nothing on portfolio</Text>
+                  </View>
+                )}
+              </View>
+            )}
           </>
         )}
       </ScrollView>
