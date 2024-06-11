@@ -30,13 +30,7 @@ const Loginscreen = () => {
         const userCred = await signInWithEmailAndPassword(firebaseAuth, email, password);
         if (userCred) {
           await userCred.user.reload();
-          if (!userCred.user.emailVerified) {
-            
-            Alert.alert("Verify your email address");
-            await signOut(firebaseAuth);
-            setIsApplying(false);
-            return;
-          }
+          
 
           console.log("User ID", userCred?.user.uid);
 
