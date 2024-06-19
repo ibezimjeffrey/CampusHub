@@ -78,8 +78,8 @@ const Searchscreen = () => {
         </View>
 
         {searchPerformed && !isLoading && searchResults.length === 0 && (
-          <View >
-            <Text>No jobs available</Text>
+          <View style={{top:300, left:150}} >
+            <Text className="italic font-extralight">No jobs available</Text>
           </View>
         )}
 

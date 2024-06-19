@@ -128,7 +128,7 @@ const DetailsScreen = ({ route }) => {
 
       <View className="px-4 mt-5">
         <Text className="text-2xl text-gray-500 capitalize">{post.JobDetails}</Text>
-        <Text className="text-base mt-2">{post.Description}</Text>
+        <Text className="text-base font-light mt-2">{post.Description}</Text>
       </View>
 
       <View className="flex-row justify-around mt-5">

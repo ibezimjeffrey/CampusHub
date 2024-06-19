@@ -155,7 +155,7 @@ const value3 = `${day}/${month}`;
               Create Post
             </Text>
           </View>
-            <Text className="left-5 text-xl">Job Details</Text>
+            <Text className="left-5 text-xl">Job Title</Text>
             <View className="left-6">
             <Picker
             

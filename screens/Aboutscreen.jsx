@@ -22,6 +22,7 @@ const Aboutscreen = () => {
   const [value2, setValue2] = useState("");
   const [stateValue2, setStateValue2] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
+  const [isUploading, setIsUploading] = useState(false); // New state for tracking image upload
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -74,6 +75,7 @@ const Aboutscreen = () => {
       formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
       try {
+        setIsUploading(true); // Start uploading
         const response = await fetch(CLOUDINARY_URL, {
           method: 'POST',
           body: formData,
@@ -88,6 +90,8 @@ const Aboutscreen = () => {
       } catch (error) {
         console.error('Upload Error: ', error);
         alert('Image upload failed');
+      } finally {
+        setIsUploading(false); // End uploading
       }
     } else {
       console.log('Image selection canceled');
@@ -229,6 +233,7 @@ const Aboutscreen = () => {
                 <Text style={{ color: '#268290', textAlign: 'center', marginBottom: 10 }} className="text-base">
                   Upload Images of your work
                 </Text>
+                {isUploading && <ActivityIndicator size="large" color="#268290" />}
               </View>
             </TouchableOpacity>
 

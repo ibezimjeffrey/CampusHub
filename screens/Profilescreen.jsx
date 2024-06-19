@@ -6,7 +6,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { firebaseAuth, firestoreDB } from '../config/firebase.config';
 import { useNavigation } from '@react-navigation/native';
 import { addDoc, collection, doc, onSnapshot, query, where } from 'firebase/firestore';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Entypo } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 const Profilescreen = () => {
   const navigation = useNavigation();
@@ -14,13 +15,16 @@ const Profilescreen = () => {
   const dispatch = useDispatch();
   const [jobCount, setJobCount] = useState(0);
   const [allHires, setAllHires] = useState(0);
+  const [postings, setPostings] = useState([])
   const [details, setDetails] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isApplying, setIsApplying] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-  const [Finish, setFinish] = useState(true)
+  const [Finish, setFinish] = useState(true);
   const [portfolioImages, setPortfolioImages] = useState([]);
-  const id = `${user._id}-${Date.now()}`; 
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false); // New state for tracking image upload
+  const id = `${user._id}-${Date.now()}`;
 
   const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dmtgcnjxv/image/upload';
   const CLOUDINARY_UPLOAD_PRESET = 'umdj7bkg';
@@ -35,6 +39,7 @@ const Profilescreen = () => {
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
     try {
+      setIsUploading(true); // Start uploading
       const response = await fetch(CLOUDINARY_URL, {
         method: 'POST',
         body: formData,
@@ -57,6 +62,8 @@ const Profilescreen = () => {
       console.log("Image sent");
     } catch (error) {
       alert('Error sending image: ' + error);
+    } finally {
+      setIsUploading(false); // End uploading
     }
   };
 
@@ -102,6 +109,16 @@ const Profilescreen = () => {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    const msgQuery = query(collection(firestoreDB, 'postings'));
+    const unsubscribe = onSnapshot(msgQuery, (QuerySnapshot) => {
+      const upMsg = QuerySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setPostings(upMsg.filter(post => post.User._id === user._id));
+      setPostsLoading(false);
+    });
+    return unsubscribe;
+  }, [user._id]);
+
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -123,6 +140,26 @@ const Profilescreen = () => {
     } else {
       console.log('Image selection canceled');
     }
+  };
+
+  const PostingCard = ({ post }) => {
+    const isCurrentUserPost = post.User._id === user._id;
+
+    return (
+      <View className="rounded-xl right-2 w-[350px] flex py-2">
+        <TouchableOpacity onPress={() => navigation.navigate("DetailsScreen", { post })}>
+          <BlurView style={{left:30}} className=" bg-slate-300 px-4 py-1 rounded-xl w-[350px] h-[150px] border-1 relative shadow " tint='extraLight' intensity={40} >
+            <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{ alignSelf:'flex-end' }} />
+            <Text className="text-black text-2xl p-2 capitalize font-extralight absolute top-10">{post.JobDetails}</Text>
+            <Text style={{ top: 20 }} className="text-gray-500 p-2 capitalize text-xl absolute">
+              {post.Location}
+            </Text>
+            <Text className="text-primaryButton  capitalize font-thin text-xl absolute bottom-2 left-2">{post.Type}</Text>
+            <Text className="text-black font-thin capitalize text-base absolute bottom-2 right-2">Fixed Price / ₦{post.Budget}</Text>
+          </BlurView>
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   return (
@@ -168,13 +205,9 @@ const Profilescreen = () => {
               <Text className="text-base text-gray-500">Course of study: <Text className="font-bold">{details.length > 0 ? details[0].Hostel : ''}</Text></Text>
             </View>
 
-            
             <View className="mt-2">
-            <Text className="mt-5 font-semibold">About {user.fullName}</Text>
-
+              <Text className="mt-5 font-semibold">About {user.fullName}</Text>
             </View>
-            
-
 
             <View className="mt-4">
               <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
@@ -189,6 +222,7 @@ const Profilescreen = () => {
                 ))
               )}
             </View>
+
             <TouchableOpacity onPress={pickImage}>
               <View className="w-full flex-row items-center ">
                 <Text className="mt-5 font-semibold">Portfolio</Text>
@@ -198,14 +232,12 @@ const Profilescreen = () => {
               </View>
             </TouchableOpacity>
 
-            {/* Conditional rendering of the activity indicator */}
-            {Finish ? (
+            {isUploading ? (
               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <ActivityIndicator size="large" color="#268290" />
               </View>
             ) : (
               <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
-                {/* Rendering images */}
                 {details.length > 0 && details[0].images && Array.isArray(details[0].images) && details[0].images.length > 0 ? (
                   details[0].images.map((imageUri, index) => (
                     <Image
@@ -228,13 +260,34 @@ const Profilescreen = () => {
                       source={{ uri: imageUri }}
                     />
                   ))
-                ) : (
+                ) : null}
+
+                {(!details.length || !(details[0].images && details[0].images.length > 0)) && portfolioImages.length === 0 ? (
                   <View className='right-5 w-full justify-center items-center'>
                     <Text className="italic font-extralight">Nothing on portfolio</Text>
                   </View>
-                )}
+                ) : null}
               </View>
             )}
+
+            <View className="mt-4">
+              <Text className="font-semibold">My Posts</Text>
+              {postsLoading ? (
+                <ActivityIndicator size="large" color="#268290" />
+              ) : (
+                <View>
+                  {postings.length > 0 ? (
+                    postings.map((post, i) => (
+                      <PostingCard key={i} post={post} />
+                    ))
+                  ) : (
+                    <View className=' w-full justify-center items-center'>
+                    <Text className="italic font-extralight">No jobs posted</Text>
+                  </View>
+                  )}
+                </View>
+              )}
+            </View>
           </>
         )}
       </ScrollView>

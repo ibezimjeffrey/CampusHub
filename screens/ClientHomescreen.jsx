@@ -98,12 +98,12 @@ const ClientHomescreen = () => {
             <Text className="text-2xl p-2 font-thin text-black"> </Text>
           </View>
 
-        <TouchableOpacity onPress={()=>{navigate.navigate("AllPostsscreen", {user:user})}}>
+      
         <View className=" right-7">
-            <Text className="text-1xl text-blue-300 italic">My Posts</Text>
+            <Text className="text-1xl text-blue-300 italic">Available Jobs</Text>
           </View>
 
-        </TouchableOpacity>
+     
          
 
 
