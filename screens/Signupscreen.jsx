@@ -86,7 +86,7 @@ const Signupscreen = () => {
         navigation.replace("Aboutscreen");
       } catch (error) {
         setIsApplying(false);
-        Alert.alert("Email already in use");
+        alert("Email already in use");
       }
     }
   };

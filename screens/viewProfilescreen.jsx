@@ -92,7 +92,7 @@ const ViewProfilescreen = ({ route }) => {
               </View>
             </View>
             <View className="mt-4">
-              <Text className="text-base text-gray-500">Course of study: <Text className="text-base font-bold">{details.length > 0 ? details[0].Hostel : ''}</Text></Text>
+              <Text className="text-base text-gray-500">Course of study: <Text className="text-base font-bold">{details.length > 0 ? details[0].Hostel : 'No course'}</Text></Text>
             </View>
 
             <View className="mt-2">
@@ -101,7 +101,7 @@ const ViewProfilescreen = ({ route }) => {
             </View>
 
             <View className="mt-4">
-              <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
+              <Text className="text-base font-thin">{details.length > 0 ? details[0].About : 'No bio'}</Text>
             </View>
             <View className="mt-4" style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
               {details.length > 0 && typeof details[0].Skills === 'string' && (

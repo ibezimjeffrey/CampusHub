@@ -100,7 +100,7 @@ const value3 = `${day}/${month}`;
 
 
     if (wordCount > 3) {
-      alert('Edit Job Title');
+      alert('Job Title too long');
       setIsApplying(false);
       return;
     }
@@ -156,6 +156,7 @@ const value3 = `${day}/${month}`;
             </Text>
           </View>
             <Text className="left-5 text-xl">Job Title</Text>
+
             <View className="left-6">
             <Picker
             
@@ -241,6 +242,7 @@ const value3 = `${day}/${month}`;
 >
   <Picker.Item label="Location" value="" />
   <Picker.Item label="Remote" value="Remote" />
+  <Picker.Item label="Students' Center" value="Students' Center" />
   <Picker.Item label="Pod" value="Pod Hostel" />
   <Picker.Item label="Cooperative" value="Cooperative" />
   <Picker.Item label="Amethyst" value="Amethyst" />

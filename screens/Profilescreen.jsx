@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { Text, View, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator, Alert, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { Image } from 'react-native-elements';
 import { useSelector, useDispatch } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import { firebaseAuth, firestoreDB } from '../config/firebase.config';
 import { useNavigation } from '@react-navigation/native';
-import { addDoc, collection, doc, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { MaterialIcons, Entypo } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 
@@ -13,9 +13,11 @@ const Profilescreen = () => {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
+  const [value, setvalue] = useState("");
+  const [Edit, setEdit] = useState(false);
   const [jobCount, setJobCount] = useState(0);
   const [allHires, setAllHires] = useState(0);
-  const [postings, setPostings] = useState([])
+  const [postings, setPostings] = useState([]);
   const [details, setDetails] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isApplying, setIsApplying] = useState(false);
@@ -63,8 +65,58 @@ const Profilescreen = () => {
     } catch (error) {
       alert('Error sending image: ' + error);
     } finally {
-      setIsUploading(false); // End uploading
+      setIsUploading(false);
     }
+  };
+
+  const EditAbout = () => {
+    setEdit(true);
+  };
+
+  const SaveEdit = async () => {
+    if (value.length > 0) {
+      try {
+        let docRef;
+        if (details.length === 0) {
+          // If details collection doesn't exist for user, create a new document
+          docRef = await addDoc(collection(firestoreDB, 'users', user._id, 'details'), { About: value, _id: user._id});
+        } else {
+          // Update the existing document
+          docRef = doc(firestoreDB, 'users', user._id, 'details', details[0].id);
+          await updateDoc(docRef, { About: value});
+        }
+  
+        setDetails((prevDetails) => {
+          const newDetails = [...prevDetails];
+          if (newDetails.length === 0) {
+            newDetails.push({ id: docRef.id, About: value });
+          } else {
+            newDetails[0].About = value;
+          }
+          return newDetails;
+        });
+  
+        alert('Bio successfully updated');
+        setvalue("");
+        setEdit(false);
+      } catch (error) {
+        console.error("Error updating document: ", error);
+        alert('Error saving changes');
+      }
+    } else {
+      CancelEdit();
+    }
+  };
+  
+  
+
+  const CancelEdit = () => {
+    setEdit(false);
+    setvalue("")
+  };
+
+  const HandleAboutChange = (text) => {
+    setvalue(text);
   };
 
   const logout = async () => {
@@ -86,8 +138,8 @@ const Profilescreen = () => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'portfolio'), where('user._id', '==', user._id)), (querySnapshot) => {
       const images = querySnapshot.docs.map(doc => doc.data().image);
       setPortfolioImages(images);
-      console.log(images.length > 0); 
-      setFinish(false)
+      console.log(images.length > 0);
+      setFinish(false);
     });
     return unsubscribe;
   }, [user._id]);
@@ -102,7 +154,7 @@ const Profilescreen = () => {
   useEffect(() => {
     const msgQuery = query(collection(firestoreDB, 'users', user._id, 'details'));
     const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
-      const upMsg = querySnapshot.docs.map((doc) => doc.data());
+      const upMsg = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setDetails(upMsg);
       setIsLoading(false);
     });
@@ -148,8 +200,8 @@ const Profilescreen = () => {
     return (
       <View className="rounded-xl right-2 w-[350px] flex py-2">
         <TouchableOpacity onPress={() => navigation.navigate("DetailsScreen", { post })}>
-          <BlurView style={{left:30}} className=" bg-slate-300 px-4 py-1 rounded-xl w-[350px] h-[150px] border-1 relative shadow " tint='extraLight' intensity={40} >
-            <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{ alignSelf:'flex-end' }} />
+          <BlurView style={{ left: 30 }} className=" bg-slate-300 px-4 py-1 rounded-xl w-[350px] h-[150px] border-1 relative shadow " tint='extraLight' intensity={40} >
+            <Image source={{ uri: post.User.profilePic }} resizeMode="cover" className="w-12 h-12 relative top-2" style={{ alignSelf: 'flex-end' }} />
             <Text className="text-black text-2xl p-2 capitalize font-extralight absolute top-10">{post.JobDetails}</Text>
             <Text style={{ top: 20 }} className="text-gray-500 p-2 capitalize text-xl absolute">
               {post.Location}
@@ -162,8 +214,10 @@ const Profilescreen = () => {
     );
   };
 
+
   return (
     <SafeAreaView className="flex-1">
+      <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <ScrollView className="p-4">
         <View className="flex-row justify-between pt-4">
           <TouchableOpacity onPress={logout}>
@@ -202,15 +256,98 @@ const Profilescreen = () => {
             </View>
 
             <View className="mt-4">
-              <Text className="text-base text-gray-500">Course of study: <Text className="font-bold">{details.length > 0 ? details[0].Hostel : ''}</Text></Text>
-            </View>
+  <Text className="text-base text-gray-500">Course of study: <Text className="font-bold">{details.length > 0 && details[0].Hostel ? details[0].Hostel : '----'}</Text></Text>
+</View>
 
-            <View className="mt-2">
+
+           
+            <View className="mt-2 w-full flex-row items-center">
               <Text className="mt-5 font-semibold">About {user.fullName}</Text>
+
+            {
+              !Edit ?
+              <TouchableOpacity onPress={EditAbout}>
+              <View className="left-2 top-2 w-6 h-6 bg-primaryButton rounded-full flex items-center justify-center">
+                  <MaterialIcons name='edit' size={10} color={'#fff'} />
+                </View>
+                </TouchableOpacity>
+                :
+                ""
+
+            }
+            
+
+{
+              Edit ?
+              
+             
+                  
+              <View className=" left-3 flex-row justify-between gap-x-4">
+
+<TouchableOpacity onPress={CancelEdit}>
+    <View>
+      <View className="top-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
+        <MaterialIcons name='cancel' size={16} color={'#fff'} />
+      </View>
+    </View>
+  </TouchableOpacity>
+
+  <TouchableOpacity onPress={SaveEdit}>
+    <View>
+      <View className="top-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+        <MaterialIcons name='check' size={16} color={'#fff'} />
+      </View>
+    </View>
+  </TouchableOpacity>
+
+  
+</View>
+
+              
+                :
+                ""
+
+            }
+   
+
             </View>
+            {
+  Edit?
+  
+  
+  <TextInput
+     className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}             
+
+     placeholder= "Edit bio"
+    multiline={true}
+    onChangeText={HandleAboutChange}
+    value={value}
+    scrollEnabled = {true}
+  />
+  
+
+         
+       
+  
+  :
+  (
+    console.log("")
+
+  )
+}
+
+           
+
+            
+            
 
             <View className="mt-4">
-              <Text className="text-base font-thin">{details.length > 0 ? details[0].About : ''}</Text>
+            
+           
+
+              {!Edit? <Text className="text-base font-thin">{details.length > 0 ? details[0].About : '- - - - -'}</Text>:("") }
+
+              
             </View>
 
             <View className="mt-4" style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -223,14 +360,17 @@ const Profilescreen = () => {
               )}
             </View>
 
-            <TouchableOpacity onPress={pickImage}>
+            
               <View className="w-full flex-row items-center ">
                 <Text className="mt-5 font-semibold">Portfolio</Text>
+                <TouchableOpacity onPress={pickImage}>
                 <View className="left-2 top-2 w-6 h-6 bg-primaryButton rounded-full flex items-center justify-center">
-                  <MaterialIcons name='edit' size={10} color={'#fff'} />
+                  <MaterialIcons name='add' size={16} color={'#fff'} />
                 </View>
+                </TouchableOpacity>
+
               </View>
-            </TouchableOpacity>
+            
 
             {isUploading ? (
               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -291,6 +431,7 @@ const Profilescreen = () => {
           </>
         )}
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
