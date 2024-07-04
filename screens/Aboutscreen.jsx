@@ -120,7 +120,7 @@ const Aboutscreen = () => {
   const handleAbout = async () => {
     setIsApplying(true);
 
-    if (!value.trim() || !value1.trim() || !value2.trim()) {
+    if (!value.trim() || !value1.trim() ) {
       alert('Please fill in all details');
       setIsApplying(false);
       return;
@@ -203,7 +203,7 @@ const Aboutscreen = () => {
             <Text className="left-5 text-base">What are your skills</Text>
             <TextInput
               className={`border rounded-2xl w-[360px]  px-4 py-9 flex-row items-center justify-between space-x-8 left-5 my-2 `}
-              placeholder="Coding, Graphic Design..."
+              placeholder="Coding, Graphic Design...(Optional)"
               onChangeText={handleTextChange2}
               value={value2}
               multiline={true}

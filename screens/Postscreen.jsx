@@ -1,12 +1,12 @@
 import { View, Text, Platform, TextInput, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native'
 import { KeyboardAvoidingView } from 'react-native'
 import { ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { addDoc, collection, onSnapshot, query, serverTimestamp } from 'firebase/firestore'
 import { firestoreDB } from '../config/firebase.config'
 import { Picker } from '@react-native-picker/picker';
 
@@ -31,6 +31,41 @@ const Postscreen = () => {
 const day = String(currentDate.getDate()).padStart(2, '0');
 const month = String(currentDate.getMonth() + 1).padStart(2, '0');
 const value3 = `${day}/${month}`;
+const [COSavailable, setCOSavailable] = useState(false)
+const [Aboutavailable, setAboutavailable] = useState(false)
+
+useEffect(() => {
+  const msgQuery = query(collection(firestoreDB, 'users', user._id, 'details'));
+  const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
+    const upMsg = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  
+    if (upMsg.length > 0 && upMsg[0].Hostel) {
+      setCOSavailable(true);
+    } else {
+      setCOSavailable(false);
+    }
+  });
+  
+  return unsubscribe;
+}, []);
+
+
+useEffect(() => {
+  const msgQuery = query(collection(firestoreDB, 'users', user._id, 'details'));
+  const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
+    const upMsg = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  
+    if (upMsg.length > 0 && upMsg[0].About) {
+      setAboutavailable(true);
+    } else {
+      setAboutavailable(false);
+    }
+  });
+  
+  return unsubscribe;
+}, []);
+
+
 
   const handleTextChange = (text) => {
     setvalue(text); 
@@ -90,6 +125,12 @@ const value3 = `${day}/${month}`;
       return;
     }
 
+    if (COSavailable == false || Aboutavailable==false ) {
+      alert('Please finish setting up your account');
+      setIsApplying(false);
+      return;
+    }
+
     const numericBudget = parseInt(value4.replace(/,/g, ''), 10);
 
     if (numericBudget > 500000) {
@@ -109,6 +150,8 @@ const value3 = `${day}/${month}`;
       setotherJob("")
       
     }
+
+
 
     const id = `${user._id}-${Date.now()}`; 
     const jobDetails = otherJob !== "" ? otherJob : value; 

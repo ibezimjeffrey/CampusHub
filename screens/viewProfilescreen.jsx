@@ -104,7 +104,7 @@ const ViewProfilescreen = ({ route }) => {
               <Text className="text-base font-thin">{details.length > 0 ? details[0].About : 'No bio'}</Text>
             </View>
             <View className="mt-4" style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-              {details.length > 0 && typeof details[0].Skills === 'string' && (
+              {details.length > 0 && typeof details[0].Skills === 'string' && details[0].Skills.length > 0 && (
                 details[0].Skills.split(', ').map((skill, index) => (
                   <View key={index} style={{ borderColor: "#268290", borderWidth: 1, borderRadius: 20, padding: 8, margin: 4 }}>
                     <Text className="capitalize">{skill}</Text>

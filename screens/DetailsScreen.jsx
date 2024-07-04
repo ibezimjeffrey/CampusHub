@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Image, SafeAreaView, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native';
-import { deleteDoc, doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { deleteDoc, doc, setDoc, collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { firestoreDB } from '../config/firebase.config';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -13,6 +13,8 @@ const DetailsScreen = ({ route }) => {
   const room_id = `${user._id}-${post._id}`;
   const [isApplying, setIsApplying] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
+  const [COSavailable, setCOSavailable] = useState(false)
+const [Aboutavailable, setAboutavailable] = useState(false)
 
   const navigation = useNavigation();
   const identifier =  `${user._id}-${post.User._id}-${post._id}`;
@@ -32,6 +34,37 @@ const DetailsScreen = ({ route }) => {
 
     checkIfApplied();
   }, [user._id, room_id]);
+
+  useEffect(() => {
+    const msgQuery = query(collection(firestoreDB, 'users', user._id, 'details'));
+    const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
+      const upMsg = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    
+      if (upMsg.length > 0 && upMsg[0].Hostel) {
+        setCOSavailable(true);
+      } else {
+        setCOSavailable(false);
+      }
+    });
+    
+    return unsubscribe;
+  }, []);
+  
+  
+  useEffect(() => {
+    const msgQuery = query(collection(firestoreDB, 'users', user._id, 'details'));
+    const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
+      const upMsg = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    
+      if (upMsg.length > 0 && upMsg[0].About) {
+        setAboutavailable(true);
+      } else {
+        setAboutavailable(false);
+      }
+    });
+    
+    return unsubscribe;
+  }, []);
 
   const othersideview = async () => {
     const newid = `${post.User._id}-${Date.now()}`;
@@ -70,7 +103,12 @@ const DetailsScreen = ({ route }) => {
   const createNewChat = async () => {
     setIsApplying(true);
 
-    // Check if the user has already applied
+    if (COSavailable == false || Aboutavailable==false ) {
+      alert('Please finish setting up your account');
+      setIsApplying(false);
+      return;
+    }
+
     const chatQuery = query(
       collection(firestoreDB, 'chats'),
       where('idRoom', '==', room_id)
