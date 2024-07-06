@@ -43,6 +43,7 @@ const Messagescreen = () => {
     const currentUser = useSelector((state) => state.user.user);
   
     const isCurrentUserRoomCreator = currentUser._id === room.index;
+    const isNotCurrentUserJobPoster = currentUser._id === room.index1;
   
     return (
       <TouchableOpacity 
@@ -67,14 +68,29 @@ const Messagescreen = () => {
   
   <View style={{ flex: 1, marginLeft: 20 }}>
     <View style={{ borderBottomWidth: 2, borderColor: "#D3D3D3" }}>
-      <Text style={{ fontSize: 18, color: "#333", fontWeight: "300", textTransform: "capitalize" }}>
-        {isCurrentUserRoomCreator ? room.jobName : "Babby"} Job
+      <Text 
+      style={{ fontSize: 18, color: "#333", fontWeight: !isNotCurrentUserJobPoster ? 'bold' : 'normal' , textTransform: "capitalize" }}>
+        {isCurrentUserRoomCreator ? room.jobName : ""} Job
+
       </Text>
     </View>
-    <View style={{ borderTopWidth: 2, borderColor: "#D3D3D3", paddingTop: 5 }}>
+    <View className="flex-row" style={{ borderTopWidth: 2, borderColor: "#D3D3D3", paddingTop: 5 }}>
       <Text style={{ fontSize: 16, color: "#666", textTransform: "capitalize" }}>
         {isCurrentUserRoomCreator ? room.user.fullName : "Babby"}
       </Text>
+      {
+        !isNotCurrentUserJobPoster ?
+        
+        <Text className="left-2" style={{ fontSize: 16, color: "#666", textTransform: "capitalize" }}>
+        (Freelancer)
+      </Text>
+      :
+      <Text className="left-2" style={{ fontSize: 16, color: "#666", textTransform: "capitalize" }}>
+      (Client)
+    </Text>
+
+
+      }
     </View>
   </View>
 </TouchableOpacity>

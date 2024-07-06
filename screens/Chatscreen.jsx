@@ -18,7 +18,7 @@ const Chatscreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [isHired, setIsHired] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-
+  const [FreelanceHired, setFreelanceHired] = useState(false)
 
   
   useLayoutEffect(() => {
@@ -51,6 +51,24 @@ const Chatscreen = ({ route }) => {
 
     checkHiredStatus();
   }, [post.idRoom]);
+
+
+  useEffect(() => {
+    const checkHiredStatus = async () => {
+      try {
+        const statusSnapshot = await getDocs(query(collection(firestoreDB, 'Status'), where('post.idRoom', '==', post.idRoom ) ));
+        setFreelanceHired(!statusSnapshot.empty);
+        setIsLoading1(false)
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error checking hired status:', error);
+      }
+    };
+
+    checkHiredStatus();
+  }, [post.idRoom]);
+
+
 
   const sendImage = async (imageUri) => {
     const timeStamp = serverTimestamp();
@@ -180,8 +198,9 @@ const Chatscreen = ({ route }) => {
 
     <View style={{ alignItems: 'flex-end' }}>
       {isLoading1 ? (
-        <View>
-          </View>
+        <View className="w-full flex items-center justify-center">
+        <ActivityIndicator size={"large"} color={"#268290"} />
+      </View>
       ) : (
         user._id !== post.index1 && (
           <>
@@ -205,6 +224,22 @@ const Chatscreen = ({ route }) => {
           </>
         )
       )}
+
+      {
+        user._id == post.index1 && FreelanceHired ?
+        <View style={{ left: 20 }} className="relative">
+                  <View style={{ backgroundColor: "#b8ccee" }} className="border-1 left-7 mr-8 border-emerald-950 rounded-lg p-4">
+                    <Text className="font-bold text-zinc-950">HIRED</Text>
+                  </View>
+                </View>
+
+     
+                :
+                ("")
+                
+                
+
+      }
     </View>
   </View>
 </BlurView>
