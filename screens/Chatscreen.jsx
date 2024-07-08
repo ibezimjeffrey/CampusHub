@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 import { BlurView } from 'expo-blur';
+import LoadingOverlay from './LoadingOverlay';
 import * as ImagePicker from 'expo-image-picker';
 
 const Chatscreen = ({ route }) => {
@@ -19,7 +20,7 @@ const Chatscreen = ({ route }) => {
   const [isHired, setIsHired] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [FreelanceHired, setFreelanceHired] = useState(false)
-
+  const [isApplying, setIsApplying] = useState(false);
   
   useLayoutEffect(() => {
     const msgQuery = query(
@@ -128,6 +129,7 @@ const Chatscreen = ({ route }) => {
 
   const Employ = async () => {
     try {
+      setIsApplying(true)
       const id = `${post.user._id}-${Date.now()}`;
       const room_id = `${user._id}-${Date.now()}-${new Date().getSeconds()}`;
       const hireStatus = {
@@ -140,6 +142,7 @@ const Chatscreen = ({ route }) => {
       };
       await addDoc(collection(firestoreDB, 'Status'), hireStatus);
       setIsHired(true);
+      setIsApplying(false)
       Alert.alert("Contract has started!")
     } catch (error) {
       console.error('Error hiring:', error);
@@ -214,9 +217,11 @@ const Chatscreen = ({ route }) => {
                 </View>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={Employ}>
+              
+              <TouchableOpacity disabled={isApplying} onPress={Employ}>
                 <View style={{ left: 20 }} className="relative">
                   <View className="border-1 left-7 bg-red-400 border-emerald-950 mr-8 rounded-lg p-4">
+                    
                     <Text className="font-bold text-zinc-950">HIRE</Text>
                   </View>
                 </View>
@@ -225,6 +230,15 @@ const Chatscreen = ({ route }) => {
           </>
         )
       )}
+
+      
+        {isApplying ? (
+        <LoadingOverlay visible={true} />
+        
+        ) : (
+          ""
+        )}
+      
 
       {
         user._id == post.index1 && FreelanceHired ?

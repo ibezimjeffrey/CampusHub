@@ -15,3 +15,4 @@ export { default as Searchscreen } from "./Searchscreen";
 export { default as DetailsScreen } from "./DetailsScreen";
 export { default as ViewProfilescreen } from "./viewProfilescreen";
 export { default as AllPostsscreen } from "./AllPostsscreen";
+export { default as LoadingOverlay } from "./LoadingOverlay";
