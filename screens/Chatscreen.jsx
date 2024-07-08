@@ -71,8 +71,34 @@ const Chatscreen = ({ route }) => {
 
 
 
+
+  const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dmtgcnjxv/image/upload';
+  const CLOUDINARY_UPLOAD_PRESET = 'umdj7bkg';
+
   const sendImage = async (imageUri) => {
-    const timeStamp = serverTimestamp();
+    setIsApplying(true)
+    const formData = new FormData();
+    formData.append('file', {
+      uri: imageUri,
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      
+      const response = await fetch(CLOUDINARY_URL, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const responseData = await response.json();
+      const imageUrl = responseData.secure_url;
+
+      const timeStamp = serverTimestamp();
     const newImageMessage = {
       _id: post.idRoom,
       roomId: post._id,
@@ -81,16 +107,18 @@ const Chatscreen = ({ route }) => {
       user: user,
       receipient: post.user._id,
       idRoom: post.idRoom,
-      image: imageUri,
+      image: imageUrl,
     };
 
-    try {
-      await addDoc(collection(firestoreDB, "messages"), newImageMessage);
-      console.log("Image sent");
+    await addDoc(collection(firestoreDB, "messages"), newImageMessage);
+    setIsApplying(false)
+     
     } catch (error) {
-      alert('Error sending image: ' + error);
-    }
+      alert('Check wifi connection');
+    } 
   };
+
+  
 
   const sendMessage = async () => {
     if (!message.trim()) {
@@ -324,6 +352,14 @@ const Chatscreen = ({ route }) => {
 ))}
                 </>
                 )}
+
+{isApplying ? (
+        <LoadingOverlay visible={true} />
+        
+        ) : (
+          ""
+        )}
+
               </ScrollView>
 
               <View className='w-full flex-row items-center justify-center px-8'>
