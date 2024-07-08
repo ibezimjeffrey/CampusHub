@@ -126,7 +126,7 @@ useEffect(() => {
     }
 
     if (COSavailable == false || Aboutavailable==false ) {
-      alert('Please finish setting up your account');
+      alert('Please finish setting up your profile');
       setIsApplying(false);
       return;
     }
@@ -325,7 +325,7 @@ useEffect(() => {
 
 
 
-            <TouchableOpacity onPress={handlePost} className="w-[360px] left-5 px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
+            <TouchableOpacity disabled={isApplying} onPress={handlePost} className="w-[360px] left-5 px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
             {isApplying ? (
             <ActivityIndicator className="py-3" size="small" color="#ffffff" />
           ) : (

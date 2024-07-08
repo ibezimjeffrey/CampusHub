@@ -15,6 +15,8 @@ const DetailsScreen = ({ route }) => {
   const [hasApplied, setHasApplied] = useState(false);
   const [COSavailable, setCOSavailable] = useState(false)
 const [Aboutavailable, setAboutavailable] = useState(false)
+const [isProfileComplete, setIsProfileComplete] = useState(false);
+
 
   const navigation = useNavigation();
   const identifier =  `${user._id}-${post.User._id}-${post._id}`;
@@ -39,33 +41,20 @@ const [Aboutavailable, setAboutavailable] = useState(false)
     const msgQuery = query(collection(firestoreDB, 'users', user._id, 'details'));
     const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
       const upMsg = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    
-      if (upMsg.length > 0 && upMsg[0].Hostel) {
-        setCOSavailable(true);
+  
+      const hasCOS = upMsg.length > 0 && upMsg[0].Hostel;
+      const hasAbout = upMsg.length > 0 && upMsg[0].About;
+  
+      if (hasCOS && hasAbout) {
+        setIsProfileComplete(true);
       } else {
-        setCOSavailable(false);
+        setIsProfileComplete(false);
       }
     });
-    
-    return unsubscribe;
-  }, []);
   
-  
-  useEffect(() => {
-    const msgQuery = query(collection(firestoreDB, 'users', user._id, 'details'));
-    const unsubscribe = onSnapshot(msgQuery, (querySnapshot) => {
-      const upMsg = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    
-      if (upMsg.length > 0 && upMsg[0].About) {
-        setAboutavailable(true);
-      } else {
-        setAboutavailable(false);
-      }
-    });
-    
     return unsubscribe;
-  }, []);
-
+  }, [user._id]);
+  
   const othersideview = async () => {
     const newid = `${post.User._id}-${Date.now()}`;
 
@@ -83,6 +72,7 @@ const [Aboutavailable, setAboutavailable] = useState(false)
     try {
       await setDoc(doc(firestoreDB, "chats", newid), _doc1);
       navigation.navigate("Homescreen", { post: post });
+      setIsApplying(false);
       alert(post.User.fullName + ' has been added to chats');
     } catch (err) {
       alert("Error: " + err);
@@ -103,8 +93,8 @@ const [Aboutavailable, setAboutavailable] = useState(false)
   const createNewChat = async () => {
     setIsApplying(true);
 
-    if (COSavailable == false || Aboutavailable==false ) {
-      alert('Please finish setting up your account');
+    if (!isProfileComplete ) {
+      alert('Please finish setting up your profile');
       setIsApplying(false);
       return;
     }
@@ -137,7 +127,7 @@ const [Aboutavailable, setAboutavailable] = useState(false)
 
     try {
       await setDoc(doc(firestoreDB, "chats", id), _doc);
-      setIsApplying(false);
+      
       othersideview();
     } catch (err) {
       setIsApplying(false);
@@ -190,7 +180,9 @@ const [Aboutavailable, setAboutavailable] = useState(false)
             <Text className="text-white font-bold">Already Applied</Text>
           </View>
         ) : (
-          <TouchableOpacity className="bg-primaryButton py-3 rounded-lg mt-5 mx-4 items-center" onPress={createNewChat}>
+          <TouchableOpacity
+          disabled={isApplying}
+           className="bg-primaryButton py-3 rounded-lg mt-5 mx-4 items-center" onPress={createNewChat}>
             {isApplying ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
@@ -199,7 +191,9 @@ const [Aboutavailable, setAboutavailable] = useState(false)
           </TouchableOpacity>
         )
       ) : (
-        <TouchableOpacity className="bg-red-500 py-3 rounded-2xl mt-5 mx-4 items-center" onPress={() => removePost(post.id)}>
+        <TouchableOpacity
+        disabled={isApplying}
+         className="bg-red-500 py-3 rounded-2xl mt-5 mx-4 items-center" onPress={() => removePost(post.id)}>
           {isApplying ? (
             <ActivityIndicator size="small" color="#ffffff" />
           ) : (

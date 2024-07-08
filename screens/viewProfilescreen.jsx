@@ -19,6 +19,8 @@ const ViewProfilescreen = ({ route }) => {
   const [isApplying, setIsApplying] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [portfolioImages, setPortfolioImages] = useState([]);
+  const [ImageWidth, setImageWidth] = useState(100)
+  const [ImageHeight, setImageHeight] = useState(100)
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'portfolio'), where('user._id', '==', post.user._id)), (querySnapshot) => {
@@ -35,6 +37,16 @@ const ViewProfilescreen = ({ route }) => {
     });
     return unsubscribe;
   }, [post._id]);
+
+  const ViewImage = () => {
+    setImageWidth(300);
+    setImageHeight(300);
+
+    setTimeout(() => {
+      setImageWidth(100);  
+      setImageHeight(100); 
+    }, 5000); 
+  };
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(firestoreDB, 'AllPostings'), where('User._id', '==', post.user._id)), (querySnapshot) => {
@@ -117,22 +129,27 @@ const ViewProfilescreen = ({ route }) => {
             </View>
             <View className="left-6" style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
               {details.length > 0 && details[0].images && Array.isArray(details[0].images) && details[0].images.length > 0 && details[0].images.map((imageUri, index) => (
+                <TouchableOpacity onPress={ViewImage}>
                 <Image
                   className="border-2 rounded-3xl border-primaryButton"
                   key={index}
                   resizeMode="cover"
-                  style={{ width: 100, height: 100, margin: 5 }}
+                  style={{ width: ImageWidth, height: ImageHeight, margin: 5 }}
                   source={{ uri: imageUri }}
                 />
+                </TouchableOpacity>
+
               ))}
               {portfolioImages.length > 0 && portfolioImages.map((imageUri, index) => (
+                <TouchableOpacity onPress={ViewImage}>
                 <Image
                   className="border-2 rounded-3xl border-primaryButton"
                   key={index}
                   resizeMode="cover"
-                  style={{ width: 100, height: 100, margin: 5 }}
+                  style={{ width: ImageWidth, height: ImageWidth, margin: 5 }}
                   source={{ uri: imageUri }}
                 />
+                </TouchableOpacity>
               ))}
               {details.length === 0 && portfolioImages.length === 0 && (
                 <View className='right-5 w-full justify-center items-center'>

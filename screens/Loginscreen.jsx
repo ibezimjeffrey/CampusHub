@@ -99,7 +99,7 @@ const Loginscreen = () => {
               isPass={true}
               setstateValue={setpassword}
             />
-            <TouchableOpacity onPress={HandleLogin} className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
+            <TouchableOpacity disabled={isApplying} onPress={HandleLogin} className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
               {isApplying ? (
                 <ActivityIndicator className="py-3" size="small" color="#ffffff" />
               ) : (

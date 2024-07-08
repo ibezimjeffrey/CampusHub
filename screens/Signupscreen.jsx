@@ -148,7 +148,7 @@ const Signupscreen = () => {
                 }}
               />
               {password !== "" && passwordStrength && <Text>Password Strength: {passwordStrength}</Text>}
-              <TouchableOpacity onPress={handleSignup}
+              <TouchableOpacity disabled={isApplying} onPress={handleSignup}
                 className="w-full px-4 rounded-xl bg-primaryButton my-3 flex items-center justify-center">
                 {isApplying ? (
             <ActivityIndicator className="py-3" size="small" color="#ffffff" />

@@ -81,11 +81,11 @@ const Messagescreen = () => {
       {
         !isNotCurrentUserJobPoster ?
         
-        <Text className="left-2" style={{ fontSize: 16, color: "#666", textTransform: "capitalize" }}>
+        <Text className="left-2" style={{ fontSize: 16, color: "#268290", textTransform: "capitalize" }}>
         (Freelancer)
       </Text>
       :
-      <Text className="left-2" style={{ fontSize: 16, color: "#666", textTransform: "capitalize" }}>
+      <Text className="left-2" style={{ fontSize: 16, color: "#268290", textTransform: "capitalize" }}>
       (Client)
     </Text>
 

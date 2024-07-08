@@ -140,6 +140,7 @@ const Chatscreen = ({ route }) => {
       };
       await addDoc(collection(firestoreDB, 'Status'), hireStatus);
       setIsHired(true);
+      Alert.alert("Contract has started!")
     } catch (error) {
       console.error('Error hiring:', error);
     }
@@ -205,7 +206,7 @@ const Chatscreen = ({ route }) => {
         user._id !== post.index1 && (
           <>
             {isHired ? (
-              <TouchableOpacity onPress={() => { }}>
+              <TouchableOpacity disabled={true} onPress={() => { }}>
                 <View style={{ left: 20 }} className="relative">
                   <View style={{ backgroundColor: "#b8ccee" }} className="border-1 left-7 mr-8 border-emerald-950 rounded-lg p-4">
                     <Text className="font-bold text-zinc-950">HIRED</Text>
@@ -313,9 +314,7 @@ const Chatscreen = ({ route }) => {
 
               <View className='w-full flex-row items-center justify-center px-8'>
                 <View className="bg-gray-200 rounded-2xl px-4 space-x-4 py-2 flex-row items-center justify-center">
-                  <TouchableOpacity>
-                    <Entypo name="emoji-happy" size={24} color="#555" />
-                  </TouchableOpacity>
+                  
                   <TextInput
                     className="flex-1 h-8 text-base text-primaryText font-semibold"
                     placeholder="Type here..."

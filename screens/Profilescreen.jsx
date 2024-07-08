@@ -72,7 +72,7 @@ const Profilescreen = () => {
       alert("Images successfully added");
       console.log("Image sent");
     } catch (error) {
-      alert('Error sending image: ' + error);
+      alert('Check wifi connection');
     } finally {
       setIsUploading(false);
     }
@@ -126,7 +126,12 @@ const Profilescreen = () => {
         console.error("Error updating document: ", error);
         alert('Error saving changes');
       }
-    } 
+    }
+
+    else{
+      setActivateSkills(false)
+    }
+
 
   }
 
@@ -596,8 +601,8 @@ const Profilescreen = () => {
   Edit ?
   (
     isSending ? (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#268290" />
+      <View  style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator className="top-9" size="large" color="#268290" />
       </View>
     ) : (
       <TextInput
