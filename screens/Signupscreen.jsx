@@ -29,9 +29,6 @@ const Signupscreen = () => {
     setAVATARmenu(false);
   };
 
-
-  
-
   const checkPasswordStrength = (password) => {
     if (password.length >= 8) {
       setPasswordStrength('Strong');
@@ -42,7 +39,6 @@ const Signupscreen = () => {
     }
   };
 
-  
 
   const handleSignup = async () => {
     setIsApplying(true);
@@ -64,8 +60,6 @@ const Signupscreen = () => {
       return;
     }
     
- 
-
     if (getEmailValidationStatus && email !== "") {
       try {
         const userCred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
@@ -77,16 +71,17 @@ const Signupscreen = () => {
           providerData: userCred.user.providerData,
         };
 
-       
-       
-
         await setDoc(doc(firestoreDB, "users", userCred?.user.uid), data);
         await sendEmailVerification(userCred.user)
-        alert('Email verification link sent');
+
         navigation.replace("Aboutscreen");
       } catch (error) {
         setIsApplying(false);
         alert("Email already in use");
+
+        if(error ==="Failed to get document because the client is offline.")
+          alert("Check Internet connection");
+
       }
     }
   };
