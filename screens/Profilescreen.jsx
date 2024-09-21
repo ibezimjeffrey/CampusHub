@@ -388,6 +388,10 @@ const Profilescreen = () => {
     }
   };
 
+  const Settings =()=>{
+    navigation.navigate("Settingsscreen")
+  }
+
 
 
 
@@ -416,15 +420,15 @@ const Profilescreen = () => {
     <SafeAreaView className="flex-1">
       <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <ScrollView className="p-4">
-        <View className="flex-row justify-between pt-4">
-          <TouchableOpacity onPress={logout}>
-            {isApplying ? (
-              <ActivityIndicator className="py-3 w-8 h-12" size="large" color="#268290" />
-            ) : (
-              <Text style={{ color: "#268290" }} className="font-bold text-lg">Logout</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+     
+
+        <View className="" style={{ flexDirection: 'row', justifyContent: 'flex-end'}}>
+
+        <TouchableOpacity onPress={Settings}>
+    <MaterialIcons name='settings' size={30} color={'#268290'} />
+  </TouchableOpacity>
+</View>
+
 
         {isLoading ? (
           <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
