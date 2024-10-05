@@ -167,6 +167,7 @@ const Chatscreen = ({ route }) => {
         status: true,
         idRoom: room_id,
         post: post,
+        price: post.price,
       };
       await addDoc(collection(firestoreDB, 'Status'), hireStatus);
       setIsHired(true);

@@ -66,7 +66,8 @@ const [isProfileComplete, setIsProfileComplete] = useState(false);
       jobName: post.JobDetails,
       profilePic: post.User.profilePic,
       idRoom: room_id,
-      index1: user._id
+      index1: user._id,
+      price:post.Budget
     };
 
     try {
@@ -122,7 +123,8 @@ const [isProfileComplete, setIsProfileComplete] = useState(false);
       chatName: post.User.fullName,
       jobName: post.JobDetails,
       idRoom: room_id,
-      index1: user._id
+      index1: user._id,
+      price:post.Budget,
     };
 
     try {
