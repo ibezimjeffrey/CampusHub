@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import React, { useEffect } from 'react';
 import { SafeAreaView, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -13,15 +13,52 @@ const Settings = () => {
   const user = useSelector((state) => state.user.user);
 
   const [start, setstart] = useState(false)
+  const [value4, setvalue4] = useState(""); 
 
   const [Balance, setBalance] = useState('0.00');
   const [Payed, setPayed] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
+  const [add, setadd] = useState(false)
+  const [number, setnumber] = useState('')
   const navigation = useNavigation();
 
-  const Begin =()=>{
-    setstart(true)
+  const handleTextChange4 = (text) => {
+    // Remove non-numeric characters except for periods (in case of decimal values)
+    const numericText = text.replace(/[^0-9]/g, '');
+    
+    // Convert the string to a number and format it
+    const formattedText = numericText ? Number(numericText).toLocaleString() : '';
+    setvalue4(formattedText); // This is for displaying commas for the user
+  
+    // Update the actual amount for Paystack in Kobo (no commas here)
+    const amountInKobo = numericText ? parseFloat(numericText) : 0;
+    setnumber(amountInKobo); // Save amount in Kobo
+  };
+
+  const CancelEdit = () => {
+    setadd(false);
+    setnumber("")
+  };
+
+  const Begin = ()=>{
+    setadd(true)
   }
+
+  const Begin1 =()=>{
+
+    if (!number.trim()) {
+      alert('Please put an amount');
+      return;
+    }
+
+    else{
+      setstart(true)
+
+    }
+    
+  }
+
+
   useEffect(() => {
     const getUserBalances = async () => {
       try {
@@ -98,14 +135,14 @@ const Settings = () => {
               }}
             >
               <View>
-                <TouchableOpacity className="left-2 w-11 h-11 border border-primaryButton rounded-full flex items-center justify-center">
+                <TouchableOpacity onPress={Begin} className="left-2 w-11 h-11 border border-primaryButton rounded-full flex items-center justify-center">
                   <MaterialIcons name='add' size={26} color={'#268290'} />
                 </TouchableOpacity>
                 <Text className="left-4 top-1 font-extrlight">Add</Text>
               </View>
 
               <View>
-                <TouchableOpacity onPress={Begin} className="left-2 w-11 h-11 border border-primaryButton rounded-full flex items-center justify-center">
+                <TouchableOpacity  className="left-2 w-11 h-11 border border-primaryButton rounded-full flex items-center justify-center">
                   <MaterialIcons name='publish' size={26} color={'#268290'} />
                 </TouchableOpacity>
                 <Text className="top-1 font-extrlight">Withdraw</Text>
@@ -117,7 +154,7 @@ const Settings = () => {
                  (
                   <Paystack  
   paystackKey="pk_test_bb056f19149cb6867f38cb9019f7f94defd87bc0"  
-  amount={Balance} 
+  amount={number} 
   billingEmail="jeff.ibezim@gmail.com"
   onCancel={(e) => {
     console.log("Transaction canceled:", e);
@@ -126,6 +163,8 @@ const Settings = () => {
   onSuccess={(res) => {
     console.log("Transaction successful:", res);
     setstart(false);
+    setadd(false)
+    setnumber(false)
     // Handle successful payment here
   }}
   autoStart={true}
@@ -145,6 +184,55 @@ const Settings = () => {
 
             </View>
           </View>
+
+{
+  add ?(
+
+    <View style={{bottom:119}} className=" left-13 flex-row justify-between gap-x-4">
+    <View className="relative bottom-5 ">
+    <Text style={{ position: 'relative', left: 24, top: 55, color: 'black', fontSize: 16 }}> ₦</Text>
+
+    <TextInput
+      className="border border-gray-400 rounded-2xl w-[160px] px-4 py-9 flex-row items-center justify-between space-x-8 left-5"
+      onChangeText={handleTextChange4}
+      value={value4}
+      keyboardType="numeric"
+    />
+
+
+  </View>
+  
+  <TouchableOpacity onPress={Begin1} >
+    <View>
+      <View className="top-5 w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
+        <MaterialIcons name='check' size={26} color={'#fff'} />
+      </View>
+    </View>
+  </TouchableOpacity>
+
+  <TouchableOpacity onPress={CancelEdit}>
+    <View>
+      <View className="top-5 w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
+        <MaterialIcons name='cancel' size={26} color={'#fff'} />
+      </View>
+    </View>
+  </TouchableOpacity>
+
+
+
+
+
+    </View>
+   
+
+  
+
+  ):
+
+  (<></>)
+}
+
+          
 
           <View className="flex-row justify-center pt-4">
             <TouchableOpacity onPress={logout}>
