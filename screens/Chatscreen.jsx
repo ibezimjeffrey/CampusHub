@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platfor
 import { Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs,getDoc, onSnapshot, orderBy, query, serverTimestamp, where, setDoc } from 'firebase/firestore';
 import { firestoreDB } from '../config/firebase.config';
 import { BlurView } from 'expo-blur';
 import LoadingOverlay from './LoadingOverlay';
@@ -21,7 +21,10 @@ const Chatscreen = ({ route }) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [FreelanceHired, setFreelanceHired] = useState(false)
   const [isApplying, setIsApplying] = useState(false);
-  
+  const [Balance, setBalance] = useState(0)
+  const [FreelancerBalance, setFreelancerBalance] = useState(0)
+  const Price = parseFloat(post.price.replace(/[^0-9.-]+/g, ''));
+
   useLayoutEffect(() => {
     const msgQuery = query(
       collection(firestoreDB, 'messages'),
@@ -68,6 +71,66 @@ const Chatscreen = ({ route }) => {
 
     checkHiredStatus();
   }, [post.idRoom]);
+
+
+  useEffect(() => {
+    const getUserBalance = async () => {
+      try {
+
+        const balanceDocRef = doc(firestoreDB, 'Balance', user._id);
+        const balanceDocSnapshot = await getDoc(balanceDocRef);
+  
+        if (balanceDocSnapshot.exists()) {
+   
+          const existingBalance = parseFloat(balanceDocSnapshot.data().Amount);
+          
+          setBalance(existingBalance)
+          
+
+        
+          
+        } 
+      } catch (error) {
+        console.error("Error fetching initial balance: ", error);
+      }
+    };
+ 
+
+
+ 
+    getUserBalance();
+  }, [user._id]); 
+  
+
+  useEffect(() => {
+    const getFreelancerBalance = async () => {
+      try {
+
+        const balanceDocRef = doc(firestoreDB, 'Balance', post.user._id);
+        const balanceDocSnapshot = await getDoc(balanceDocRef);
+  
+        if (balanceDocSnapshot.exists()) {
+   
+          const existingBalance = parseFloat(balanceDocSnapshot.data().Amount);
+          
+          setFreelancerBalance(existingBalance)
+          console.log(FreelancerBalance)
+
+        
+          
+        } 
+      } catch (error) {
+        console.error("Error fetching initial balance: ", error);
+      }
+    };
+ 
+
+
+ 
+    getFreelancerBalance();
+  }, [post.user._id]); 
+
+
 
 
 
@@ -156,6 +219,14 @@ const Chatscreen = ({ route }) => {
   };
 
   const Employ = async () => {
+
+    if (Balance < Price){
+      alert("Insufficient funds")
+      return;
+      
+    }
+
+    
     try {
       setIsApplying(true)
       const id = `${post.user._id}-${Date.now()}`;
@@ -172,6 +243,15 @@ const Chatscreen = ({ route }) => {
       await addDoc(collection(firestoreDB, 'Status'), hireStatus);
       setIsHired(true);
       setIsApplying(false)
+      
+      const newBalance = Balance - Price
+      const balanceDocRef = doc(firestoreDB, 'Balance', user._id);
+      await setDoc(balanceDocRef, { Amount: newBalance }); // Store the new balance in Firestore
+
+      const charge =  FreelancerBalance + Price
+      const balanceDocRef1 = doc(firestoreDB, 'Balance', post.user._id);
+      await setDoc(balanceDocRef1, { Amount: charge }); // Store the new balance in Firestore
+
       Alert.alert("Contract has started!")
     } catch (error) {
       console.error('Error hiring:', error);
